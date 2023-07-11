@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.config;
+package com.avg.lawsuitmanagement.common.config;
 
 
 import org.springframework.context.annotation.Bean;
