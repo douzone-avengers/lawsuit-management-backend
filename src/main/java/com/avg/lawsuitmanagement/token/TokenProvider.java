@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.token;
 
 
-import com.avg.lawsuitmanagement.token.dto.TokenDto;
+import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -28,7 +28,7 @@ public class TokenProvider {
      * 로그인 시, accessToken과 refreshToken을 발행하는 메소드
      * refreshToken은 DB에 저장된다.
      */
-    public TokenDto createTokenDto(Authentication authentication) {
+    public JwtTokenDto createTokenDto(Authentication authentication) {
 
         long now = (new Date()).getTime();
 
@@ -40,7 +40,7 @@ public class TokenProvider {
         return tokenDto;
         */
 
-        return TokenDto.builder()
+        return JwtTokenDto.builder()
             .accessToken(createAccessToken(now, authentication))
             .refreshToken(createRefreshToken(now))
             .build();
