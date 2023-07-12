@@ -25,7 +25,7 @@ public class TokenController {
 
         JwtTokenDto jwtTokenDto = tokenService.clientLogin(clientLoginForm);
 
-        log.info(clientLoginForm.getEmail() + " 님 토큰 발행 성공, 발행된 토큰 : ");
+        log.info(clientLoginForm.getEmail() + " 님 (고객) 토큰 발행 성공, 발행된 토큰 : ");
         log.info(jwtTokenDto.toString());
         return ResponseEntity.ok(jwtTokenDto);
     }

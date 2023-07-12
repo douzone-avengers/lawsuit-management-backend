@@ -10,11 +10,6 @@
         select * from client where email = #{email}
     </select>
 
-    <select id = "selectClientByIdAndPassword" parameterType="ClientLoginParam"
-    resultType="ClientDto">
-        select * from client where email = #{email} and password = #{password}
-    </select>
-
     <insert id="insertClient" parameterType="ClientSignUpParam">
         insert into client(email, password, name, phone, address)
         values (#{email}, #{password}, #{name}, #{phone}, #{address})
