@@ -7,7 +7,7 @@
 
     <select id = "selectClientById" parameterType="java.lang.String"
       resultType="ClientDto">
-        select * from client where email = #{email}
+        select * from client where email = #{email} and is_deleted = false
     </select>
 
     <insert id="insertClient" parameterType="ClientSignUpParam">
