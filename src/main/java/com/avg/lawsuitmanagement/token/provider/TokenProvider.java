@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.token;
+package com.avg.lawsuitmanagement.token.provider;
 
 
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;

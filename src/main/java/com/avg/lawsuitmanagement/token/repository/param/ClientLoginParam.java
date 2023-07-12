@@ -14,8 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ClientLoginParam {
 
-    String email;
-    String password;
+    private String email;
+    private String password;
 
     public static ClientLoginParam of(ClientLoginForm form) {
         return ClientLoginParam.builder()
