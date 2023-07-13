@@ -28,12 +28,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         //고객 로그인일 경우
         if (userType == UserType.CLIENT) {
             return new CustomUserDetail(
-                tokenMapperRepository.selectClientById(email));
-
+                tokenMapperRepository.selectClientByEmail(email));
         }
 
         //직원 로그인일 경우
-        log.error("직원 로그인으로 판정됨");
-        return null;
+        if (userType == UserType.EMPLOYEE) {
+            return new CustomUserDetail(
+                tokenMapperRepository.selectEmployeeById(email));
+        }
+
+        throw new RuntimeException("알수없는 오류 - 직원도, 유저도 아님");
     }
 }

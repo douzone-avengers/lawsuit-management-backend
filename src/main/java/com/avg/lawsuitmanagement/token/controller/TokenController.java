@@ -34,6 +34,10 @@ public class TokenController {
     public ResponseEntity<JwtTokenDto> employeeLogin(
         @RequestBody EmployeeLoginForm employeeLoginForm) {
 
-        return null;
+        JwtTokenDto jwtTokenDto = tokenService.employeeLogin(employeeLoginForm);
+
+        log.info(employeeLoginForm.getEmail() + " 님 (사원) 토큰 발행 성공, 발행된 토큰 : ");
+        log.info(jwtTokenDto.toString());
+        return ResponseEntity.ok(jwtTokenDto);
     }
 }
