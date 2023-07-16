@@ -56,5 +56,4 @@ public class TokenTest {
                 .password(password + "1234")
                 .build()));
     }
-
 }
