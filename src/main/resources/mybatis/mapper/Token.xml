@@ -5,27 +5,16 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.token.repository.TokenMapperRepository">
 
-    <select id = "selectClientByEmail" parameterType="java.lang.String"
-      resultType="ClientDto">
-        select * from client where email = #{email} and is_deleted = false
+    <select id = "selectMemberByEmail" parameterType="java.lang.String">
+        select m.*, h.name as hierarchy_id, r.name as role_id
+        from member m
+                join hierarchy h on m.hierarchy_id = h.id
+                join role r on m.role_id = r.id
+        where m.email = #{email} and m.is_deleted = false
     </select>
 
-    <insert id="insertClient" parameterType="ClientSignUpParam">
-        insert into client(email, password, name, phone, address)
-        values (#{email}, #{password}, #{name}, #{phone}, #{address})
-    </insert>
-
-    <select id = "selectEmployeeById" parameterType="java.lang.String"
-        resultType="EmployeeDto">
-        SELECT e.*, h.name AS hierarchy_name, r.name AS role_name
-        FROM employee e
-                 JOIN hierarchy h ON e.hierarchy_id = h.id
-                 JOIN role r ON e.role_id = r.id
-        WHERE e.email = #{email} and e.is_deleted = false
-    </select>
-
-    <insert id="insertEmployee" parameterType="EmployeeSignUpParam">
-        insert into employee (email, password, name, phone, hierarchy_id, address, role_id)
+    <insert id="insertMember" parameterType="SignUpParam">
+        insert into member (email, password, name, phone, hierarchy_id, address, role_id)
         values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
     </insert>
 </mapper>
