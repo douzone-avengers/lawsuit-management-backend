@@ -6,11 +6,11 @@
 <mapper namespace="com.avg.lawsuitmanagement.token.repository.TokenMapperRepository">
 
     <select id = "selectMemberByEmail" parameterType="java.lang.String">
-        select m.*, h.name as hierarchy, r.name as role
+        select m.*, h.name as hierarchy_id, r.name as role_id
         from member m
                 join hierarchy h on m.hierarchy_id = h.id
                 join role r on m.role_id = r.id
-        where m.email = #{email} and e.is_deleted = false
+        where m.email = #{email} and m.is_deleted = false
     </select>
 
     <insert id="insertMember" parameterType="SignUpParam">
