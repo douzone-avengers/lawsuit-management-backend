@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class EmployeeDto {
+public class MemberDto {
     private long id;
     private String email; //이메일
     private String password; //비밀번호

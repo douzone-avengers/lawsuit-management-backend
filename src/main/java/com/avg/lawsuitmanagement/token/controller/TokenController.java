@@ -1,8 +1,7 @@
 package com.avg.lawsuitmanagement.token.controller;
 
-import com.avg.lawsuitmanagement.token.controller.form.EmployeeLoginForm;
+import com.avg.lawsuitmanagement.token.controller.form.LoginForm;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
-import com.avg.lawsuitmanagement.token.controller.form.ClientLoginForm;
 import com.avg.lawsuitmanagement.token.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,24 +19,13 @@ public class TokenController {
 
     private final TokenService tokenService;
 
-    @PostMapping("/client-login")
-    public ResponseEntity<JwtTokenDto> clientLogin(@RequestBody ClientLoginForm clientLoginForm) {
+    @PostMapping("/login")
+    public ResponseEntity<JwtTokenDto> clientLogin(@RequestBody LoginForm loginForm) {
 
-        JwtTokenDto jwtTokenDto = tokenService.clientLogin(clientLoginForm);
+        JwtTokenDto jwtTokenDto = tokenService.login(loginForm);
+        log.info(loginForm.getEmail() + " 님 로그인 성공");
+        log.info("발행된 토큰 : \n" + jwtTokenDto.toString());
 
-        log.info(clientLoginForm.getEmail() + " 님 (고객) 토큰 발행 성공, 발행된 토큰 : ");
-        log.info(jwtTokenDto.toString());
-        return ResponseEntity.ok(jwtTokenDto);
-    }
-
-    @PostMapping("/employee-login")
-    public ResponseEntity<JwtTokenDto> employeeLogin(
-        @RequestBody EmployeeLoginForm employeeLoginForm) {
-
-        JwtTokenDto jwtTokenDto = tokenService.employeeLogin(employeeLoginForm);
-
-        log.info(employeeLoginForm.getEmail() + " 님 (사원) 토큰 발행 성공, 발행된 토큰 : ");
-        log.info(jwtTokenDto.toString());
         return ResponseEntity.ok(jwtTokenDto);
     }
 }

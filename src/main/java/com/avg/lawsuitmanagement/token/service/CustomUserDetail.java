@@ -1,10 +1,8 @@
 package com.avg.lawsuitmanagement.token.service;
 
-import com.avg.lawsuitmanagement.token.dto.ClientDto;
-import com.avg.lawsuitmanagement.token.dto.EmployeeDto;
+import com.avg.lawsuitmanagement.token.dto.MemberDto;
 import com.avg.lawsuitmanagement.token.type.AuthRole;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,42 +11,38 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetail implements UserDetails {
 
-    private final String userName; //ex)ksj2083@naver.com#CLIENT
-    private final String password;
-    private final List<SimpleGrantedAuthority> authRoleList;
+    private final MemberDto member;
 
-
-    public CustomUserDetail(ClientDto clientDto) {
-        this.userName = clientDto.getEmail();
-        this.password = clientDto.getPassword();
-        this.authRoleList = List.of(new SimpleGrantedAuthority(AuthRole.ROLE_CLIENT.name()));
-    }
-
-    public CustomUserDetail(EmployeeDto employeeDto) {
-        this.userName = employeeDto.getEmail();
-        this.password = employeeDto.getPassword();
-
-        this.authRoleList = new ArrayList<>();
-        authRoleList.add(new SimpleGrantedAuthority(AuthRole.ROLE_USER.name()));
-
-        if(employeeDto.getRole().equals("ADMIN")) {
-            authRoleList.add(new SimpleGrantedAuthority(AuthRole.ROLE_ADMIN.name()));
-        }
+    public CustomUserDetail(MemberDto member) {
+        this.member = member;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authRoleList;
+
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        if(member.getRole().equals("CLIENT")) {
+            authorities.add(new SimpleGrantedAuthority(AuthRole.ROLE_CLIENT.name()));
+            return authorities;
+        }
+
+        authorities.add(new SimpleGrantedAuthority(AuthRole.ROLE_EMPLOYEE.name()));
+        if(member.getRole().equals("ADMIN")) {
+            authorities.add(new SimpleGrantedAuthority(AuthRole.ROLE_ADMIN.name()));
+        }
+
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return this.password;
+        return this.member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.userName;
+        return this.member.getEmail();
     }
 
     /***

@@ -12,12 +12,11 @@ import lombok.ToString;
 public class ClientDto {
     private long id;
     private String email;
-    private String password;
-    private boolean signupStatus;
     private String name;
     private String phone;
     private String address;
-    private String  createdAt;
+    private Long memberId; // 회원가입 된 의뢰인일 경우 관계 존재
+    private String createdAt;
     private String updatedAt;
     private boolean isDeleted;
 }

@@ -7,10 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ClientSignUpParam {
+public class SignUpParam {
     private String email;
     private String password;
     private String name;
     private String phone;
+    private long hierarchyId;
     private String address;
+    private long roleId;
 }

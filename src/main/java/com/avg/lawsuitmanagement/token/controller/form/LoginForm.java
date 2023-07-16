@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ClientLoginForm {
+public class LoginForm {
     private String email;
     private String password;
 }
