@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.token.service;
 
 
-import com.avg.lawsuitmanagement.token.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.token.type.AuthRole;
 import java.util.ArrayList;
 import java.util.Collection;

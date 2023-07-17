@@ -2,7 +2,7 @@ package com.avg.lawsuitmanagement.token.provider;
 
 
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
-import com.avg.lawsuitmanagement.token.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.token.service.CustomUserDetail;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

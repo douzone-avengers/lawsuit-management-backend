@@ -1,6 +1,6 @@
 package com.avg.lawsuitmanagement.token.service;
 
-import com.avg.lawsuitmanagement.token.repository.TokenMapperRepository;
+import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final TokenMapperRepository tokenMapperRepository;
+    private final MemberMapperRepository memberMapperRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        return new CustomUserDetail(tokenMapperRepository.selectMemberByEmail(username));
+        return new CustomUserDetail(memberMapperRepository.selectMemberByEmail(username));
     }
 }
