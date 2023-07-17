@@ -20,9 +20,10 @@
     </insert>
 
     <insert id="insertRefreshToken" parameterType="RefreshTokenParam">
-        insert into refresh_token (`key`, `value`)
+        replace into refresh_token (`key`, `value`)
         values (#{key}, #{value})
     </insert>
+
 
     <select id="selectRefreshTokenByKey" parameterType="java.lang.String">
         select *
