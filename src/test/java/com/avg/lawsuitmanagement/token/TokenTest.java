@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.avg.lawsuitmanagement.token.controller.form.LoginForm;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
+import com.avg.lawsuitmanagement.token.dto.RefreshTokenDto;
 import com.avg.lawsuitmanagement.token.repository.TokenMapperRepository;
 import com.avg.lawsuitmanagement.token.repository.param.SignUpParam;
 import com.avg.lawsuitmanagement.token.service.TokenService;
@@ -58,7 +59,11 @@ public class TokenTest {
 
         //then
         assertNotNull(tokenDto);
-        System.out.println(tokenDto);
+
+        RefreshTokenDto refreshTokenDto = tokenMapperRepository.selectRefreshTokenByKey(email);
+
+        System.out.println("발급 토큰 : " + tokenDto);
+        System.out.println("저장된 refresh 토큰 : " + refreshTokenDto);
     }
 
     @Test
