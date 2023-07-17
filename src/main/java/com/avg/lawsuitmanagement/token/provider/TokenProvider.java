@@ -93,7 +93,7 @@ public class TokenProvider {
         // UserDetails 객체를 만들어서 Authentication 리턴
 
         MemberDto memberDto = MemberDto.builder()
-            .name(claims.getSubject())
+            .email(claims.getSubject())
             .build();
 
         CustomUserDetail customUserDetail = new CustomUserDetail(memberDto);
