@@ -3,6 +3,8 @@ package com.avg.lawsuitmanagement.token.service;
 import com.avg.lawsuitmanagement.token.controller.form.LoginForm;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
 import com.avg.lawsuitmanagement.token.provider.TokenProvider;
+import com.avg.lawsuitmanagement.token.repository.TokenMapperRepository;
+import com.avg.lawsuitmanagement.token.repository.param.RefreshTokenParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +19,8 @@ public class TokenService {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final TokenMapperRepository tokenMapperRepository;
 
 
     public JwtTokenDto login(LoginForm form) {
@@ -33,7 +37,12 @@ public class TokenService {
         //무사히 통과했다면 jwt 토큰 발행
         JwtTokenDto jwtTokenDto = tokenProvider.createTokenDto(authentication);
 
-        //refreshToken DB에 저장 구현 예정
+        //refreshToken DB에 저장
+        tokenMapperRepository.insertRefreshToken(RefreshTokenParam.builder()
+            .key(form.getEmail())
+            .value(jwtTokenDto.getRefreshToken())
+            .build());
+
         return jwtTokenDto;
     }
 
