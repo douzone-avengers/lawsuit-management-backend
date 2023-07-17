@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.token.repository.param;
+package com.avg.lawsuitmanagement.member.repository.param;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.token.dto;
+package com.avg.lawsuitmanagement.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;

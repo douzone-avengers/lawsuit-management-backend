@@ -2,7 +2,7 @@ package com.avg.lawsuitmanagement.token.provider;
 
 
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
-import com.avg.lawsuitmanagement.token.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.token.service.CustomUserDetail;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -93,7 +93,7 @@ public class TokenProvider {
         // UserDetails 객체를 만들어서 Authentication 리턴
 
         MemberDto memberDto = MemberDto.builder()
-            .name(claims.getSubject())
+            .email(claims.getSubject())
             .build();
 
         CustomUserDetail customUserDetail = new CustomUserDetail(memberDto);

@@ -3,11 +3,12 @@ package com.avg.lawsuitmanagement.token;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.token.controller.form.LoginForm;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
 import com.avg.lawsuitmanagement.token.dto.RefreshTokenDto;
 import com.avg.lawsuitmanagement.token.repository.TokenMapperRepository;
-import com.avg.lawsuitmanagement.token.repository.param.SignUpParam;
+import com.avg.lawsuitmanagement.member.repository.param.SignUpParam;
 import com.avg.lawsuitmanagement.token.service.TokenService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ public class TokenTest {
 
     @Autowired
     TokenMapperRepository tokenMapperRepository;
+    @Autowired
+    MemberMapperRepository memberMapperRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -41,7 +44,7 @@ public class TokenTest {
         long roldId = 2L; //employee
 
         //given
-        tokenMapperRepository.insertMember(SignUpParam.builder()
+        memberMapperRepository.insertMember(SignUpParam.builder()
             .email(email)
             .password(passwordEncoder.encode(password))
             .name(name)
@@ -80,7 +83,7 @@ public class TokenTest {
         long roldId = 2L; //employee
 
         //given
-        tokenMapperRepository.insertMember(SignUpParam.builder()
+        memberMapperRepository.insertMember(SignUpParam.builder()
             .email(email)
             .password(passwordEncoder.encode(password))
             .name(name)

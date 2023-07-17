@@ -19,7 +19,6 @@ public class TokenService {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
     private final TokenMapperRepository tokenMapperRepository;
 
 
