@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.common.config;
 
 
+import com.avg.lawsuitmanagement.common.exception.CustomAuthenticationEntryPoint;
 import com.avg.lawsuitmanagement.token.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
-//    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +39,7 @@ public class SecurityConfig {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/token/**").permitAll() //열어줄 요청들 표기
+            .antMatchers("/token/**", "/test2").permitAll() //열어줄 요청들 표기
 
             //for test
             //테스트 메소드는 admin 권한이 있어야 가능
@@ -52,13 +53,15 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
             //인증 간 예외처리
-//            .and()
-//            .exceptionHandling()
-//            .authenticationEntryPoint(customAuthenticationEntryPoint)
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(customAuthenticationEntryPoint)
 
             .and()
             .addFilterBefore(new JwtFilter(tokenProvider),
                 UsernamePasswordAuthenticationFilter.class)
+
+
             .build();
     }
 

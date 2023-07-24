@@ -1,10 +1,14 @@
 package com.avg.lawsuitmanagement.token.provider;
 
 
+import com.avg.lawsuitmanagement.common.exception.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.token.service.CustomUserDetail;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -59,14 +63,19 @@ public class TokenProvider {
     /*
     토큰이 적법한지 검증한다.
      */
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
+
+        if(token == null) {
+            throw new CustomRuntimeException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            log.info(e.getMessage());
+        } catch (ExpiredJwtException e) {
+            throw new CustomRuntimeException(ErrorCode.TOKEN_EXPIRED);
+        } catch (JwtException e) {
+            throw new CustomRuntimeException(ErrorCode.TOKEN_WRONG);
         }
-        return false;
     }
 
     public Authentication getAuthentication(String accessToken) {

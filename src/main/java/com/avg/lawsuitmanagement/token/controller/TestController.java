@@ -13,7 +13,14 @@ public class TestController {
     @GetMapping("/test")
     public void testMethod() {
 
-        System.out.println("테스트 성공");
+        System.out.println("컨트롤러 도달");
     }
+
+    @GetMapping("/test2")
+    public void testMethod2() {
+//        throw new CustomRuntimeException(ErrorCode.TOKEN_NOT_FOUND);
+        System.out.println("컨트롤러 도달");
+    }
+
 
 }
