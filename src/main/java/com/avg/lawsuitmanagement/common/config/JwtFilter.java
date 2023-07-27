@@ -30,13 +30,14 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = resolveToken(request);
 
         //2. 토큰 유효성 검사
-
-        if (jwt == null || !tokenProvider.validateToken(jwt)) {
-
-            log.error("AUTHORIZATION을 잘못 보냈습니다.");
-            filterChain.doFilter(request, response);
+        try {
+            tokenProvider.validateToken(jwt);
+        } catch (Exception e) {
+            request.setAttribute("ex", e);
+            filterChain.doFilter(request,response);
             return;
         }
+
 // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
         Authentication authentication = tokenProvider.getAuthentication(jwt);
         SecurityContextHolder.getContext().setAuthentication(authentication);
