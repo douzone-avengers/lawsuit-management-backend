@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.common.exception;
+package com.avg.lawsuitmanagement.common.custom;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

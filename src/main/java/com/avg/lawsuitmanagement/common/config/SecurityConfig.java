@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.common.config;
 
 
-import com.avg.lawsuitmanagement.common.exception.CustomAuthenticationEntryPoint;
+import com.avg.lawsuitmanagement.common.custom.CustomAuthenticationEntryPoint;
 import com.avg.lawsuitmanagement.token.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
