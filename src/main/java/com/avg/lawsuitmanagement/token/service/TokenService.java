@@ -49,12 +49,7 @@ public class TokenService {
         //실질적인 검증단계
         //authenticate 메소드가 실행 될 때 CustomUserDetailService.loadUserByUsername이 실행된다.
         //즉, 사용자가 입력한 정보와 db 정보가 일치하는지 검증한다.
-        try {
-            return authenticationManagerBuilder.getObject()
-                .authenticate(authenticationToken);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            throw new RuntimeException("로그인 실패");
-        }
+        return authenticationManagerBuilder.getObject()
+            .authenticate(authenticationToken);
     }
 }

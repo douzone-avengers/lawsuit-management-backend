@@ -1,10 +1,12 @@
 package com.avg.lawsuitmanagement.common.exception.handler;
 
-import com.avg.lawsuitmanagement.common.exception.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.dto.ExceptionDto;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,9 +20,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<ExceptionDto> customException(CustomRuntimeException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        log.error("CustomException 발생 : {} \n HttpStatus : {} \n Message : {} \n StackTrace : {}",
+        log.error("CustomException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
-            errorCode.getMessage(), ex.getStackTrace());
+            errorCode.getMessage(), ex.toString());
+
+        return new ResponseEntity<>(
+            ExceptionDto.builder()
+                .code(errorCode.name())
+                .message(errorCode.getMessage())
+                .build()
+            , errorCode.getHttpStatus()
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ExceptionDto> badCredentialsException(BadCredentialsException ex) {
+        ErrorCode errorCode = ErrorCode.BAD_CREDENTIAL;
+        log.error("UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+            errorCode.name(), errorCode.getHttpStatus().toString(),
+            errorCode.getMessage(), ex.toString());
 
         return new ResponseEntity<>(
             ExceptionDto.builder()
@@ -37,9 +55,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDto> unknownException(Exception ex) {
         ErrorCode errorCode = ErrorCode.UNKNOWN_EXCEPTION;
-        log.error("UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n StackTrace : {}",
+        log.error("UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
-            errorCode.getMessage(), ex.getStackTrace());
+            errorCode.getMessage(), ex.toString());
 
         return new ResponseEntity<>(
             ExceptionDto.builder()

@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.common.exception;
+package com.avg.lawsuitmanagement.common.custom;
 
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import lombok.Getter;

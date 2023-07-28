@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.token.provider;
 
 
-import com.avg.lawsuitmanagement.common.exception.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
