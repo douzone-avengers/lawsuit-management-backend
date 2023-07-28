@@ -39,7 +39,7 @@ public class SecurityConfig {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/token/**", "/test2").permitAll() //열어줄 요청들 표기
+            .antMatchers("/tokens/**", "/test2").permitAll() //열어줄 요청들 표기
 
             //for test
             //테스트 메소드는 admin 권한이 있어야 가능
