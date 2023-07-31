@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,7 +23,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<ExceptionDto> customException(CustomRuntimeException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        log.error("CustomException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+        log.error(
+            "CustomException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
             errorCode.getMessage(), ex.toString());
 
@@ -33,10 +37,39 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionDto> tmp(BindException ex) {
+        ErrorCode errorCode = ErrorCode.VALID_EXCEPTION;
+        BindingResult bindingResult = ex.getBindingResult();
+        StringBuilder sb = new StringBuilder();
+
+        for (FieldError x : bindingResult.getFieldErrors()) {
+            sb.append(x.getField())
+                .append(" : ")
+                .append(x.getDefaultMessage())
+                .append(", ");
+        }
+        sb.delete(sb.length()-2, sb.length());
+
+
+        return new ResponseEntity<>(
+            ExceptionDto.builder()
+                .code(errorCode.name())
+                .message(sb.toString())
+                .build(),
+            errorCode.getHttpStatus()
+        );
+    }
+
+
+    /**
+     * 로그인 실패 시
+     */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ExceptionDto> badCredentialsException(BadCredentialsException ex) {
         ErrorCode errorCode = ErrorCode.BAD_CREDENTIAL;
-        log.error("UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+        log.error(
+            "BadCredentialsException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
             errorCode.getMessage(), ex.toString());
 
@@ -55,7 +88,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDto> unknownException(Exception ex) {
         ErrorCode errorCode = ErrorCode.UNKNOWN_EXCEPTION;
-        log.error("UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+        log.error(
+            "UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
             errorCode.getMessage(), ex.toString());
 

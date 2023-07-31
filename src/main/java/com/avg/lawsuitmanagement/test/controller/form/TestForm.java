@@ -15,10 +15,9 @@ import lombok.Setter;
 @Builder
 public class TestForm {
 
-
     @Email
     private String email;
 
-    @NotBlank
+    @NotBlank()
     private String nickname;
 }
