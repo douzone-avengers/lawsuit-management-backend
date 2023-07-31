@@ -2,14 +2,15 @@ package com.avg.lawsuitmanagement.common.exception.handler;
 
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.dto.ExceptionDto;
+import com.avg.lawsuitmanagement.common.exception.dto.ValidException;
+import com.avg.lawsuitmanagement.common.exception.dto.ValidExceptionDto;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -37,30 +38,34 @@ public class GlobalExceptionHandler {
         );
     }
 
+    /**
+     * ModelAttribute(param) 일 때 형식 예외에 대한 처리
+     */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ExceptionDto> tmp(BindException ex) {
         ErrorCode errorCode = ErrorCode.VALID_EXCEPTION;
-        BindingResult bindingResult = ex.getBindingResult();
-        StringBuilder sb = new StringBuilder();
 
-        for (FieldError x : bindingResult.getFieldErrors()) {
-            sb.append(x.getField())
-                .append(" : ")
-                .append(x.getDefaultMessage())
-                .append(", ");
-        }
-        sb.delete(sb.length()-2, sb.length());
+        List<ValidException> validExceptions = ex.getBindingResult().getFieldErrors().stream().map(
+            x -> ValidException.builder()
+                .filed(x.getField())
+                .filedMessage(x.getDefaultMessage()).build()
+        ).toList();
+
+        log.error(
+            "CustomException 발생 : {} \n HttpStatus : {} \n Message : {} \n ValidException : {} \n ExceptionDetail : {}",
+            errorCode.name(), errorCode.getHttpStatus().toString(),
+            errorCode.getMessage(), validExceptions, ex.toString());
 
 
         return new ResponseEntity<>(
-            ExceptionDto.builder()
+            ValidExceptionDto.builder()
                 .code(errorCode.name())
-                .message(sb.toString())
+                .message(errorCode.getMessage())
+                .validExceptions(validExceptions)
                 .build(),
             errorCode.getHttpStatus()
         );
     }
-
 
     /**
      * 로그인 실패 시
