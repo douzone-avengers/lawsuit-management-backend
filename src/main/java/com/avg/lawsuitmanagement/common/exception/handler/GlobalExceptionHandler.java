@@ -40,9 +40,11 @@ public class GlobalExceptionHandler {
 
     /**
      * ModelAttribute(param) 일 때 형식 예외에 대한 처리
+     * RequestBody 일 때 형식 위반시 MethodArgumentNotValidException 이 발생한다.
+     * 그런데 BindException은 MethodArgumentNotValidExceptiond의 부모이므로 따로 처리할 필요가 없다.
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ExceptionDto> tmp(BindException ex) {
+    public ResponseEntity<ExceptionDto> bindException(BindException ex) {
         ErrorCode errorCode = ErrorCode.VALID_EXCEPTION;
 
         List<ValidException> validExceptions = ex.getBindingResult().getFieldErrors().stream().map(
@@ -52,10 +54,9 @@ public class GlobalExceptionHandler {
         ).toList();
 
         log.error(
-            "CustomException 발생 : {} \n HttpStatus : {} \n Message : {} \n ValidException : {} \n ExceptionDetail : {}",
+            "BindException 발생 : {} \n HttpStatus : {} \n Message : {} \n ValidException : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
             errorCode.getMessage(), validExceptions, ex.toString());
-
 
         return new ResponseEntity<>(
             ValidExceptionDto.builder()
