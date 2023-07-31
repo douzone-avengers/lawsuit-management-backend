@@ -11,6 +11,9 @@ public enum ErrorCode {
     //500 발생
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 예외가 발생했습니다."),
 
+    //valid exception
+    VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "입력값 형식이 잘못되었습니다."),
+
     //계정관련
     BAD_CREDENTIAL(HttpStatus.NOT_FOUND, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),
 

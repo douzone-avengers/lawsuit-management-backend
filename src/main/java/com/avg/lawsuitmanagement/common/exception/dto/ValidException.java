@@ -1,18 +1,17 @@
 package com.avg.lawsuitmanagement.common.exception.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
-@SuperBuilder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
-public class ExceptionDto {
-    private String code;
-    private String message;
-
-
-
+@ToString
+public class ValidException {
+    String filed;
+    String filedMessage;
 }

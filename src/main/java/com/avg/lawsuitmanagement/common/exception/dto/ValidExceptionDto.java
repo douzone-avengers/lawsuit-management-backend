@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.common.exception.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +10,7 @@ import lombok.experimental.SuperBuilder;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
-public class ExceptionDto {
-    private String code;
-    private String message;
-
-
-
+public class ValidExceptionDto extends ExceptionDto {
+    List<ValidException> validExceptions;
 }
+
