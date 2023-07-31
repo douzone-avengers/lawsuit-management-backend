@@ -39,12 +39,7 @@ public class SecurityConfig {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/tokens/**", "/test2").permitAll() //열어줄 요청들 표기
-
-            //for test
-            //테스트 메소드는 admin 권한이 있어야 가능
-            .antMatchers("/test/**")
-            .hasAnyRole("ADMIN")
+            .antMatchers("/tokens/**", "/test/**").permitAll() //열어줄 요청들 표기
 
             .anyRequest().authenticated() //나머지 요청은 인증 필요
 

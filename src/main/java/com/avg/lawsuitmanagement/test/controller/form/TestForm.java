@@ -1,7 +1,6 @@
 package com.avg.lawsuitmanagement.test.controller.form;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +20,5 @@ public class TestForm {
     private String email;
 
     @NotBlank
-    @Min(10)
     private String nickname;
 }
