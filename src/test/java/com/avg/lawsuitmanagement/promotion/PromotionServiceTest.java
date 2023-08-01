@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.member;
+package com.avg.lawsuitmanagement.promotion;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,8 +10,8 @@ import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
-import com.avg.lawsuitmanagement.member.dto.CreatePromotionKeyDto;
-import com.avg.lawsuitmanagement.member.service.MemberService;
+import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.service.PromotionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-public class MemberServiceTest {
+public class PromotionServiceTest {
 
     @Autowired
-    MemberService memberService;
+    PromotionService promotionService;
 
     @Autowired
     ClientMapperRepository clientMapperRepository;
@@ -36,7 +36,7 @@ public class MemberServiceTest {
         long targetClientId = insertClientAndGetClientId();
 
         //when
-        CreatePromotionKeyDto dto = memberService.getClientPromotionKey(
+        CreatePromotionKeyDto dto = promotionService.getClientPromotionKey(
             targetClientId);
 
         //then
@@ -58,7 +58,7 @@ public class MemberServiceTest {
 
         //when
         CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
-            () -> memberService.getClientPromotionKey(
+            () -> promotionService.getClientPromotionKey(
                 targetClientId));
 
         //then
