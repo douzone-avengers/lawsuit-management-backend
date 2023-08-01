@@ -16,6 +16,8 @@ public enum ErrorCode {
 
     //계정관련
     BAD_CREDENTIAL(HttpStatus.NOT_FOUND, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),
+    CLIENT_ALREADY_REGISTERED(HttpStatus.CONFLICT, "이미 가입된 의뢰인입니다."),
+
 
     //JWT 관련 예외
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
@@ -23,7 +25,6 @@ public enum ErrorCode {
     TOKEN_WRONG(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다"),
 
     //의뢰인 관련 예외
-
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
 
     //TEST

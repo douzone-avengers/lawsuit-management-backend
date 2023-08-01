@@ -40,6 +40,7 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .antMatchers("/tokens/**", "/test/**").permitAll() //열어줄 요청들 표기
+            .antMatchers("/members/promotions/clients").hasAnyRole("ADMIN", "EMPLOYEE")
 
             .anyRequest().authenticated() //나머지 요청은 인증 필요
 
@@ -55,7 +56,6 @@ public class SecurityConfig {
             .and()
             .addFilterBefore(new JwtFilter(tokenProvider),
                 UsernamePasswordAuthenticationFilter.class)
-
 
             .build();
     }

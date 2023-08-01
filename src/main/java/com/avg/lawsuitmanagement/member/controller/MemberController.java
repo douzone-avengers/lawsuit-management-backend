@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.member.controller;
 
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.dto.CreatePromotionKeyDto;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,4 +20,11 @@ public class MemberController {
     public ResponseEntity<MemberDto> getLoginUserInfo() {
         return ResponseEntity.ok(memberService.getLoginMemberInfo());
     }
+
+    @GetMapping("/promotions/clients")
+    public ResponseEntity<CreatePromotionKeyDto> getClientPromotionKey(long clientId) {
+        return ResponseEntity.ok(memberService.getClientPromotionKey(clientId));
+    }
+
+
 }
