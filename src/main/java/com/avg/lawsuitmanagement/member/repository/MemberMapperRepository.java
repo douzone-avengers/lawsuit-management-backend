@@ -9,5 +9,4 @@ public interface MemberMapperRepository {
 
     MemberDto selectMemberByEmail(String email);
     void insertMember(SignUpParam param);
-    void insertPromotionKey(String value);
 }

@@ -19,9 +19,4 @@
         values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
     </insert>
 
-    <insert id="insertPromotionKey" parameterType="java.lang.String">
-        replace into client_promotion (`value`)
-        values (#{value})
-    </insert>
-
 </mapper>

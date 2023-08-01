@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.member.dto;
+package com.avg.lawsuitmanagement.promotion.dto;
 
 import lombok.Builder;
 import lombok.Getter;
