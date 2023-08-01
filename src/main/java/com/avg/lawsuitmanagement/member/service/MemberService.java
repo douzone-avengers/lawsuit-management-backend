@@ -34,7 +34,7 @@ public class MemberService {
         //존재하는 유저인지? -> ClientService에서 검증
         //이미 가입된 의뢰인인지?
         ClientDto clientDto = clientService.getClientById(clientId);
-        if(clientDto.getMemberId() == 0) {
+        if(clientDto.getMemberId() != 0) {
             throw new CustomRuntimeException(ErrorCode.CLIENT_ALREADY_REGISTERED);
         }
 
