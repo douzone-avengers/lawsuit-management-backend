@@ -5,12 +5,12 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository">
 
-    <insert id="insertPromotionKey" parameterType="java.lang.String">
-        replace into client_promotion (`value`)
-        values (#{value})
+    <insert id="insertPromotionKey" parameterType="InsertPromotionKeyParam">
+        replace into client_promotion (`value`, client_id)
+        values (#{value}, #{clientId})
     </insert>
 
-    <select id="selectPromotionKeyByValue" parameterType="java.lang.String">
+    <select id="selectPromotionKeyByValue" resultType="PromotionKeyDto" parameterType="java.lang.String">
         select *
         from client_promotion
         where value = #{value}

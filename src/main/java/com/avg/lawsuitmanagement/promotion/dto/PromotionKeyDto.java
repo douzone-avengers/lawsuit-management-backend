@@ -15,6 +15,7 @@ public class PromotionKeyDto {
     private String value;
     private String createdAt;
     private String updatedAt;
-    private long clientId;
+    private boolean isDeleted;
+    private Long clientId;
     private boolean isActive;
 }

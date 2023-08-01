@@ -10,6 +10,7 @@ import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.dto.PromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
+import com.avg.lawsuitmanagement.promotion.repository.param.InsertPromotionKeyParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -31,12 +32,15 @@ public class PromotionService {
         //존재하는 유저인지? -> ClientService에서 검증
         //이미 가입된 의뢰인인지?
         ClientDto clientDto = clientService.getClientById(clientId);
-        if(clientDto.getMemberId() != 0) {
+        if (clientDto.getMemberId() != 0) {
             throw new CustomRuntimeException(ErrorCode.CLIENT_ALREADY_REGISTERED);
         }
 
         //db 입력
-        promotionMapperRepository.insertPromotionKey(promotionKey);
+        promotionMapperRepository.insertPromotionKey(InsertPromotionKeyParam.builder()
+            .value(promotionKey)
+            .clientId(clientDto.getId())
+            .build());
 
         //return
         return CreatePromotionKeyDto.builder()
@@ -54,10 +58,10 @@ public class PromotionService {
     프로모션 키 검증
      */
     private void validatePromotionKey(PromotionKeyDto dto) {
-        if(dto == null) {
+        if (dto == null) {
             throw new CustomRuntimeException(PROMOTION_NOT_FOUND);
         }
-        if(!dto.isActive()) {
+        if (!dto.isActive()) {
             throw new CustomRuntimeException(PROMOTION_NOT_ACTIVE);
         }
     }
