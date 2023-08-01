@@ -62,7 +62,43 @@ public class PromotionServiceTest {
                 targetClientId));
 
         //then
-        assertEquals(ErrorCode.CLIENT_ALREADY_REGISTERED,exception.getErrorCode());
+        assertEquals(ErrorCode.CLIENT_ALREADY_REGISTERED, exception.getErrorCode());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("의뢰인 promotion 키 resolve 성공")
+    void resolveClientPromotionKeySuccess() {
+
+        //given
+        long targetClientId = insertClientAndGetClientId();
+        CreatePromotionKeyDto dto = promotionService.getClientPromotionKey(
+            targetClientId);
+
+        //when
+        ClientDto clientDto = promotionService.resolveClientPromotionKey(dto.getValue());
+
+        //then
+        assertNotNull(clientDto);
+        assertEquals("cofee123@naver.com", clientDto.getEmail());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("의뢰인 promotion 키 resolve 실패 - 존재하지 않는 promotion key")
+    void resolveClientPromotionKeyNotFound() {
+
+        //given
+        long targetClientId = insertClientAndGetClientId();
+        CreatePromotionKeyDto dto = promotionService.getClientPromotionKey(
+            targetClientId);
+
+        //when
+        CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
+            () -> promotionService.resolveClientPromotionKey(dto.getValue() + "abcd"));
+
+        //then
+        assertEquals(ErrorCode.PROMOTION_NOT_FOUND, exception.getErrorCode());
     }
 
     private long insertClientAndGetClientId() {
