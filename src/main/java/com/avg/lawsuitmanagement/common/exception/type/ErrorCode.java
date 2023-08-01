@@ -21,7 +21,12 @@ public enum ErrorCode {
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     TOKEN_WRONG(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다"),
-    
+
+    //의뢰인 관련 예외
+
+    CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
+
+    //TEST
     EXCEPTION_AOP_TEST(HttpStatus.BAD_REQUEST, "TEST : 테스트용 예외가 발생했습니다.");
 
     private final HttpStatus httpStatus; // header에 담길 정보

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.member.repository.ClientMapperRepository">
+
+    <select id="selectClientById">
+        select *
+        from client
+        where id = #{clientId};
+    </select>
+
+    <select id="selectClientByEmail">
+        select *
+        from client
+        where email = #{email};
+    </select>
+
+    <insert id="insertClient" parameterType="InsertClientParam">
+        insert into client (email, name, phone, address)
+        values (#{email}, #{name}, #{phone}, #{address});
+    </insert>
+
+</mapper>
