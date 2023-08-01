@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository">
+
+    <insert id="insertPromotionKey" parameterType="InsertPromotionKeyParam">
+        replace into client_promotion (`value`, client_id)
+        values (#{value}, #{clientId})
+    </insert>
+
+    <select id="selectPromotionKeyByValue" resultType="PromotionKeyDto" parameterType="java.lang.String">
+        select *
+        from client_promotion
+        where value = #{value}
+          and is_deleted = false
+    </select>
+
+</mapper>

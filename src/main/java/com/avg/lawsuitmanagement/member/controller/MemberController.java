@@ -19,4 +19,5 @@ public class MemberController {
     public ResponseEntity<MemberDto> getLoginUserInfo() {
         return ResponseEntity.ok(memberService.getLoginMemberInfo());
     }
+
 }

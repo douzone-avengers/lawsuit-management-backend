@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 //@TestPropertySource(locations = "classpath:application-test.properties")
-public class TokenTest {
+public class TokenServiceTest {
 
     @Autowired
     TokenMapperRepository tokenMapperRepository;

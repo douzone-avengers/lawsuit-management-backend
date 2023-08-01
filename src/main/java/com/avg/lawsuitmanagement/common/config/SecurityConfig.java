@@ -6,6 +6,7 @@ import com.avg.lawsuitmanagement.token.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -39,7 +40,9 @@ public class SecurityConfig {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/tokens/**", "/test/**").permitAll() //열어줄 요청들 표기
+            .antMatchers("/tokens/**", "/test/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/promotions/clients").permitAll()
+            .antMatchers(HttpMethod.POST, "/promotions/clients").hasAnyRole("ADMIN", "EMPLOYEE")
 
             .anyRequest().authenticated() //나머지 요청은 인증 필요
 
@@ -55,7 +58,6 @@ public class SecurityConfig {
             .and()
             .addFilterBefore(new JwtFilter(tokenProvider),
                 UsernamePasswordAuthenticationFilter.class)
-
 
             .build();
     }

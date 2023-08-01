@@ -18,4 +18,5 @@
         insert into member (email, password, name, phone, hierarchy_id, address, role_id)
         values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
     </insert>
+
 </mapper>
