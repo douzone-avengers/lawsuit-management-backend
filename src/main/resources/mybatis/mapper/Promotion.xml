@@ -10,4 +10,11 @@
         values (#{value})
     </insert>
 
+    <select id="selectPromotionKeyByValue" parameterType="java.lang.String">
+        select *
+        from client_promotion
+        where value = #{value}
+          and is_deleted = false
+    </select>
+
 </mapper>

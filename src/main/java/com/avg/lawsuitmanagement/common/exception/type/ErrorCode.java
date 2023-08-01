@@ -16,7 +16,11 @@ public enum ErrorCode {
 
     //계정관련
     BAD_CREDENTIAL(HttpStatus.NOT_FOUND, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),
+
+    //PROMOTION
     CLIENT_ALREADY_REGISTERED(HttpStatus.CONFLICT, "이미 가입된 의뢰인입니다."),
+    PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "가입키가 존재하지 않습니다."),
+    PROMOTION_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "만료된 가입키입니다."),
 
 
     //JWT 관련 예외

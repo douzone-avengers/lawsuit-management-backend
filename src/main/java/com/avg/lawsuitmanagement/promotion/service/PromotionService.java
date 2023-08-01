@@ -1,10 +1,14 @@
 package com.avg.lawsuitmanagement.promotion.service;
 
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.PROMOTION_NOT_ACTIVE;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.PROMOTION_NOT_FOUND;
+
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.PromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +42,24 @@ public class PromotionService {
         return CreatePromotionKeyDto.builder()
             .value(promotionKey)
             .build();
+    }
+
+    public ClientDto resolveClientPromotionKey(String key) {
+        PromotionKeyDto promotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(key);
+        validatePromotionKey(promotionKeyDto);
+        return clientService.getClientById(promotionKeyDto.getClientId());
+    }
+
+    /*
+    프로모션 키 검증
+     */
+    private void validatePromotionKey(PromotionKeyDto dto) {
+        if(dto == null) {
+            throw new CustomRuntimeException(PROMOTION_NOT_FOUND);
+        }
+        if(!dto.isActive()) {
+            throw new CustomRuntimeException(PROMOTION_NOT_ACTIVE);
+        }
     }
 
 
