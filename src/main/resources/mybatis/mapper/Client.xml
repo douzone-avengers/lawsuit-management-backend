@@ -22,4 +22,11 @@
         values (#{email}, #{name}, #{phone}, #{address});
     </insert>
 
+    <update id="updateClientMemberId" parameterType="UpdateClientMemberIdParam">
+        update client
+        set member_id = #{memberId}
+        where id = #{clientId};
+    </update>
+
+
 </mapper>
