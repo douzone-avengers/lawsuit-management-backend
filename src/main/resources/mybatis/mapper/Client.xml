@@ -11,7 +11,7 @@
         where id = #{clientId};
     </select>
 
-    <select id="selectClientByEmail">
+    <select id="selectClientByEmail" parameterType="java.lang.String">
         select *
         from client
         where email = #{email};
