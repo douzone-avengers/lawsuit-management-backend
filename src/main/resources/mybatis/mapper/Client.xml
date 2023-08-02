@@ -8,13 +8,13 @@
     <select id="selectClientById" parameterType="java.lang.Long">
         select *
         from client
-        where id = #{clientId};
+        where id = #{clientId} and is_deleted=false;;
     </select>
 
     <select id="selectClientByEmail" parameterType="java.lang.String">
         select *
         from client
-        where email = #{email};
+        where email = #{email} and is_deleted=false;;
     </select>
 
     <insert id="insertClient" parameterType="InsertClientParam">
@@ -31,7 +31,7 @@
     <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
         update client
         set email=#{email}, name=#{name}, phone=#{phone}, address=#{address}
-        where id = #{clientId}
+        where id = #{clientId};
     </update>
 
 
