@@ -26,9 +26,9 @@ public class InsertMemberParam {
             .password(passwordEncoder.encode(form.getPassword()))
             .name(form.getName())
             .phone(form.getPhone())
-            .hierarchyId(0) //고민 필요
+            .hierarchyId(1) //고민 필요
             .address(form.getAddress())
-            .roleId(0)
+            .roleId(1) //고민필요
             .build();
     }
 }
