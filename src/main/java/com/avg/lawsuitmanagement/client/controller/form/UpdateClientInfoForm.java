@@ -1,6 +1,5 @@
 package com.avg.lawsuitmanagement.client.controller.form;
 
-import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

@@ -52,10 +52,6 @@ public class ClientService {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
         }
 
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("clientId", clientId);
-        map.put("form", UpdateClientInfoParam.of(form));
-
-        clientMapperRepository.updateClientInfo(map);
+        clientMapperRepository.updateClientInfo(UpdateClientInfoParam.of(clientId, form));
     }
 }

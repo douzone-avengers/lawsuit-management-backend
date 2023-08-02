@@ -28,9 +28,9 @@
         where id = #{clientId};
     </update>
 
-    <update id="updateClientInfo" parameterType="java.util.HashMap">
+    <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
         update client
-        set email=#{form.email}, name=#{form.name}, phone=#{form.phone}, address=#{form.address}
+        set email=#{email}, name=#{name}, phone=#{phone}, address=#{address}
         where id = #{clientId}
     </update>
 

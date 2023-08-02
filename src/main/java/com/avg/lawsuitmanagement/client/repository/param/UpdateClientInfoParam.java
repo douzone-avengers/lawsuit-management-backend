@@ -9,13 +9,15 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UpdateClientInfoParam {
+    private Long clientId;
     private String email;
     private String name;
     private String phone;
     private String address;
 
-    public static UpdateClientInfoParam of(UpdateClientInfoForm form) {
+    public static UpdateClientInfoParam of(Long clientId, UpdateClientInfoForm form) {
         return UpdateClientInfoParam.builder()
+            .clientId(clientId)
             .email(form.getEmail())
             .name(form.getName())
             .phone(form.getPhone())
