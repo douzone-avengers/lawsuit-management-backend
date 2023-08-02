@@ -29,7 +29,7 @@ public class PromotionService {
     private final MemberService memberService;
 
     @Transactional
-    public CreatePromotionKeyDto getClientPromotionKey(long clientId) {
+    public CreatePromotionKeyDto createClientPromotionKey(long clientId) {
         String promotionKey = getRandomPromotionKey();
 
         //존재하는 유저인지? -> ClientService에서 검증

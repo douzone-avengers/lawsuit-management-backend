@@ -36,7 +36,7 @@ public class PromotionServiceTest {
         long targetClientId = insertClientAndGetClientId();
 
         //when
-        CreatePromotionKeyDto dto = promotionService.getClientPromotionKey(
+        CreatePromotionKeyDto dto = promotionService.createClientPromotionKey(
             targetClientId);
 
         //then
@@ -58,7 +58,7 @@ public class PromotionServiceTest {
 
         //when
         CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
-            () -> promotionService.getClientPromotionKey(
+            () -> promotionService.createClientPromotionKey(
                 targetClientId));
 
         //then
@@ -72,7 +72,7 @@ public class PromotionServiceTest {
 
         //given
         long targetClientId = insertClientAndGetClientId();
-        CreatePromotionKeyDto dto = promotionService.getClientPromotionKey(
+        CreatePromotionKeyDto dto = promotionService.createClientPromotionKey(
             targetClientId);
 
         //when
@@ -90,7 +90,7 @@ public class PromotionServiceTest {
 
         //given
         long targetClientId = insertClientAndGetClientId();
-        CreatePromotionKeyDto dto = promotionService.getClientPromotionKey(
+        CreatePromotionKeyDto dto = promotionService.createClientPromotionKey(
             targetClientId);
 
         //when
