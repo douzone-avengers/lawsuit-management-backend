@@ -5,7 +5,7 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.client.repository.ClientMapperRepository">
 
-    <select id="selectClientById">
+    <select id="selectClientById" parameterType="java.lang.Long">
         select *
         from client
         where id = #{clientId};
@@ -28,9 +28,9 @@
         where id = #{clientId};
     </update>
 
-    <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
+    <update id="updateClientInfo" parameterType="java.util.HashMap">
         update client
-        set {email, name, phone, address}
+        set email=#{form.email}, name=#{form.name}, phone=#{form.phone}, address=#{form.address}
         where id = #{clientId}
     </update>
 

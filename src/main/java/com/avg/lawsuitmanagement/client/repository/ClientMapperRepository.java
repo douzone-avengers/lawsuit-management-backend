@@ -5,6 +5,7 @@ import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdParam;
 import org.apache.ibatis.annotations.Mapper;
+import java.util.HashMap;
 
 @Mapper
 public interface ClientMapperRepository {
@@ -13,5 +14,5 @@ public interface ClientMapperRepository {
     ClientDto selectClientByEmail(String email);
     void insertClient(InsertClientParam param);
     void updateClientMemberId(UpdateClientMemberIdParam param);
-    void updateClientInfo(UpdateClientInfoParam param);
+    void updateClientInfo(HashMap map);
 }
