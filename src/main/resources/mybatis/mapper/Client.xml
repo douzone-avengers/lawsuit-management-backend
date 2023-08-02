@@ -28,5 +28,11 @@
         where id = #{clientId};
     </update>
 
+    <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
+        update client
+        set {email, name, phone, address}
+        where id = #{clientId}
+    </update>
+
 
 </mapper>
