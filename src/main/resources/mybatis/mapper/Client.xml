@@ -8,13 +8,13 @@
     <select id="selectClientById" parameterType="java.lang.Long">
         select *
         from client
-        where id = #{clientId} and is_deleted=false;;
+        where id = #{clientId} and is_deleted = false;
     </select>
 
     <select id="selectClientByEmail" parameterType="java.lang.String">
         select *
         from client
-        where email = #{email} and is_deleted=false;;
+        where email = #{email} and is_deleted = false;
     </select>
 
     <insert id="insertClient" parameterType="InsertClientParam">
@@ -30,9 +30,13 @@
 
     <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
         update client
-        set email=#{email}, name=#{name}, phone=#{phone}, address=#{address}
+        set email = #{email}, name = #{name}, phone = #{phone}, address = #{address}
         where id = #{clientId};
     </update>
 
-
+    <update id="deleteClientInfo" parameterType="java.lang.Long">
+        update client
+        set is_deleted = true
+        where id = #{clientId};
+    </update>
 </mapper>

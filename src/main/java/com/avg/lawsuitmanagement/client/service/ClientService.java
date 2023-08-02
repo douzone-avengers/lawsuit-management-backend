@@ -54,4 +54,15 @@ public class ClientService {
 
         clientMapperRepository.updateClientInfo(UpdateClientInfoParam.of(clientId, form));
     }
+
+    public void deleteClientInfo(long clientId) {
+        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
+
+        // 해당 clientId의 의뢰인이 없을 경우
+        if (clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        clientMapperRepository.deleteClientInfo(clientId);
+    }
 }

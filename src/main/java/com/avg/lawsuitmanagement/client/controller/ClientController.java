@@ -6,6 +6,7 @@ import com.avg.lawsuitmanagement.client.service.ClientService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,12 @@ public class ClientController {
     @PutMapping("/{clientId}")
     public ResponseEntity<Void> updateClientInfo(@PathVariable("clientId") Long clientId, @RequestBody @Valid UpdateClientInfoForm form) {
         clientService.updateClientInfo(clientId, form);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{clientId}")
+    public ResponseEntity<Void> deleteClientInfo(@PathVariable("clientId") Long clientId) {
+        clientService.deleteClientInfo(clientId);
         return ResponseEntity.ok().build();
     }
 }

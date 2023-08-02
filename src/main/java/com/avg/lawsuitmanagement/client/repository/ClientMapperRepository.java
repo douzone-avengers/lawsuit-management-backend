@@ -15,4 +15,5 @@ public interface ClientMapperRepository {
     void insertClient(InsertClientParam param);
     void updateClientMemberId(UpdateClientMemberIdParam param);
     void updateClientInfo(UpdateClientInfoParam param);
+    void deleteClientInfo(long clientId);
 }
