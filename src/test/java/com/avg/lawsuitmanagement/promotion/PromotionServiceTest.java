@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.promotion;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,7 +30,7 @@ public class PromotionServiceTest {
     @Test
     @Transactional
     @DisplayName("의뢰인 promotion 키 발급 성공")
-    void getClientPromotionKeySuccess() {
+    void createClientPromotionKeySuccess() {
 
         //given
         long targetClientId = insertClientAndGetClientId();
@@ -46,7 +47,7 @@ public class PromotionServiceTest {
     @Test
     @Transactional
     @DisplayName("의뢰인 promotion 키 발급 실패 - 이미 가입한 의뢰인")
-    void getClientPromotionKeyAlreadyRegisteredClient() {
+    void createClientPromotionKeyAlreadyRegisteredClient() {
 
         //given
         long targetClientId = insertClientAndGetClientId();
@@ -97,6 +98,48 @@ public class PromotionServiceTest {
             () -> promotionService.resolveClientPromotionKey(key + "abcd"));
 
         //then
+        assertEquals(ErrorCode.PROMOTION_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("직원 promotion 키 발급 성공")
+    void createEmployeePromotionKeySuccess() {
+
+        //given
+
+        //when
+        String key = promotionService.createEmployeePromotionKey();
+
+        //then
+        assertNotNull(key);
+        assertEquals(10, key.length());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("직원 promotion 키 validate 성공")
+    void validateEmployeePromotionKeySuccess() {
+
+        //given
+        String key = promotionService.createEmployeePromotionKey();
+
+        //when then
+        assertDoesNotThrow(() -> promotionService.validateEmployeePromotionKey(key));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("직원 promotion 키 validate 실패 - 존재하지 않는 key")
+    void validateEmployeePromotionKeyNotFound() {
+
+        //given
+        String key = promotionService.createEmployeePromotionKey();
+
+        //when
+        CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
+            () -> promotionService.validateEmployeePromotionKey(key + "abcd"));
+
         assertEquals(ErrorCode.PROMOTION_NOT_FOUND, exception.getErrorCode());
     }
 
