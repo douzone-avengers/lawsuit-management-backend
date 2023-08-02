@@ -5,7 +5,7 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository">
 
-    <insert id="insertPromotionKey" parameterType="InsertPromotionKeyParam">
+    <insert id="insertClientPromotionKey" parameterType="InsertClientPromotionKeyParam">
         replace into client_promotion (`value`, client_id)
         values (#{value}, #{clientId})
     </insert>

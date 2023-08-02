@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class InsertPromotionKeyParam {
+public class InsertClientPromotionKeyParam {
     private String value;
     private long clientId;
 

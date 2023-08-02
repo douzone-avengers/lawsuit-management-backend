@@ -10,7 +10,7 @@ import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
-import com.avg.lawsuitmanagement.promotion.repository.param.InsertPromotionKeyParam;
+import com.avg.lawsuitmanagement.promotion.repository.param.InsertClientPromotionKeyParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -39,7 +39,7 @@ public class PromotionService {
         }
 
         //db 입력
-        promotionMapperRepository.insertPromotionKey(InsertPromotionKeyParam.builder()
+        promotionMapperRepository.insertClientPromotionKey(InsertClientPromotionKeyParam.builder()
             .value(promotionKey)
             .clientId(clientDto.getId())
             .build());
