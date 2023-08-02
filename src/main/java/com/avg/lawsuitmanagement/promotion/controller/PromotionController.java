@@ -1,7 +1,6 @@
 package com.avg.lawsuitmanagement.promotion.controller;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
-import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.service.PromotionService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -20,8 +19,8 @@ public class PromotionController {
     private final PromotionService promotionService;
 
     @PostMapping("/clients")
-    public ResponseEntity<CreatePromotionKeyDto> getClientPromotionKey(@Valid @NotBlank long clientId) {
-        return ResponseEntity.ok(promotionService.getClientPromotionKey(clientId));
+    public ResponseEntity<String> createClientPromotionKey(@Valid @NotBlank long clientId) {
+        return ResponseEntity.ok(promotionService.createClientPromotionKey(clientId));
     }
 
     @GetMapping("/clients")
@@ -29,5 +28,15 @@ public class PromotionController {
         return ResponseEntity.ok(promotionService.resolveClientPromotionKey(key));
     }
 
+    @PostMapping("/employees")
+    public ResponseEntity<String> createEmployeePromotionKey() {
+        return ResponseEntity.ok(promotionService.createEmployeePromotionKey());
+    }
+
+    @GetMapping("/employees")
+    public ResponseEntity<String> validateEmployeePromotionKey(@Valid @NotBlank String key) {
+        promotionService.validateEmployeePromotionKey(key);
+        return ResponseEntity.ok().build();
+    }
 
 }

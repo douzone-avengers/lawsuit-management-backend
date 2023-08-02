@@ -7,10 +7,10 @@ import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
-import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
-import com.avg.lawsuitmanagement.promotion.dto.PromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
-import com.avg.lawsuitmanagement.promotion.repository.param.InsertPromotionKeyParam;
+import com.avg.lawsuitmanagement.promotion.repository.param.InsertClientPromotionKeyParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -26,7 +26,7 @@ public class PromotionService {
     private final ClientService clientService;
 
     @Transactional
-    public CreatePromotionKeyDto getClientPromotionKey(long clientId) {
+    public String createClientPromotionKey(long clientId) {
         String promotionKey = getRandomPromotionKey();
 
         //존재하는 유저인지? -> ClientService에서 검증
@@ -37,27 +37,49 @@ public class PromotionService {
         }
 
         //db 입력
-        promotionMapperRepository.insertPromotionKey(InsertPromotionKeyParam.builder()
+        promotionMapperRepository.insertClientPromotionKey(InsertClientPromotionKeyParam.builder()
             .value(promotionKey)
             .clientId(clientDto.getId())
             .build());
 
         //return
-        return CreatePromotionKeyDto.builder()
-            .value(promotionKey)
-            .build();
+        return promotionKey;
     }
 
+
     public ClientDto resolveClientPromotionKey(String key) {
-        PromotionKeyDto promotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(key);
-        validatePromotionKey(promotionKeyDto);
-        return clientService.getClientById(promotionKeyDto.getClientId());
+        ClientPromotionKeyDto clientPromotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(
+            key);
+        validatePromotionKey(clientPromotionKeyDto);
+        return clientService.getClientById(clientPromotionKeyDto.getClientId());
+    }
+
+    public String createEmployeePromotionKey() {
+        String promotionKey = getRandomPromotionKey();
+
+        promotionMapperRepository.insertEmployeePromotionKey(promotionKey);
+        return promotionKey;
+    }
+
+    public void validateEmployeePromotionKey(String key) {
+        EmployeePromotionKeyDto employeePromotionKeyDto = promotionMapperRepository.selectEmployeePromotionKeyByValue(
+            key);
+        validatePromotionKey(employeePromotionKeyDto);
     }
 
     /*
     프로모션 키 검증
      */
-    private void validatePromotionKey(PromotionKeyDto dto) {
+    private void validatePromotionKey(ClientPromotionKeyDto dto) {
+        if (dto == null) {
+            throw new CustomRuntimeException(PROMOTION_NOT_FOUND);
+        }
+        if (!dto.isActive()) {
+            throw new CustomRuntimeException(PROMOTION_NOT_ACTIVE);
+        }
+    }
+
+    private void validatePromotionKey(EmployeePromotionKeyDto dto) {
         if (dto == null) {
             throw new CustomRuntimeException(PROMOTION_NOT_FOUND);
         }

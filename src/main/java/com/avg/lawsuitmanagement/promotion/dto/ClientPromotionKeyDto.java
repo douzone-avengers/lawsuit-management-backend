@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class PromotionKeyDto {
+public class ClientPromotionKeyDto {
 
     private long id;
     private String value;
