@@ -31,5 +31,16 @@
           and is_deleted = false
     </select>
 
+    <update id="deactivateClientPromotionById" parameterType="java.lang.Long">
+        update client_promotion
+        set is_active = false
+        where id = #{id};
+    </update>
+
+    <update id="deactivateEmployeePromotionById" parameterType="java.lang.Long">
+        update employee_promotion
+        set is_active = false
+        where id = #{id};
+    </update>
 
 </mapper>
