@@ -67,6 +67,14 @@ public class PromotionService {
         validatePromotionKey(employeePromotionKeyDto);
     }
 
+    public void deactivateClientPromotion(long id) {
+        promotionMapperRepository.deactivateClientPromotionById(id);
+    }
+
+    public void deactivateEmployeePromotion(long id) {
+        promotionMapperRepository.deactivateClientPromotionById(id);
+    }
+
     /*
     프로모션 키 검증
      */
