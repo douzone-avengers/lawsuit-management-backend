@@ -9,4 +9,5 @@ public interface PromotionMapperRepository {
 
     void insertClientPromotionKey(InsertClientPromotionKeyParam param);
     ClientPromotionKeyDto selectPromotionKeyByValue(String value);
+    void insertEmployeePromotionKey(String value);
 }

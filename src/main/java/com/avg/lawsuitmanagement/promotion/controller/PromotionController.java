@@ -19,13 +19,18 @@ public class PromotionController {
     private final PromotionService promotionService;
 
     @PostMapping("/clients")
-    public ResponseEntity<String> getClientPromotionKey(@Valid @NotBlank long clientId) {
+    public ResponseEntity<String> createClientPromotionKey(@Valid @NotBlank long clientId) {
         return ResponseEntity.ok(promotionService.createClientPromotionKey(clientId));
     }
 
     @GetMapping("/clients")
     public ResponseEntity<ClientDto> resolveClientPromotionKey(@Valid @NotBlank String key) {
         return ResponseEntity.ok(promotionService.resolveClientPromotionKey(key));
+    }
+
+    @PostMapping("/employees")
+    public ResponseEntity<String> createEmployeePromotionKey() {
+        return ResponseEntity.ok(promotionService.createEmployeePromotionKey());
     }
 
 

@@ -55,6 +55,13 @@ public class PromotionService {
         return clientService.getClientById(clientPromotionKeyDto.getClientId());
     }
 
+    public String createEmployeePromotionKey() {
+        String promotionKey = getRandomPromotionKey();
+
+        promotionMapperRepository.insertEmployeePromotionKey(promotionKey);
+        return promotionKey;
+    }
+
     /*
     프로모션 키 검증
      */
