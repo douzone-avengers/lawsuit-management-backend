@@ -10,7 +10,8 @@
         values (#{value}, #{clientId})
     </insert>
 
-    <select id="selectPromotionKeyByValue" resultType="ClientPromotionKeyDto" parameterType="java.lang.String">
+    <select id="selectPromotionKeyByValue" resultType="ClientPromotionKeyDto"
+      parameterType="java.lang.String">
         select *
         from client_promotion
         where value = #{value}
@@ -19,7 +20,16 @@
 
     <insert id="insertEmployeePromotionKey" parameterType="java.lang.String">
         insert into employee_promotion (`value`)
-        value (#{value})
+            value (#{value})
     </insert>
+
+    <select id="selectEmployeePromotionKeyByValue" resultType="EmployeePromotionKeyDto"
+      parameterType="java.lang.String">
+        select *
+        from employee_promotion
+        where value = #{value}
+          and is_deleted = false
+    </select>
+
 
 </mapper>

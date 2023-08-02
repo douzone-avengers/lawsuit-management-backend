@@ -7,8 +7,8 @@ import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
-import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
 import com.avg.lawsuitmanagement.promotion.repository.param.InsertClientPromotionKeyParam;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,6 @@ public class PromotionService {
 
     private final PromotionMapperRepository promotionMapperRepository;
     private final ClientService clientService;
-
-    private final MemberService memberService;
 
     @Transactional
     public String createClientPromotionKey(long clientId) {
@@ -50,7 +48,8 @@ public class PromotionService {
 
 
     public ClientDto resolveClientPromotionKey(String key) {
-        ClientPromotionKeyDto clientPromotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(key);
+        ClientPromotionKeyDto clientPromotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(
+            key);
         validatePromotionKey(clientPromotionKeyDto);
         return clientService.getClientById(clientPromotionKeyDto.getClientId());
     }
@@ -62,10 +61,25 @@ public class PromotionService {
         return promotionKey;
     }
 
+    public void validateEmployeePromotionKey(String key) {
+        EmployeePromotionKeyDto employeePromotionKeyDto = promotionMapperRepository.selectEmployeePromotionKeyByValue(
+            key);
+        validatePromotionKey(employeePromotionKeyDto);
+    }
+
     /*
     프로모션 키 검증
      */
     private void validatePromotionKey(ClientPromotionKeyDto dto) {
+        if (dto == null) {
+            throw new CustomRuntimeException(PROMOTION_NOT_FOUND);
+        }
+        if (!dto.isActive()) {
+            throw new CustomRuntimeException(PROMOTION_NOT_ACTIVE);
+        }
+    }
+
+    private void validatePromotionKey(EmployeePromotionKeyDto dto) {
         if (dto == null) {
             throw new CustomRuntimeException(PROMOTION_NOT_FOUND);
         }

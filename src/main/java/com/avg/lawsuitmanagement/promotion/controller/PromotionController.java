@@ -33,5 +33,10 @@ public class PromotionController {
         return ResponseEntity.ok(promotionService.createEmployeePromotionKey());
     }
 
+    @GetMapping("/employees")
+    public ResponseEntity<String> validateEmployeePromotionKey(@Valid @NotBlank String key) {
+        promotionService.validateEmployeePromotionKey(key);
+        return ResponseEntity.ok().build();
+    }
 
 }
