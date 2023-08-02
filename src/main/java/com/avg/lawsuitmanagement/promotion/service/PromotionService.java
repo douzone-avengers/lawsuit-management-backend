@@ -8,7 +8,6 @@ import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.member.service.MemberService;
-import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
 import com.avg.lawsuitmanagement.promotion.repository.param.InsertPromotionKeyParam;
@@ -29,7 +28,7 @@ public class PromotionService {
     private final MemberService memberService;
 
     @Transactional
-    public CreatePromotionKeyDto createClientPromotionKey(long clientId) {
+    public String createClientPromotionKey(long clientId) {
         String promotionKey = getRandomPromotionKey();
 
         //존재하는 유저인지? -> ClientService에서 검증
@@ -46,10 +45,9 @@ public class PromotionService {
             .build());
 
         //return
-        return CreatePromotionKeyDto.builder()
-            .value(promotionKey)
-            .build();
+        return promotionKey;
     }
+
 
     public ClientDto resolveClientPromotionKey(String key) {
         ClientPromotionKeyDto clientPromotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(key);

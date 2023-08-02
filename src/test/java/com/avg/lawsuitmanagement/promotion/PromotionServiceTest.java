@@ -10,7 +10,6 @@ import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
-import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.service.PromotionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,12 +35,12 @@ public class PromotionServiceTest {
         long targetClientId = insertClientAndGetClientId();
 
         //when
-        CreatePromotionKeyDto dto = promotionService.createClientPromotionKey(
+        String key = promotionService.createClientPromotionKey(
             targetClientId);
 
         //then
-        assertNotNull(dto);
-        assertEquals(10, dto.getValue().length());
+        assertNotNull(key);
+        assertEquals(10, key.length());
     }
 
     @Test
@@ -72,11 +71,11 @@ public class PromotionServiceTest {
 
         //given
         long targetClientId = insertClientAndGetClientId();
-        CreatePromotionKeyDto dto = promotionService.createClientPromotionKey(
+        String key = promotionService.createClientPromotionKey(
             targetClientId);
 
         //when
-        ClientDto clientDto = promotionService.resolveClientPromotionKey(dto.getValue());
+        ClientDto clientDto = promotionService.resolveClientPromotionKey(key);
 
         //then
         assertNotNull(clientDto);
@@ -90,12 +89,12 @@ public class PromotionServiceTest {
 
         //given
         long targetClientId = insertClientAndGetClientId();
-        CreatePromotionKeyDto dto = promotionService.createClientPromotionKey(
+        String key = promotionService.createClientPromotionKey(
             targetClientId);
 
         //when
         CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
-            () -> promotionService.resolveClientPromotionKey(dto.getValue() + "abcd"));
+            () -> promotionService.resolveClientPromotionKey(key + "abcd"));
 
         //then
         assertEquals(ErrorCode.PROMOTION_NOT_FOUND, exception.getErrorCode());

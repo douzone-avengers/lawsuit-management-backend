@@ -1,7 +1,6 @@
 package com.avg.lawsuitmanagement.promotion.controller;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
-import com.avg.lawsuitmanagement.promotion.dto.CreatePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.service.PromotionService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -20,7 +19,7 @@ public class PromotionController {
     private final PromotionService promotionService;
 
     @PostMapping("/clients")
-    public ResponseEntity<CreatePromotionKeyDto> getClientPromotionKey(@Valid @NotBlank long clientId) {
+    public ResponseEntity<String> getClientPromotionKey(@Valid @NotBlank long clientId) {
         return ResponseEntity.ok(promotionService.createClientPromotionKey(clientId));
     }
 
