@@ -1,6 +1,6 @@
 package com.avg.lawsuitmanagement.promotion.repository;
 
-import com.avg.lawsuitmanagement.promotion.dto.PromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.param.InsertPromotionKeyParam;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface PromotionMapperRepository {
 
     void insertPromotionKey(InsertPromotionKeyParam param);
-    PromotionKeyDto selectPromotionKeyByValue(String value);
+    ClientPromotionKeyDto selectPromotionKeyByValue(String value);
 }

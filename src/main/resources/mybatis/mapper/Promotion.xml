@@ -10,7 +10,7 @@
         values (#{value}, #{clientId})
     </insert>
 
-    <select id="selectPromotionKeyByValue" resultType="PromotionKeyDto" parameterType="java.lang.String">
+    <select id="selectPromotionKeyByValue" resultType="ClientPromotionKeyDto" parameterType="java.lang.String">
         select *
         from client_promotion
         where value = #{value}
