@@ -72,7 +72,7 @@ public class PromotionService {
     }
 
     public void deactivateEmployeePromotion(long id) {
-        promotionMapperRepository.deactivateClientPromotionById(id);
+        promotionMapperRepository.deactivateEmployeePromotionById(id);
     }
 
     /*
