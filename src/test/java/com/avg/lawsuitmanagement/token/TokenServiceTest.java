@@ -8,7 +8,7 @@ import com.avg.lawsuitmanagement.token.controller.form.LoginForm;
 import com.avg.lawsuitmanagement.token.dto.JwtTokenDto;
 import com.avg.lawsuitmanagement.token.dto.RefreshTokenDto;
 import com.avg.lawsuitmanagement.token.repository.TokenMapperRepository;
-import com.avg.lawsuitmanagement.member.repository.param.SignUpParam;
+import com.avg.lawsuitmanagement.member.repository.param.InsertMemberParam;
 import com.avg.lawsuitmanagement.token.service.TokenService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class TokenServiceTest {
         long roldId = 2L; //employee
 
         //given
-        memberMapperRepository.insertMember(SignUpParam.builder()
+        memberMapperRepository.insertMember(InsertMemberParam.builder()
             .email(email)
             .password(passwordEncoder.encode(password))
             .name(name)
@@ -83,7 +83,7 @@ public class TokenServiceTest {
         long roldId = 2L; //employee
 
         //given
-        memberMapperRepository.insertMember(SignUpParam.builder()
+        memberMapperRepository.insertMember(InsertMemberParam.builder()
             .email(email)
             .password(passwordEncoder.encode(password))
             .name(name)

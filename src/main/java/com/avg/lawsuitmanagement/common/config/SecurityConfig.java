@@ -42,6 +42,7 @@ public class SecurityConfig {
             .authorizeRequests()
             .antMatchers("/tokens/**", "/test/**").permitAll()
             .antMatchers(HttpMethod.GET, "/promotions/clients", "/promotions/employees").permitAll()
+            .antMatchers(HttpMethod.POST, "/members/clients").permitAll()
             .antMatchers(HttpMethod.POST, "/promotions/clients").hasAnyRole("ADMIN", "EMPLOYEE")
             .antMatchers(HttpMethod.POST, "/promotions/employees").hasRole("ADMIN")
 
