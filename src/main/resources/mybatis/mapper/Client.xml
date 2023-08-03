@@ -39,4 +39,10 @@
         set is_deleted = true
         where id = #{clientId};
     </update>
+
+    <select id="getClientList">
+        select *
+        from client
+        where is_deleted = false;
+    </select>
 </mapper>

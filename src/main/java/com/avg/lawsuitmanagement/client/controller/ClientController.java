@@ -2,10 +2,12 @@ package com.avg.lawsuitmanagement.client.controller;
 
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
+import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,12 @@ public class ClientController {
     @PatchMapping("/{clientId}")
     public ResponseEntity<Void> deleteClientInfo(@PathVariable("clientId") Long clientId) {
         clientService.deleteClientInfo(clientId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<Void> getClientList() {
+        clientService.getClientList();
         return ResponseEntity.ok().build();
     }
 }

@@ -65,4 +65,8 @@ public class ClientService {
 
         clientMapperRepository.deleteClientInfo(clientId);
     }
+
+    public void getClientList() {
+        clientMapperRepository.getClientList();
+    }
 }
