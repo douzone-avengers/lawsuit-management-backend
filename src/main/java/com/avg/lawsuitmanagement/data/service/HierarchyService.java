@@ -1,5 +1,7 @@
 package com.avg.lawsuitmanagement.data.service;
 
+import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.data.dto.HierarchyDto;
 import com.avg.lawsuitmanagement.data.repository.HierarchyMapperRepository;
 import java.util.List;
@@ -15,5 +17,13 @@ public class HierarchyService {
 
     public List<HierarchyDto> getHierarchyList() {
         return hierarchyMapperRepository.selectHierarchyList();
+    }
+
+    public HierarchyDto getHierarchy(long id) {
+        HierarchyDto hierarchyDto = hierarchyMapperRepository.selectHierarchyById(id);
+        if(hierarchyDto == null) {
+            throw new CustomRuntimeException(ErrorCode.HIERARCHY_NOT_FOUND);
+        }
+        return hierarchyDto;
     }
 }
