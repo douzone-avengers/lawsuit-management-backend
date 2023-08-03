@@ -4,13 +4,17 @@ import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_A
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
+import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
+import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +43,31 @@ public class ClientService {
 
         // 등록된 고객이 아니면 db 입력
         clientMapperRepository.insertClient(InsertClientParam.of(form));
+    }
+
+    public void updateClientInfo(long clientId, UpdateClientInfoForm form) {
+        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
+
+        // 해당 clientId의 의뢰인이 없을 경우
+        if (clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        clientMapperRepository.updateClientInfo(UpdateClientInfoParam.of(clientId, form));
+    }
+
+    public void deleteClientInfo(long clientId) {
+        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
+
+        // 해당 clientId의 의뢰인이 없을 경우
+        if (clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        clientMapperRepository.deleteClientInfo(clientId);
+    }
+
+    public List<ClientDto> getClientList() {
+        return clientMapperRepository.getClientList();
     }
 }

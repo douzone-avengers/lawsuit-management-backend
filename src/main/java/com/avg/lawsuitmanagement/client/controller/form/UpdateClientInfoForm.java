@@ -8,8 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InsertClientForm {
-
+public class UpdateClientInfoForm {
     @Email
     private String email;
     @Size(min=2, max=10)
