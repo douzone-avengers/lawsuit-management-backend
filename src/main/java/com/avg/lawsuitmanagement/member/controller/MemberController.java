@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.member.controller;
 
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import javax.validation.Valid;
@@ -27,6 +28,12 @@ public class MemberController {
     @PostMapping("/clients")
     public ResponseEntity<Void> clientSignUp(@RequestBody @Valid ClientSignUpForm form) {
         memberService.clientSignUp(form);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/employees")
+    public ResponseEntity<Void> employeeSignUp(@RequestBody @Valid EmployeeSignUpForm form) {
+        memberService.employeeSignUp(form);
         return ResponseEntity.ok().build();
     }
 
