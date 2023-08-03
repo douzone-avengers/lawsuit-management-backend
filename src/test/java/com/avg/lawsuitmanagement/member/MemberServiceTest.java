@@ -13,11 +13,13 @@ import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.repository.param.InsertMemberParam;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
 import com.avg.lawsuitmanagement.promotion.service.PromotionService;
 import org.junit.jupiter.api.DisplayName;
@@ -190,6 +192,50 @@ public class MemberServiceTest {
         clientMapperRepository.insertClient(param);
         ClientDto clientDto = clientMapperRepository.selectClientByEmail(param.getEmail());
         return clientDto.getId();
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("직원 회원가입 성공")
+    void EmployeeSignUpSuccess() {
+        //given
+        String email = "cofee123@naver.com";
+        String password = "1234";
+        String name = "김커피";
+        String phone = "010-1564-4848";
+        String address = "커피하우스";
+        long hierarchyId = 2L;
+        long roleId = 2L;
+
+        String promotionKey = promotionService.createEmployeePromotionKey();
+
+        //when
+        memberService.employeeSignUp(EmployeeSignUpForm.builder()
+            .promotionKey(promotionKey)
+            .email(email)
+            .password(password)
+            .name(name)
+            .phone(phone)
+            .address(address)
+            .hierarchyId(hierarchyId)
+            .roleId(roleId)
+            .build()
+        );
+
+        //then
+        MemberDto memberDto = memberMapperRepository.selectMemberByEmail(email);
+        EmployeePromotionKeyDto employeePromotionKeyDto = promotionMapperRepository.selectEmployeePromotionKeyByValue(
+            promotionKey);
+
+        //member 테이블 검증
+        assertNotNull(memberDto);
+        assertEquals(name, memberDto.getName());
+        assertEquals(email, memberDto.getEmail());
+        assertEquals(phone, memberDto.getPhone());
+        assertEquals(address, memberDto.getAddress());
+
+        //employee_promotion 검증
+        assertFalse(employeePromotionKeyDto.isActive());
     }
 
 }
