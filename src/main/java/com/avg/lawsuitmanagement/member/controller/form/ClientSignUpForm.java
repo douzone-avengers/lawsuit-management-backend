@@ -3,11 +3,13 @@ package com.avg.lawsuitmanagement.member.controller.form;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class ClientSignUpForm {
     @NotBlank
     private String promotionKey;
