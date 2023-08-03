@@ -10,6 +10,7 @@ import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,7 +67,7 @@ public class ClientService {
         clientMapperRepository.deleteClientInfo(clientId);
     }
 
-    public void getClientList() {
-        clientMapperRepository.getClientList();
+    public List<ClientDto> getClientList() {
+        return clientMapperRepository.getClientList();
     }
 }

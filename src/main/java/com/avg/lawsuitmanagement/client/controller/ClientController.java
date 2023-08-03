@@ -4,6 +4,7 @@ import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +44,9 @@ public class ClientController {
     }
 
     @GetMapping()
-    public ResponseEntity<Void> getClientList() {
+    public ResponseEntity<List<ClientDto>> getClientList() {
         clientService.getClientList();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(clientService.getClientList());
     }
 }
 
