@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.data.repository.HierarchyMapperRepository">
+
+    <select id="selectHierarchyList" resultType="HierarchyDto">
+        select *
+        from hierarchy
+    </select>
+
+    <select id="selectHierarchyById" resultType="HierarchyDto" parameterType="java.lang.Long">
+        select *
+        from hierarchy
+        where id = #{id}
+    </select>
+
+</mapper>

@@ -40,7 +40,7 @@ public class SecurityConfig {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/tokens/**", "/test/**").permitAll()
+            .antMatchers("/tokens/**", "/test/**", "/hierarchy/**", "/role/**", "/court/**" ).permitAll()
             .antMatchers(HttpMethod.GET, "/promotions/clients", "/promotions/employees").permitAll()
             .antMatchers(HttpMethod.POST, "/members/clients").permitAll()
             .antMatchers(HttpMethod.POST, "/promotions/clients").hasAnyRole("ADMIN", "EMPLOYEE")
