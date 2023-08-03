@@ -12,4 +12,7 @@ public interface PromotionMapperRepository {
     ClientPromotionKeyDto selectPromotionKeyByValue(String value);
     void insertEmployeePromotionKey(String value);
     EmployeePromotionKeyDto selectEmployeePromotionKeyByValue(String value);
+    void deactivateClientPromotionByValue(String value);
+    void deactivateEmployeePromotionByValue(String value);
+
 }

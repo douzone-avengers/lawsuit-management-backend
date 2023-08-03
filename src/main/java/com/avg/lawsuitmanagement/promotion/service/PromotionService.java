@@ -46,7 +46,6 @@ public class PromotionService {
         return promotionKey;
     }
 
-
     public ClientDto resolveClientPromotionKey(String key) {
         ClientPromotionKeyDto clientPromotionKeyDto = promotionMapperRepository.selectPromotionKeyByValue(
             key);
@@ -65,6 +64,14 @@ public class PromotionService {
         EmployeePromotionKeyDto employeePromotionKeyDto = promotionMapperRepository.selectEmployeePromotionKeyByValue(
             key);
         validatePromotionKey(employeePromotionKeyDto);
+    }
+
+    public void deactivateClientPromotion(String key) {
+        promotionMapperRepository.deactivateClientPromotionByValue(key);
+    }
+
+    public void deactivateEmployeePromotion(String key) {
+        promotionMapperRepository.deactivateEmployeePromotionByValue(key);
     }
 
     /*

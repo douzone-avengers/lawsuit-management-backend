@@ -14,9 +14,12 @@
           and m.is_deleted = false
     </select>
 
-    <insert id="insertMember" parameterType="SignUpParam">
+    <insert id="insertMember" parameterType="InsertMemberParam" >
         insert into member (email, password, name, phone, hierarchy_id, address, role_id)
         values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
+        <selectKey keyProperty="id" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
 </mapper>
