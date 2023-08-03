@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.member.repository.param;
 
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,18 @@ public class InsertMemberParam {
             .hierarchyId(1) //고민 필요
             .address(form.getAddress())
             .roleId(1) //고민필요
+            .build();
+    }
+
+    public static InsertMemberParam of(EmployeeSignUpForm form, PasswordEncoder passwordEncoder) {
+        return InsertMemberParam.builder()
+            .email(form.getEmail())
+            .password(passwordEncoder.encode(form.getPassword()))
+            .name(form.getName())
+            .phone(form.getPhone())
+            .hierarchyId(form.getHierarchyId())
+            .address(form.getAddress())
+            .roleId(form.getRoleId())
             .build();
     }
 }
