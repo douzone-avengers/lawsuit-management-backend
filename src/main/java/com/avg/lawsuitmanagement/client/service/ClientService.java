@@ -21,7 +21,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -96,8 +95,6 @@ public class ClientService {
         // startPage, endPage 저장
         PageRangeDto pageRangeDto = PagingUtil.calculatePageRange(form.getCurPage(), total);
 
-        // ClientController의 반환값은 List<LawSuitDto>인데 lawsuitList pageRangeDto를 어떻게 넘겨주지?
-        // 다른 Dto를 또 만들어야하나..??
         return ClientLawsuitDto.of(lawsuitList, pageRangeDto);
     }
 }
