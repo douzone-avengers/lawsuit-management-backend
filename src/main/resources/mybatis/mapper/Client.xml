@@ -45,4 +45,13 @@
         from client
         where is_deleted = false;
     </select>
+
+    <select id="selectClientListById" parameterType="java.util.List">
+        select *
+        from client
+        where #{clientId} in
+        <foreach item="item" index="index" collection="clientId" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
