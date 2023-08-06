@@ -9,6 +9,7 @@ import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdPar
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.repository.param.InsertMemberParam;
@@ -52,6 +53,16 @@ public class MemberService {
                 .clientId(clientDto.getId())
                 .memberId(memberId)
             .build());
+    }
+
+    @Transactional
+    public void employeeSignUp(EmployeeSignUpForm form) {
+        //1. 가입키 검증
+        promotionService.validateEmployeePromotionKey(form.getPromotionKey());
+        //2. 키 비활성화
+        promotionService.deactivateEmployeePromotion(form.getPromotionKey());
+        //3. 데이터 삽입
+        insertMember(InsertMemberParam.of(form, passwordEncoder));
     }
 
     private long insertMember(InsertMemberParam param) {
