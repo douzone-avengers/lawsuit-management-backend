@@ -25,7 +25,7 @@ public class TokenService {
     public JwtTokenDto login(LoginForm form) {
 //
 //        UsernamePasswordAuthenticationToken authenticationToken
-//            = new UsernamePasswordAuthenticationToken(userName, form.getPassword());
+//            = new UsernamePasswordAuthenticationToken(userName, repository.getPassword());
 //
 //        Authentication authentication = authenticate(authenticationToken);
 
