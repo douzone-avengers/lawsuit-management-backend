@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.controller.form;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,8 +24,8 @@ public class EmployeeSignUpForm {
     private String phone;
     @NotBlank
     private String address;
-    @NotBlank
+    @NotNull
     private long hierarchyId;
-    @NotBlank
+    @NotNull
     private long roleId;
 }
