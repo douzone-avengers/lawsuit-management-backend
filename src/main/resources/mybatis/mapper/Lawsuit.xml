@@ -4,6 +4,12 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository">
+    <select id="selectLawsuitById" parameterType="java.lang.Long">
+        select *
+        from lawsuit
+        where id = #{lawsuitId} and is_deleted = false;
+    </select>
+
     <insert id="insertLawsuit" parameterType="InsertLawsuitParam">
         insert into lawsuit (lawsuit_type, name, court_id, commission_fee, contingent_fee, lawsuit_status, lawsuit_num, result)
         values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee}, #{lawsuitStatus}, #{lawsuitNum}, null);
@@ -14,5 +20,14 @@
         from lawsuit
         where is_deleted = false;
     </select>
+
+    <update id="updateLawsuitInfo">
+        update lawsuit
+        set lawsuit_type = #{lawsuit_type}, name = #{name}, court_id = #{court_id},
+            commission_fee = #{commission_fee}, contingent_fee = #{contingent_fee},
+            lawsuit_status = #{lawsuit_status}, lawsuit_num = #{lawsuit_num},
+            result = #{result}, judgement_date = #{judgement_date}
+        where id = #{lawsuitId};
+    </update>
 
 </mapper>
