@@ -4,8 +4,8 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avg.lawsuitmanagement.reception.repository.ReceptionMapperRepository">
-    <select id="selectReceptions"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.SelectReceptionsParam">
+    <select id="select"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.SelectReceptionParam">
         SELECT id,
         lawsuit_id,
         status,
@@ -50,7 +50,7 @@
             </otherwise>
         </choose>
     </select>
-    <insert id="insertReception"
+    <insert id="insert"
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.InsertReceptionParam"
       useGeneratedKeys="true"
       keyProperty="id"
@@ -58,7 +58,7 @@
         INSERT INTO reception (lawsuit_id, status, category, contents, received_at, deadline)
         VALUES (#{lawsuitId}, #{status}, #{category}, #{contents}, #{receivedAt}, #{deadline})
     </insert>
-    <update id="updateReception"
+    <update id="update"
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.UpdateReceptionParam">
         UPDATE reception
         SET updated_at = now()
@@ -79,7 +79,7 @@
         </if>
         WHERE id = #{id}
     </update>
-    <update id="deleteReception"
+    <update id="delete"
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.DeleteReceptionParam"
     >
         UPDATE reception

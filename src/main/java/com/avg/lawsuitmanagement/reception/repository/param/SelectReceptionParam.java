@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class SelectReceptionsParam {
+public class SelectReceptionParam {
 
     private Long lawsuitId;
     private Long page;
