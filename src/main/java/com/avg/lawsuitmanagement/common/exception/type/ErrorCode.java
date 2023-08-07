@@ -32,7 +32,14 @@ public enum ErrorCode {
     //의뢰인 관련 예외
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
     CLIENT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 의뢰인입니다."),
-    
+
+    //사건 관련 예외
+    LAWSUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사건입니다."),
+    //상담 관련 예외
+    ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상담입니다."),
+
+
+
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 역할입니다."),
