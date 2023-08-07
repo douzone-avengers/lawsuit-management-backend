@@ -9,4 +9,10 @@
         values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee}, #{lawsuitStatus}, #{lawsuitNum}, null);
     </insert>
 
+    <select id="selectLawsuitList">
+        select *
+        from lawsuit
+        where is_deleted = false;
+    </select>
+
 </mapper>

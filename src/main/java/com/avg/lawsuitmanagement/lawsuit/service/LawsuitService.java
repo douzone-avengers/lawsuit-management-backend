@@ -5,6 +5,7 @@ import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
@@ -43,6 +44,10 @@ public class LawsuitService {
         }
 
         lawsuitMapperRepository.insertLawsuit(InsertLawsuitParam.of(form, LawsuitStatus.REGISTRATION));
+    }
+
+    public List<LawsuitDto> selectLawsuitList() {
+        return lawsuitMapperRepository.selectLawsuitList();
     }
 
 }
