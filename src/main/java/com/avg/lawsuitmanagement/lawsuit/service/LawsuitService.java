@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.lawsuit.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_STATUS_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
@@ -57,12 +58,24 @@ public class LawsuitService {
     public void updateLawsuitInfo(long lawsuitId, UpdateLawsuitInfoForm form) {
         LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
         
-        // lawsuitId에 해당하는 사건이 없다면 
+        // lawsuitId에 해당하는 사건이 없다면
         if (lawsuitDto == null) {
             throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
         }
 
-        lawsuitMapperRepository.updateLawsuitInfo(UpdateLawsuitInfoParam.of(lawsuitId, form));
+        // 클라이언트에서 받아온 사건상태 정보를 enum 클래스의 사건 상태들과 비교
+        LawsuitStatus lawsuitStatus = null;
+        for (LawsuitStatus status : LawsuitStatus.values()) {
+            if (status.getStatusKr().equals(form.getLawsuit_status())) {
+                lawsuitStatus = status;
+            }
+        }
+
+        if (lawsuitStatus == null) {
+            throw new CustomRuntimeException(LAWSUIT_STATUS_NOT_FOUND);
+        }
+
+        lawsuitMapperRepository.updateLawsuitInfo(UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
     }
 
 }
