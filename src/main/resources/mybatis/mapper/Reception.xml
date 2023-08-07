@@ -86,4 +86,11 @@
         SET is_deleted=1
         WHERE id = #{id}
     </update>
+    <delete id="truncate">
+        TRUNCATE TABLE reception
+    </delete>
+    <select id="count">
+        SELECT COUNT(*)
+        FROM reception
+    </select>
 </mapper>
