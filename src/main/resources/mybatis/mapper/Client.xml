@@ -40,7 +40,7 @@
         where id = #{clientId};
     </update>
 
-    <select id="getClientList">
+    <select id="selectClientList">
         select *
         from client
         where is_deleted = false;
