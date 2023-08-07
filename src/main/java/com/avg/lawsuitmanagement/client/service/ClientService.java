@@ -73,11 +73,11 @@ public class ClientService {
         clientMapperRepository.deleteClientInfo(clientId);
     }
 
-    public List<ClientDto> getClientList() {
-        return clientMapperRepository.getClientList();
+    public List<ClientDto> selectClientList() {
+        return clientMapperRepository.selectClientList();
     }
 
-    public ClientLawsuitDto getClientLawsuitList(long clientId, GetClientLawsuitForm form) {
+    public ClientLawsuitDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
 
         // 해당 clientId의 의뢰인이 없을 경우
