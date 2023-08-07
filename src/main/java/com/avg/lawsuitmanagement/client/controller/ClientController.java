@@ -59,14 +59,5 @@ public class ClientController {
     public ResponseEntity<List<ClientDto>> selectClientList() {
         return ResponseEntity.ok(clientService.selectClientList());
     }
-
-    // 의뢰인 사건 리스트, 페이징 정보
-    @GetMapping("/{clientId}/{lawsuitId}")  // url 수정 필요
-    public ResponseEntity<ClientLawsuitDto> selectClientLawsuitList(
-        @PathVariable("clientId") Long clientId,
-        @ModelAttribute GetClientLawsuitForm form) {
-
-        return ResponseEntity.ok(clientService.selectClientLawsuitList(clientId, form));
-    }
 }
 

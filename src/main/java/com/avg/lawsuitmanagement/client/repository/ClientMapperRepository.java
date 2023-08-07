@@ -20,7 +20,6 @@ public interface ClientMapperRepository {
     void updateClientInfo(UpdateClientInfoParam param);
     void deleteClientInfo(long clientId);
     List<ClientDto> selectClientList();
-    List<LawsuitDto> selectClientLawsuitList(SelectClientLawsuitListParam param);
     long getLawsuitCountByClientId(long clientId);
     List<ClientDto> selectClientListById(List<Long> clientIdList);
 }

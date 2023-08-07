@@ -76,25 +76,4 @@ public class ClientService {
     public List<ClientDto> selectClientList() {
         return clientMapperRepository.selectClientList();
     }
-
-    public ClientLawsuitDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
-        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
-
-        // 해당 clientId의 의뢰인이 없을 경우
-        if (clientDto == null) {
-            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
-        }
-
-        long total = clientMapperRepository.getLawsuitCountByClientId(clientId);
-
-        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getItemsPerPage());
-        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto);
-        // 한 페이지에 나타나는 사건 리스트 목록
-        List<LawsuitDto> lawsuitList = clientMapperRepository.selectClientLawsuitList(param);
-
-        // startPage, endPage 저장
-        PageRangeDto pageRangeDto = PagingUtil.calculatePageRange(form.getCurPage(), total);
-
-        return ClientLawsuitDto.of(lawsuitList, pageRangeDto);
-    }
 }

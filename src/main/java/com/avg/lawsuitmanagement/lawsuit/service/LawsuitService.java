@@ -1,15 +1,23 @@
 package com.avg.lawsuitmanagement.lawsuit.service;
 
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
 
+import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
+import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
+import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
+import com.avg.lawsuitmanagement.common.util.PagingUtil;
+import com.avg.lawsuitmanagement.common.util.dto.PageRangeDto;
+import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
@@ -19,6 +27,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +37,31 @@ public class LawsuitService {
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
 
+    public ClientLawsuitDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
+        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
+
+        // 해당 clientId의 의뢰인이 없을 경우
+        if (clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        long total = clientMapperRepository.getLawsuitCountByClientId(clientId);
+        System.out.println("total = " + total);
+
+        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getItemsPerPage());
+        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto);
+        // 한 페이지에 나타나는 사건 리스트 목록
+        List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectClientLawsuitList(param);
+
+        // startPage, endPage 저장
+        PageRangeDto pageRangeDto = PagingUtil.calculatePageRange(form.getCurPage(), total);
+
+        return ClientLawsuitDto.of(lawsuitList, pageRangeDto);
+    }
+
+    @Transactional
     public void insertLawsuit(InsertLawsuitForm form) {
+        // clientIdList에 입력한 의뢰인의 id가 하나라도 없을 때
         List<Long> clientIdList = form.getClientId();
         if (clientIdList != null && !clientIdList.isEmpty()) {
             List<ClientDto> clientList = clientMapperRepository.selectClientListById(clientIdList);
@@ -38,6 +71,7 @@ public class LawsuitService {
             }
         }
 
+        // memberIdList에 입력한 직원의 id가 하나라도 없을 때
         List<Long> memberIdList = form.getMemberId();
         if (memberIdList != null && !memberIdList.isEmpty()) {
             List<MemberDto> memberList = memberMapperRepository.selectMemberListById(memberIdList);
@@ -46,8 +80,16 @@ public class LawsuitService {
                 throw new CustomRuntimeException(ErrorCode.MEMBER_NOT_FOUND);
             }
         }
-
         lawsuitMapperRepository.insertLawsuit(InsertLawsuitParam.of(form, LawsuitStatus.REGISTRATION));
+
+        // 등록한 사건의 id값
+        long lawsuitId = lawsuitMapperRepository.getLastInsertedLawsuitId();
+
+        lawsuitMapperRepository.insertLawsuitClientMap(
+            InsertLawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
+        lawsuitMapperRepository.insertLawsuitMemberMap(
+            InsertLawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
+
     }
 
     public List<LawsuitDto> selectLawsuitList() {
