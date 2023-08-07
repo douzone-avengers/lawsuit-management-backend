@@ -40,12 +40,11 @@ public class SecurityConfig {
 
             .and()
             .authorizeRequests()
-//            .antMatchers("/tokens/**", "/test/**", "/hierarchy/**", "/role/**", "/court/**" ).permitAll()
-            .antMatchers("/**").permitAll()
-//            .antMatchers(HttpMethod.GET, "/promotions/clients", "/promotions/employees").permitAll()
-//            .antMatchers(HttpMethod.POST, "/members/clients").permitAll()
-//            .antMatchers(HttpMethod.POST, "/promotions/clients").hasAnyRole("ADMIN", "EMPLOYEE")
-//            .antMatchers(HttpMethod.POST, "/promotions/employees").hasRole("ADMIN")
+            .antMatchers("/tokens/**", "/test/**", "/hierarchy/**", "/role/**", "/court/**" ).permitAll()
+            .antMatchers(HttpMethod.GET, "/promotions/clients", "/promotions/employees").permitAll()
+            .antMatchers(HttpMethod.POST, "/members/clients", "/members/employees").permitAll()
+            .antMatchers(HttpMethod.POST, "/promotions/clients").hasAnyRole("ADMIN", "EMPLOYEE")
+            .antMatchers(HttpMethod.POST, "/promotions/employees").hasRole("ADMIN")
 
             .anyRequest().authenticated() //나머지 요청은 인증 필요
 
