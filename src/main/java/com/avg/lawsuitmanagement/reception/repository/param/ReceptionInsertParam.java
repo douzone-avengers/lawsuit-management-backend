@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class InsertReceptionParam {
+public class ReceptionInsertParam {
 
     private Long id;
     private Long lawsuitId;

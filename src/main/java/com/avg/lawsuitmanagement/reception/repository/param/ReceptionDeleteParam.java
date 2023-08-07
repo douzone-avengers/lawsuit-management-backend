@@ -13,8 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class DeleteReceptionParam {
+public class ReceptionDeleteParam {
 
     private Long id;
-    
+
 }

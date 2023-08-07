@@ -14,16 +14,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class SelectReceptionParam {
+public class ReceptionUpdateParam {
 
-    private Long lawsuitId;
-    private Long page;
+    private Long id;
     private Boolean status;
     private String category;
     private String contents;
-    private LocalDate startReceivedAt;
-    private LocalDate endReceivedAt;
-    private LocalDate startDeadline;
-    private LocalDate endDeadline;
+    private LocalDate receivedAt;
+    private LocalDate deadline;
 
 }

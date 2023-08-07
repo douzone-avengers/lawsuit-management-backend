@@ -5,7 +5,7 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.reception.repository.ReceptionMapperRepository">
     <select id="select"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.SelectReceptionParam">
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionSelectParam">
         SELECT id,
         lawsuit_id,
         status,
@@ -51,7 +51,7 @@
         </choose>
     </select>
     <insert id="insert"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.InsertReceptionParam"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam"
       useGeneratedKeys="true"
       keyProperty="id"
     >
@@ -59,7 +59,7 @@
         VALUES (#{lawsuitId}, #{status}, #{category}, #{contents}, #{receivedAt}, #{deadline})
     </insert>
     <update id="update"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.UpdateReceptionParam">
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam">
         UPDATE reception
         SET updated_at = now()
         <if test="status != null">
@@ -80,7 +80,7 @@
         WHERE id = #{id}
     </update>
     <update id="delete"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.DeleteReceptionParam"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionDeleteParam"
     >
         UPDATE reception
         SET is_deleted=1

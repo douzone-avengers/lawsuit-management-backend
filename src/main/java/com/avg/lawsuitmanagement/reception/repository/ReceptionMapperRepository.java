@@ -1,22 +1,22 @@
 package com.avg.lawsuitmanagement.reception.repository;
 
 import com.avg.lawsuitmanagement.reception.dto.ReceptionDto;
-import com.avg.lawsuitmanagement.reception.repository.param.DeleteReceptionParam;
-import com.avg.lawsuitmanagement.reception.repository.param.InsertReceptionParam;
-import com.avg.lawsuitmanagement.reception.repository.param.SelectReceptionParam;
-import com.avg.lawsuitmanagement.reception.repository.param.UpdateReceptionParam;
+import com.avg.lawsuitmanagement.reception.repository.param.ReceptionDeleteParam;
+import com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam;
+import com.avg.lawsuitmanagement.reception.repository.param.ReceptionSelectParam;
+import com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ReceptionMapperRepository {
 
-    List<ReceptionDto> select(SelectReceptionParam param);
+    List<ReceptionDto> select(ReceptionSelectParam param);
 
-    void insert(InsertReceptionParam param);
+    void insert(ReceptionInsertParam param);
 
-    void update(UpdateReceptionParam param);
+    void update(ReceptionUpdateParam param);
 
-    void delete(DeleteReceptionParam param);
+    void delete(ReceptionDeleteParam param);
 
 }
