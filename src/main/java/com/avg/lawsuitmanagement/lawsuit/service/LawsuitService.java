@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.lawsuit.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
@@ -9,7 +10,6 @@ import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
-import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.dto.PageRangeDto;
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
@@ -67,7 +67,7 @@ public class LawsuitService {
             List<ClientDto> clientList = clientMapperRepository.selectClientListById(clientIdList);
 
             if (clientList.size() != form.getClientId().size()) {
-                throw new CustomRuntimeException(ErrorCode.CLIENT_NOT_FOUND);
+                throw new CustomRuntimeException(CLIENT_NOT_FOUND);
             }
         }
 
@@ -77,13 +77,19 @@ public class LawsuitService {
             List<MemberDto> memberList = memberMapperRepository.selectMemberListById(memberIdList);
 
             if (memberList.size() != form.getMemberId().size()) {
-                throw new CustomRuntimeException(ErrorCode.MEMBER_NOT_FOUND);
+                throw new CustomRuntimeException(MEMBER_NOT_FOUND);
             }
         }
         lawsuitMapperRepository.insertLawsuit(InsertLawsuitParam.of(form, LawsuitStatus.REGISTRATION));
 
         // 등록한 사건의 id값
         long lawsuitId = lawsuitMapperRepository.getLastInsertedLawsuitId();
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+
+        // 사건 id에 해당하는 사건이 없을 경우
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
 
         lawsuitMapperRepository.insertLawsuitClientMap(
             InsertLawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
