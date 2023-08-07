@@ -67,8 +67,8 @@
     <select id="selectClientListById" parameterType="java.util.List">
         select *
         from client
-        where #{clientId} in
-        <foreach item="item" index="index" collection="clientId" open="(" separator="," close=")">
+        where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>

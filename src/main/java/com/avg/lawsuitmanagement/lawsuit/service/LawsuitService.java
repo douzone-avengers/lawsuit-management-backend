@@ -7,6 +7,7 @@ import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
+import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import java.util.List;
@@ -41,7 +42,7 @@ public class LawsuitService {
             }
         }
 
-        lawsuitMapperRepository.insertLawsuit(InsertLawsuitParam.of(form));
+        lawsuitMapperRepository.insertLawsuit(InsertLawsuitParam.of(form, LawsuitStatus.REGISTRATION));
     }
 
 }

@@ -4,9 +4,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository">
-    <insert id="insertClient" parameterType="InsertLawsuitParam">
-        insert into lawsuit (lawsuitType, name, courtId, commissionFee, contingentFee)
-        values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee});
+    <insert id="insertLawsuit" parameterType="InsertLawsuitParam">
+        insert into lawsuit (lawsuit_type, name, court_id, commission_fee, contingent_fee, lawsuit_status, lawsuit_num, result)
+        values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee}, #{lawsuitStatus}, #{lawsuitNum}, null);
     </insert>
 
 </mapper>
