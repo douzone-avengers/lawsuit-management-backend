@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.lawsuit.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class LawsuitDto {
+
     private String lawsuit_type;
     private String name;
     private int court_id;
