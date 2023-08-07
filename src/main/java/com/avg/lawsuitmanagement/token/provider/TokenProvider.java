@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TokenProvider {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 5; //5분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 300; //300분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60; //60분
     private final Key key; //토큰 암호화에 사용되는 비밀키
 

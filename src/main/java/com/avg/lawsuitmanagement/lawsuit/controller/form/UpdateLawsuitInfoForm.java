@@ -1,14 +1,12 @@
-package com.avg.lawsuitmanagement.lawsuit.dto;
+package com.avg.lawsuitmanagement.lawsuit.controller.form;
 
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-public class LawsuitDto {
-    private long id;
+public class UpdateLawsuitInfoForm {
     private String lawsuit_type;
     private String name;
     private int court_id;
@@ -17,7 +15,6 @@ public class LawsuitDto {
     private String lawsuit_status;
     private String lawsuit_num;
     private String result;
-    private String judgement_date;
-    private String created_at;
-    private String updated_at;
+    private Date judgement_date;
+    private Date updated_at;
 }
