@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.reception.repository.ReceptionMapperRepository">
+    <select id="selectReceptions"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.SelectReceptionsParam">
+        SELECT id,
+        lawsuit_id,
+        status,
+        category,
+        contents,
+        received_at,
+        deadline,
+        created_at,
+        updated_at,
+        is_deleted
+        FROM reception
+        WHERE is_deleted = false
+        AND lawsuit_id = #{lawsuitId}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="category != null">
+            AND category = #{category}
+        </if>
+        <if test="contents != null">
+            AND contents LIKE CONCAT('%', #{contents}, '%')
+        </if>
+        <if test="startReceivedAt != null">
+            AND received_at >= #{startReceivedAt}
+        </if>
+        <if test="endReceivedAt != null">
+            AND #{endReceivedAt} >= received_at
+        </if>
+        <if test="startDeadline != null">
+            AND deadline >= #{startDeadline}
+        </if>
+        <if test="endDeadline != null">
+            AND #{endDeadline} >= deadline
+        </if>
+        ORDER BY id DESC
+        <choose>
+            <when test="page != null">
+                LIMIT #{page}, 5
+            </when>
+            <otherwise>
+                LIMIT 0, 5
+            </otherwise>
+        </choose>
+    </select>
+    <insert id="insertReception"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.InsertReceptionParam"
+      useGeneratedKeys="true"
+      keyProperty="id"
+    >
+        INSERT INTO reception (lawsuit_id, status, category, contents, received_at, deadline)
+        VALUES (#{lawsuitId}, #{status}, #{category}, #{contents}, #{receivedAt}, #{deadline})
+    </insert>
+    <update id="updateReception"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.UpdateReceptionParam">
+        UPDATE reception
+        SET updated_at = now()
+        <if test="status != null">
+            , status = #{status}
+        </if>
+        <if test="category != null">
+            , category = #{category}
+        </if>
+        <if test="contents != null">
+            , contents = #{contents}
+        </if>
+        <if test="receivedAt != null">
+            , received_at = #{receivedAt}
+        </if>
+        <if test="deadline != null">
+            , deadline = #{deadline}
+        </if>
+        WHERE id = #{id}
+    </update>
+    <update id="deleteReception"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.DeleteReceptionParam"
+    >
+        UPDATE reception
+        SET is_deleted=1
+        WHERE id = #{id}
+    </update>
+</mapper>
