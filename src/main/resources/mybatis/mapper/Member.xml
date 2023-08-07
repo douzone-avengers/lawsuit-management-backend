@@ -22,4 +22,13 @@
         </selectKey>
     </insert>
 
+    <select id="selectMemberListById" parameterType="java.util.List">
+        select *
+        from member
+        where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>

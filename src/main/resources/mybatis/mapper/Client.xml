@@ -40,7 +40,7 @@
         where id = #{clientId};
     </update>
 
-    <select id="getClientList">
+    <select id="selectClientList">
         select *
         from client
         where is_deleted = false;
@@ -64,5 +64,12 @@
             limit #{limit} offset #{offset}
     </select>
 
-
+    <select id="selectClientListById" parameterType="java.util.List">
+        select *
+        from client
+        where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
