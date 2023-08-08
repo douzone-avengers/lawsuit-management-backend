@@ -10,9 +10,11 @@ import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.repository.param.InsertMemberParam;
+import com.avg.lawsuitmanagement.member.repository.param.UpdateMemberParam;
 import com.avg.lawsuitmanagement.promotion.service.PromotionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,12 @@ public class MemberService {
     public MemberDto getLoginMemberInfo() {
         String email = SecurityUtil.getCurrentLoginEmail();
         return memberMapperRepository.selectMemberByEmail(email);
+    }
+
+    public void updatePrivateInfo(PrivateUpdateForm form){
+        MemberDto me = getLoginMemberInfo();
+
+        memberMapperRepository.updateMember(UpdateMemberParam.of(form, me.getId()));
     }
 
     @Transactional

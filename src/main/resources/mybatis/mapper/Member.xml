@@ -12,7 +12,7 @@
           and m.is_deleted = false
     </select>
 
-    <insert id="insertMember" parameterType="InsertMemberParam" >
+    <insert id="insertMember" parameterType="InsertMemberParam">
         insert into member (email, password, name, phone, hierarchy_id, address, role_id)
         values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
         <selectKey keyProperty="id" resultType="java.lang.Long">
@@ -28,5 +28,16 @@
             #{item}
         </foreach>
     </select>
+
+    <update id="updateMember" parameterType="UpdateMemberParam">
+        update member
+        set email        = #{email},
+            name         = #{name},
+            phone        = #{phone},
+            address      = #{address},
+            hierarchy_id = #{hierarchyId},
+            role_id      = #{roleId}
+        where id = #{id};
+    </update>
 
 </mapper>

@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.controller;
 
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import javax.validation.Valid;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,12 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity<MemberDto> getLoginUserInfo() {
         return ResponseEntity.ok(memberService.getLoginMemberInfo());
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateLoginUserInfo(@RequestBody @Valid PrivateUpdateForm form) {
+        memberService.updatePrivateInfo(form);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/clients")
