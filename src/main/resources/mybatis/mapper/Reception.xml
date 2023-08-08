@@ -5,7 +5,8 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.reception.repository.ReceptionMapperRepository">
     <select id="select"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionSelectParam">
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionSelectParam"
+      resultType="com.avg.lawsuitmanagement.reception.dto.ReceptionDto">
         SELECT id,
         lawsuit_id,
         status,
@@ -17,8 +18,8 @@
         updated_at,
         is_deleted
         FROM reception
-        WHERE is_deleted = false
-        AND lawsuit_id = #{lawsuitId}
+        WHERE lawsuit_id = #{lawsuitId}
+        AND is_deleted = false
         <if test="status != null">
             AND status = #{status}
         </if>
@@ -42,13 +43,36 @@
         </if>
         ORDER BY id DESC
         <choose>
-            <when test="page != null">
+            <when test="page != null and count != null ">
+                LIMIT #{page}, #{count}
+            </when>
+            <when test="page != null and count == null">
                 LIMIT #{page}, 5
+            </when>
+            <when test="page == null and count != null">
+                LIMIT 0, #{count}
             </when>
             <otherwise>
                 LIMIT 0, 5
             </otherwise>
         </choose>
+    </select>
+    <select id="selectById"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.reception.dto.ReceptionDto">
+        SELECT id,
+               lawsuit_id,
+               status,
+               category,
+               contents,
+               received_at,
+               deadline,
+               created_at,
+               updated_at,
+               is_deleted
+        FROM reception
+        WHERE id = #{id}
+          AND is_deleted = false
     </select>
     <insert id="insert"
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam"
@@ -78,13 +102,15 @@
             , deadline = #{deadline}
         </if>
         WHERE id = #{id}
+        AND is_deleted = false
     </update>
     <update id="delete"
-      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionDeleteParam"
+      parameterType="java.lang.Long"
     >
         UPDATE reception
         SET is_deleted=1
         WHERE id = #{id}
+          AND is_deleted = false
     </update>
     <delete id="truncate">
         TRUNCATE TABLE reception
@@ -92,5 +118,6 @@
     <select id="count">
         SELECT COUNT(*)
         FROM reception
+        WHERE is_deleted = false
     </select>
 </mapper>

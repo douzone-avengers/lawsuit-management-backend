@@ -1,7 +1,6 @@
 package com.avg.lawsuitmanagement.reception.repository;
 
 import com.avg.lawsuitmanagement.reception.dto.ReceptionDto;
-import com.avg.lawsuitmanagement.reception.repository.param.ReceptionDeleteParam;
 import com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam;
 import com.avg.lawsuitmanagement.reception.repository.param.ReceptionSelectParam;
 import com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam;
@@ -13,11 +12,13 @@ public interface ReceptionMapperRepository {
 
     List<ReceptionDto> select(ReceptionSelectParam param);
 
+    ReceptionDto selectById(Long id);
+
     void insert(ReceptionInsertParam param);
 
     void update(ReceptionUpdateParam param);
 
-    void delete(ReceptionDeleteParam param);
+    void delete(Long id);
 
     void truncate();
 
