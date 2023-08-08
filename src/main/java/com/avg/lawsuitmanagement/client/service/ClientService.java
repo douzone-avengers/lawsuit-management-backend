@@ -3,20 +3,16 @@ package com.avg.lawsuitmanagement.client.service;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 
-import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
-import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
+import com.avg.lawsuitmanagement.client.dto.ClientLawsuitCountDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
-import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
-import com.avg.lawsuitmanagement.common.util.PagingUtil;
-import com.avg.lawsuitmanagement.common.util.dto.PageRangeDto;
-import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
-import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
+import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +24,8 @@ import org.springframework.stereotype.Service;
 public class ClientService {
 
     private final ClientMapperRepository clientMapperRepository;
+    private final LawsuitMapperRepository lawsuitMapperRepository;
+    private final LawsuitService lawsuitService;
 
     public ClientDto getClientById(long clientId) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
@@ -71,6 +69,18 @@ public class ClientService {
         }
 
         clientMapperRepository.deleteClientInfo(clientId);
+
+        // cliendId가 속한 사건별 사건id와 의뢰인 수
+        List<ClientLawsuitCountDto> countClientList = lawsuitMapperRepository.selectLawsuitCountByClientId(clientId);
+
+        for (ClientLawsuitCountDto dto : countClientList) {
+            // 사건의 의뢰인 수가 1명(삭제하려는 의뢰인)일 때
+            if (dto.getClientLawsuitCount() == 1) {
+                lawsuitService.deleteLawsuitInfo(dto.getLawsuitId());
+            } else {    // 사건의 의뢰인 수가 2명 이상일 때
+                lawsuitMapperRepository.deleteLawsuitClientMapByClientId(clientId);
+            }
+        }
     }
 
     public List<ClientDto> selectClientList() {

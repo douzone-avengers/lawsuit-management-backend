@@ -18,7 +18,7 @@ import lombok.ToString;
 @ToString
 public class ReceptionEditForm {
 
-    private Boolean status;
+    private String status;
     @Pattern(regexp = "fixed|scheduled")
     private String category;
     private String contents;
@@ -28,7 +28,7 @@ public class ReceptionEditForm {
     public ReceptionUpdateParam toParam(Long id) {
         return ReceptionUpdateParam.builder()
             .id(id)
-            .status(status)
+            .status(status.equals("complete"))
             .category(category)
             .contents(contents)
             .receivedAt(receivedAt)

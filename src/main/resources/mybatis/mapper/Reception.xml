@@ -20,12 +20,31 @@
         FROM reception
         WHERE lawsuit_id = #{lawsuitId}
         AND is_deleted = false
-        <if test="status != null">
-            AND status = #{status}
-        </if>
-        <if test="category != null">
-            AND category = #{category}
-        </if>
+        <choose>
+            <when test='status != null and status.equals("all")'>
+
+            </when>
+            <when test='status != null and status.equals("complete")'>
+                AND status = true
+            </when>
+            <when test='status != null and status.equals("incomplete")'>
+                AND status = false
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <choose>
+            <when test='category != null and category.equals("all")'>
+
+            </when>
+            <when test='category != null'>
+                AND category = #{category}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
         <if test="contents != null">
             AND contents LIKE CONCAT('%', #{contents}, '%')
         </if>
@@ -113,5 +132,51 @@
         SELECT COUNT(*)
         FROM reception
         WHERE is_deleted = false
+    </select>
+    <select id="searchCount">
+        SELECT COUNT(*)
+        FROM reception
+        WHERE lawsuit_id = #{lawsuitId}
+        AND is_deleted = false
+        <choose>
+            <when test='status != null and status.equals("all")'>
+
+            </when>
+            <when test='status != null and status.equals("complete")'>
+                AND status = true
+            </when>
+            <when test='status != null and status.equals("incomplete")'>
+                AND status = false
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <choose>
+            <when test='category != null and category.equals("all")'>
+
+            </when>
+            <when test='category != null'>
+                AND category = #{category}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="contents != null">
+            AND contents LIKE CONCAT('%', #{contents}, '%')
+        </if>
+        <if test="startReceivedAt != null">
+            AND received_at >= #{startReceivedAt}
+        </if>
+        <if test="endReceivedAt != null">
+            AND #{endReceivedAt} >= received_at
+        </if>
+        <if test="startDeadline != null">
+            AND deadline >= #{startDeadline}
+        </if>
+        <if test="endDeadline != null">
+            AND #{endDeadline} >= deadline
+        </if>
     </select>
 </mapper>

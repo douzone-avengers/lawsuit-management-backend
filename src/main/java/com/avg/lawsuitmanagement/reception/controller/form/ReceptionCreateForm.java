@@ -22,7 +22,7 @@ public class ReceptionCreateForm {
     @Null
     private Long id;
     private Long lawsuitId;
-    private Boolean status;
+    private String status;
     @Pattern(regexp = "fixed|scheduled")
     private String category;
     private String contents;
@@ -32,7 +32,7 @@ public class ReceptionCreateForm {
     public ReceptionInsertParam toParam() {
         return ReceptionInsertParam.builder()
             .lawsuitId(lawsuitId)
-            .status(status)
+            .status(status.equals("complete"))
             .category(category)
             .contents(contents)
             .receivedAt(receivedAt)
