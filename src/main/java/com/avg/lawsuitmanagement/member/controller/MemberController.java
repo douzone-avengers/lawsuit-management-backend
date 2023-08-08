@@ -28,7 +28,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateLoginUserInfo(PrivateUpdateForm form) {
+    public ResponseEntity<Void> updateLoginUserInfo(@RequestBody @Valid PrivateUpdateForm form) {
         memberService.updatePrivateInfo(form);
         return ResponseEntity.ok().build();
     }
