@@ -4,6 +4,7 @@ import com.avg.lawsuitmanagement.reception.controller.form.ReceptionCreateForm;
 import com.avg.lawsuitmanagement.reception.controller.form.ReceptionEditForm;
 import com.avg.lawsuitmanagement.reception.controller.form.ReceptionSearchForm;
 import com.avg.lawsuitmanagement.reception.dto.ReceptionDto;
+import com.avg.lawsuitmanagement.reception.dto.ReceptionSearchDto;
 import com.avg.lawsuitmanagement.reception.service.ReceptionService;
 import java.time.LocalDate;
 import java.util.List;
@@ -64,7 +65,12 @@ public class ReceptionController {
             .startDeadline(startDeadline)
             .endDeadline(endDeadline)
             .build();
-        List<ReceptionDto> result = receptionService.search(form);
+        List<ReceptionDto> receptions = receptionService.search(form);
+        Long size = receptionService.size();
+        ReceptionSearchDto result = ReceptionSearchDto.builder()
+            .receptions(receptions)
+            .size(size)
+            .build();
         return ResponseEntity.ok(result);
     }
 

@@ -43,4 +43,8 @@ public class ReceptionService {
         receptionRepository.delete(id);
     }
 
+    public Long size() {
+        return receptionRepository.count();
+    }
+    
 }
