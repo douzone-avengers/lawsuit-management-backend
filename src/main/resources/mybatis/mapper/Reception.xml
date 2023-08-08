@@ -34,9 +34,17 @@
 
             </otherwise>
         </choose>
-        <if test="category != null">
-            AND category = #{category}
-        </if>
+        <choose>
+            <when test='category != null and category.equals("all")'>
+
+            </when>
+            <when test='category != null'>
+                AND category = #{category}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
         <if test="contents != null">
             AND contents LIKE CONCAT('%', #{contents}, '%')
         </if>
@@ -144,9 +152,17 @@
 
             </otherwise>
         </choose>
-        <if test="category != null">
-            AND category = #{category}
-        </if>
+        <choose>
+            <when test='category != null and category.equals("all")'>
+
+            </when>
+            <when test='category != null'>
+                AND category = #{category}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
         <if test="contents != null">
             AND contents LIKE CONCAT('%', #{contents}, '%')
         </if>
