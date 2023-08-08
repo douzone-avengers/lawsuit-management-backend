@@ -23,13 +23,13 @@ public class CustomUserDetail implements UserDetails {
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        if(member.getRole().equals("CLIENT")) {
+        if(member.getRoleId() == 1L) {
             authorities.add(new SimpleGrantedAuthority(AuthRole.ROLE_CLIENT.name()));
             return authorities;
         }
 
         authorities.add(new SimpleGrantedAuthority(AuthRole.ROLE_EMPLOYEE.name()));
-        if(member.getRole().equals("ADMIN")) {
+        if(member.getRoleId() == 3L) {
             authorities.add(new SimpleGrantedAuthority(AuthRole.ROLE_ADMIN.name()));
         }
 

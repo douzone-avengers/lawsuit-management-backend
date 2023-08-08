@@ -6,10 +6,8 @@
 <mapper namespace="com.avg.lawsuitmanagement.member.repository.MemberMapperRepository">
 
     <select id="selectMemberByEmail" parameterType="java.lang.String">
-        select m.*, h.name_eng as hierarchy, r.name_eng as role
+        select *
         from member m
-                 join hierarchy h on m.hierarchy_id = h.id
-                 join role r on m.role_id = r.id
         where m.email = #{email}
           and m.is_deleted = false
     </select>
