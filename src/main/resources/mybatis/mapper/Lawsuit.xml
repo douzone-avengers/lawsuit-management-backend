@@ -88,4 +88,19 @@
         where lawsuit_id = #{lawsuitId};
     </update>
 
+    <!-- cliendId가 속한 사건별 의뢰인 수 -->
+    <select id="selectLawsuitCountByClientId" parameterType="java.lang.Long">
+        select lcm1.lawsuit_id, count(*)
+        from lawsuit_client_map lcm1
+                 join lawsuit_client_map lcm2 on lcm1.lawsuit_id = lcm2.lawsuit_id
+        where lcm1.is_deleted = false and lcm1.client_id = #{clientId}
+        group by lcm1.lawsuit_id;
+    </select>
+
+    <!-- '사건-의뢰인' 매핑 테이블에서 해당 의뢰인 정보 삭제 -->
+    <update id="deleteLawsuitClientMapByClientId" parameterType="java.lang.Long">
+        update lawsuit_client_map
+        set is_deleted = true
+        where client_id = #{clientId};
+    </update>
 </mapper>
