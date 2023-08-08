@@ -14,6 +14,7 @@ import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -57,5 +58,10 @@ public class LawsuitController {
     }
 
     // 사건 삭제
+    @PatchMapping("/{lawsuitId}")
+    public ResponseEntity<Void> deleteLawsuitInfo(@PathVariable("lawsuitId") Long lawsuitId) {
+        lawsuitService.deleteLawsuitInfo(lawsuitId);
+        return ResponseEntity.ok().build();
+    }
 
 }
