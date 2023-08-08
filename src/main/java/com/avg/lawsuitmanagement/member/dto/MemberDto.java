@@ -14,10 +14,10 @@ public class MemberDto {
     private String email; //이메일
     private String password; //비밀번호
     private String name; //이름
-    private String hierarchy; //직급, 조인필요
+    private long hierarchyId; //직급 아이디
     private String phone; //전화번호
     private String address; //주소
-    private String role; //역할, 조인필요
+    private long roleId; //역할 아이디
     private String createdAt; //생성일
     private String updatedAt; //수정일
     private boolean isDeleted; //삭제여부
