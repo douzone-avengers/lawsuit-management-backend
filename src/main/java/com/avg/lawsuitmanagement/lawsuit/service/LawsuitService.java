@@ -13,6 +13,7 @@ import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
+import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.common.util.dto.PageRangeDto;
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
@@ -25,8 +26,6 @@ import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
-import com.avg.lawsuitmanagement.member.service.MemberService;
-import java.lang.reflect.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ public class LawsuitService {
     private final ClientMapperRepository clientMapperRepository;
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
-    private final MemberService memberService;
 
     public ClientLawsuitDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
@@ -140,7 +138,8 @@ public class LawsuitService {
         }
 
         // 해당 사건의 담당자가 아니라면
-        MemberDto loginMemberInfo = memberService.getLoginMemberInfo();
+        String email = SecurityUtil.getCurrentLoginEmail();
+        MemberDto loginMemberInfo = memberMapperRepository.selectMemberByEmail(email);
 
         List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
         if (!memberIdList.contains(loginMemberInfo.getId())) {
