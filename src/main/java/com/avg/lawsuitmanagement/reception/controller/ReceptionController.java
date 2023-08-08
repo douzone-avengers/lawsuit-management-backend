@@ -33,8 +33,6 @@ public class ReceptionController {
         @RequestParam(required = false)
         Long page,
         @RequestParam(required = false)
-        Long count,
-        @RequestParam(required = false)
         Boolean status,
         @RequestParam(required = false)
         String category,
