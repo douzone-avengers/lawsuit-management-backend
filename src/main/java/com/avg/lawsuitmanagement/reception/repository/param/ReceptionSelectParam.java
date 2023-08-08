@@ -19,7 +19,7 @@ public class ReceptionSelectParam {
     private Long lawsuitId;
     private Long page;
     private Long count;
-    private Boolean status;
+    private String status;
     private String category;
     private String contents;
     private LocalDate startReceivedAt;

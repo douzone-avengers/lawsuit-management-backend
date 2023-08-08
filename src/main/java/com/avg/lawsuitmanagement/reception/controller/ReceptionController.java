@@ -35,7 +35,7 @@ public class ReceptionController {
         @RequestParam(required = false)
         Long page,
         @RequestParam(required = false)
-        Boolean status,
+        String status,
         @RequestParam(required = false)
         String category,
         @RequestParam(required = false)
@@ -66,7 +66,7 @@ public class ReceptionController {
             .endDeadline(endDeadline)
             .build();
         List<ReceptionDto> receptions = receptionService.search(form);
-        Long size = receptionService.size();
+        Long size = receptionService.searchSize(form);
         ReceptionSearchDto result = ReceptionSearchDto.builder()
             .receptions(receptions)
             .size(size)

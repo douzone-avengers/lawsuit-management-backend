@@ -12,6 +12,8 @@ public interface ReceptionMapperRepository {
 
     List<ReceptionDto> select(ReceptionSelectParam param);
 
+    Long searchCount(ReceptionSelectParam param);
+
     ReceptionDto selectById(Long id);
 
     void insert(ReceptionInsertParam param);

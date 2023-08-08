@@ -24,6 +24,12 @@ public class ReceptionService {
         return result;
     }
 
+    public Long searchSize(ReceptionSearchForm form) {
+        ReceptionSelectParam param = form.toParam();
+        Long size = receptionRepository.searchCount(param);
+        return size;
+    }
+
     public ReceptionDto create(ReceptionCreateForm form) {
         ReceptionInsertParam param = form.toParam();
         receptionRepository.insert(param);
@@ -46,5 +52,5 @@ public class ReceptionService {
     public Long size() {
         return receptionRepository.count();
     }
-    
+
 }
