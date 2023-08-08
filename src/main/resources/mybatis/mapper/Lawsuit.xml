@@ -28,13 +28,13 @@
 
     <!-- 추가한 데이터의 id 값을 가져옴 -->
     <select id="getLastInsertedLawsuitId" resultType="java.lang.Long">
-        SELECT LAST_INSERT_ID();
+        select LAST_INSERT_ID();
     </select>
 
     <!-- lawsuit_client_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitClientMap" parameterType="InsertLawsuitClientMemberIdParam">
-        INSERT INTO lawsuit_client_map (lawsuit_id, client_id)
-        VALUES
+        insert into lawsuit_client_map (lawsuit_id, client_id)
+        values
         <foreach item="clientId" collection="clientId" separator=",">
             (#{lawsuitId}, #{clientId})
         </foreach>
@@ -42,8 +42,8 @@
 
     <!-- lawsuit_member_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitMemberMap" parameterType="InsertLawsuitClientMemberIdParam">
-        INSERT INTO lawsuit_member_map (lawsuit_id, member_id)
-        VALUES
+        insert into lawsuit_member_map (lawsuit_id, member_id)
+        values
         <foreach item="memberId" collection="memberId" separator=",">
             (#{lawsuitId}, #{memberId})
         </foreach>
