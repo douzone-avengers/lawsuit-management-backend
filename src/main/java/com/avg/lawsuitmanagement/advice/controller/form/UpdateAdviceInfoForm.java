@@ -4,19 +4,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @Getter
 @Setter
 public class UpdateAdviceInfoForm {
 
-    @NotBlank
-    private long memberId;
-    @NotBlank
-    private long clientId;
+
+    @NotNull
+    private List<Long> memberId;
+    @NotNull
+    private List<Long> clientId;
+    @NotNull
+    private long lawsuitId;
     @NotBlank
     private String title;
     @NotBlank
-    private String contnets;
+    private String contents;
     @NotBlank
     private String advicedAt;
+
 
 }

@@ -3,5 +3,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="con.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository" />
+<mapper namespace="con.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository" >
 
+    <select id="selectAdviceById" parameterType="java.lang.Long">
+    select *
+    from advice
+    where id = #{adviceId} and is_deleted=false;
+    </select>
+
+
+    <insert id="insertAdvice" parameterType="java.util.List">
+        insert into advice (title, contents, advice_at, memberId, client_id, lawsuit_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.title}, #{item.contents}, #{item.adviceAt},
+            <foreach collection="item.memberId" item="memberId" separator=",">
+                #{memberId}
+            </foreach>,
+            <foreach collection="item.clientId" item="clientId" separator=",">
+                #{clientId}
+            </foreach>,
+            #{item.lawsuitId})
+        </foreach>
+    </insert>
+
+    <update id="updateAdviceInfo" parameterType="UpdateAdviceInfoParam">
+        update advice
+        set title = #{title},
+        contents = #{contents},
+        adviced_at = #{advicedAt},
+        member_id = (
+        <foreach collection="memberId" item="memberId" separator=",">
+            #{memberId}
+        </foreach>
+        ),
+        client_id = (
+        <foreach collection="clientId" item="clientId" separator=",">
+            #{clientId}
+        </foreach>
+        )
+        where id = #{adviceId}
+    </update>
+
+    <update id="deleteAdviceInfo" parameterType="java.lang.Long">
+        update advice
+        set is_deleted = true
+        where id = #{adviceId};
+    </update>
+
+</mapper>

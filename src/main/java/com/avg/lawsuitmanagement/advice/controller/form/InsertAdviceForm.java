@@ -21,7 +21,7 @@ public class InsertAdviceForm {
     @NotBlank
     private String title;
     @NotBlank
-    private String contnets;
+    private String contents;
     @NotBlank
     private String advicedAt;
 }
