@@ -64,4 +64,28 @@
         where id = #{lawsuitId};
     </update>
 
+    <select id="selectMemberByLawsuitId" parameterType="java.lang.Long">
+        select member_id
+        from lawsuit_member_map
+        where lawsuit_id = #{lawsuitId};
+    </select>
+
+    <update id="deleteLawsuitInfo" parameterType="java.lang.Long">
+        update lawsuit
+        set is_deleted = true
+        where id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitClientMap" parameterType="java.lang.Long">
+        update lawsuit_client_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitMemberMap" parameterType="java.lang.Long">
+        update lawsuit_member_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
+    </update>
+
 </mapper>
