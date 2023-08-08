@@ -4,6 +4,17 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository">
+
+    <select id="selectClientLawsuitList" parameterType="SelectClientLawsuitListParam" resultType="LawsuitDto">
+        select l.*
+        from lawsuit l
+                 join lawsuit_client_map map on l.id = map.lawsuit_id
+        where map.client_id = #{clientId}
+          and l.is_deleted = false
+        order by l.created_at desc
+        limit #{limit} offset #{offset}
+    </select>
+
     <select id="selectLawsuitById" parameterType="java.lang.Long">
         select *
         from lawsuit
@@ -13,6 +24,29 @@
     <insert id="insertLawsuit" parameterType="InsertLawsuitParam">
         insert into lawsuit (lawsuit_type, name, court_id, commission_fee, contingent_fee, lawsuit_status, lawsuit_num, result)
         values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee}, #{lawsuitStatus}, #{lawsuitNum}, null);
+    </insert>
+
+    <!-- 추가한 데이터의 id 값을 가져옴 -->
+    <select id="getLastInsertedLawsuitId" resultType="java.lang.Long">
+        select LAST_INSERT_ID();
+    </select>
+
+    <!-- lawsuit_client_map 테이블에 데이터 추가 -->
+    <insert id="insertLawsuitClientMap" parameterType="InsertLawsuitClientMemberIdParam">
+        insert into lawsuit_client_map (lawsuit_id, client_id)
+        values
+        <foreach item="clientId" collection="clientId" separator=",">
+            (#{lawsuitId}, #{clientId})
+        </foreach>
+    </insert>
+
+    <!-- lawsuit_member_map 테이블에 데이터 추가 -->
+    <insert id="insertLawsuitMemberMap" parameterType="InsertLawsuitClientMemberIdParam">
+        insert into lawsuit_member_map (lawsuit_id, member_id)
+        values
+        <foreach item="memberId" collection="memberId" separator=",">
+            (#{lawsuitId}, #{memberId})
+        </foreach>
     </insert>
 
     <select id="selectLawsuitList">
@@ -28,6 +62,30 @@
             lawsuit_status = #{lawsuit_status}, lawsuit_num = #{lawsuit_num},
             result = #{result}, judgement_date = #{judgement_date}
         where id = #{lawsuitId};
+    </update>
+
+    <select id="selectMemberByLawsuitId" parameterType="java.lang.Long">
+        select member_id
+        from lawsuit_member_map
+        where lawsuit_id = #{lawsuitId};
+    </select>
+
+    <update id="deleteLawsuitInfo" parameterType="java.lang.Long">
+        update lawsuit
+        set is_deleted = true
+        where id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitClientMap" parameterType="java.lang.Long">
+        update lawsuit_client_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitMemberMap" parameterType="java.lang.Long">
+        update lawsuit_member_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
     </update>
 
 </mapper>

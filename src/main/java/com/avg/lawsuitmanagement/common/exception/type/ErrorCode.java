@@ -35,9 +35,11 @@ public enum ErrorCode {
 
     //사원 관련 예외
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사원입니다."),
+    MEMBER_NOT_ASSIGNED_TO_LAWSUIT(HttpStatus.NOT_FOUND, "해당 사건을 담당하는 사원이 아닙니다."),
 
     //사건 관련 예외
     LAWSUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사건입니다."),
+    LAWSUIT_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상태입니다."),
 
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),
