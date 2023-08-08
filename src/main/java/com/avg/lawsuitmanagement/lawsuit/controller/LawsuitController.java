@@ -29,7 +29,7 @@ public class LawsuitController {
     private final ClientService clientService;
 
     // 의뢰인 사건 리스트, 페이징 정보
-    @GetMapping("/{clientId}")  // url 수정 필요
+    @GetMapping("/clients/{clientId}")  // url 수정 필요
     public ResponseEntity<ClientLawsuitDto> selectClientLawsuitList(
         @PathVariable("clientId") Long clientId,
         @ModelAttribute GetClientLawsuitForm form) {
@@ -55,4 +55,7 @@ public class LawsuitController {
         lawsuitService.updateLawsuitInfo(lawsuitId, form);
         return ResponseEntity.ok().build();
     }
+
+    // 사건 삭제
+
 }
