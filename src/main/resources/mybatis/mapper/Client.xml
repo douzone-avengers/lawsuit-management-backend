@@ -54,16 +54,6 @@
           and l.is_deleted = false
     </select>
 
-    <select id="selectClientLawsuitList" parameterType="SelectClientLawsuitListParam" resultType="LawsuitDto">
-        select l.*
-        from lawsuit l
-                 join lawsuit_client_map map on l.id = map.lawsuit_id
-        where map.client_id = #{clientId}
-          and l.is_deleted = false
-        order by l.created_at desc
-            limit #{limit} offset #{offset}
-    </select>
-
     <select id="selectClientListById" parameterType="java.util.List">
         select *
         from client

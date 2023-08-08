@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Setter
 @RequiredArgsConstructor
 public class LawsuitDto {
-    private long id;
+    private Long id;
     private String lawsuit_type;
     private String name;
     private int court_id;
