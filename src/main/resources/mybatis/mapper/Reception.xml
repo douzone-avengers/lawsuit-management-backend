@@ -43,17 +43,11 @@
         </if>
         ORDER BY id DESC
         <choose>
-            <when test="page != null and count != null ">
-                LIMIT #{page}, #{count}
-            </when>
-            <when test="page != null and count == null">
-                LIMIT #{page}, 5
-            </when>
-            <when test="page == null and count != null">
-                LIMIT 0, #{count}
+            <when test="page != null">
+                LIMIT ${page * 5}, #{count}
             </when>
             <otherwise>
-                LIMIT 0, 5
+                LIMIT 0, #{count}
             </otherwise>
         </choose>
     </select>
