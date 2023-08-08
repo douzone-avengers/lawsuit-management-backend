@@ -2,6 +2,8 @@ package com.avg.lawsuitmanagement.reception.controller.form;
 
 import com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam;
 import java.time.LocalDate;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +19,11 @@ import lombok.ToString;
 @ToString
 public class ReceptionCreateForm {
 
+    @Null
     private Long id;
     private Long lawsuitId;
     private Boolean status;
+    @Pattern(regexp = "fixed|scheduled")
     private String category;
     private String contents;
     private LocalDate receivedAt;

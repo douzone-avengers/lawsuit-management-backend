@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.reception.controller.form;
 
 import com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam;
 import java.time.LocalDate;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import lombok.ToString;
 public class ReceptionEditForm {
 
     private Boolean status;
+    @Pattern(regexp = "fixed|scheduled")
     private String category;
     private String contents;
     private LocalDate receivedAt;
