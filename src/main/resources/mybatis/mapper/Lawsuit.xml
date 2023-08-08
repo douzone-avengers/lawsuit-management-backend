@@ -28,13 +28,13 @@
 
     <!-- 추가한 데이터의 id 값을 가져옴 -->
     <select id="getLastInsertedLawsuitId" resultType="java.lang.Long">
-        SELECT LAST_INSERT_ID();
+        select LAST_INSERT_ID();
     </select>
 
     <!-- lawsuit_client_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitClientMap" parameterType="InsertLawsuitClientMemberIdParam">
-        INSERT INTO lawsuit_client_map (lawsuit_id, client_id)
-        VALUES
+        insert into lawsuit_client_map (lawsuit_id, client_id)
+        values
         <foreach item="clientId" collection="clientId" separator=",">
             (#{lawsuitId}, #{clientId})
         </foreach>
@@ -42,8 +42,8 @@
 
     <!-- lawsuit_member_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitMemberMap" parameterType="InsertLawsuitClientMemberIdParam">
-        INSERT INTO lawsuit_member_map (lawsuit_id, member_id)
-        VALUES
+        insert into lawsuit_member_map (lawsuit_id, member_id)
+        values
         <foreach item="memberId" collection="memberId" separator=",">
             (#{lawsuitId}, #{memberId})
         </foreach>
@@ -62,6 +62,30 @@
             lawsuit_status = #{lawsuit_status}, lawsuit_num = #{lawsuit_num},
             result = #{result}, judgement_date = #{judgement_date}
         where id = #{lawsuitId};
+    </update>
+
+    <select id="selectMemberByLawsuitId" parameterType="java.lang.Long">
+        select member_id
+        from lawsuit_member_map
+        where lawsuit_id = #{lawsuitId};
+    </select>
+
+    <update id="deleteLawsuitInfo" parameterType="java.lang.Long">
+        update lawsuit
+        set is_deleted = true
+        where id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitClientMap" parameterType="java.lang.Long">
+        update lawsuit_client_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitMemberMap" parameterType="java.lang.Long">
+        update lawsuit_member_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
     </update>
 
 </mapper>

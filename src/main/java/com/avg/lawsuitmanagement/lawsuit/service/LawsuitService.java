@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.lawsuit.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_STATUS_NOT_FOUND;
 
@@ -24,6 +25,8 @@ import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import com.avg.lawsuitmanagement.member.service.MemberService;
+import java.lang.reflect.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,7 @@ public class LawsuitService {
     private final ClientMapperRepository clientMapperRepository;
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
+    private final MemberService memberService;
 
     public ClientLawsuitDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
@@ -126,4 +130,25 @@ public class LawsuitService {
         lawsuitMapperRepository.updateLawsuitInfo(UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
     }
 
+    @Transactional
+    public void deleteLawsuitInfo(long lawsuitId) {
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+
+        // lawsuitId에 해당하는 사건이 없다면
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+
+        // 해당 사건의 담당자가 아니라면
+        MemberDto loginMemberInfo = memberService.getLoginMemberInfo();
+
+        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
+        if (!memberIdList.contains(loginMemberInfo.getId())) {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+        }
+
+        lawsuitMapperRepository.deleteLawsuitInfo(lawsuitId);
+        lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
+        lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
+    }
 }
