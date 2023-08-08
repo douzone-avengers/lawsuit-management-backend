@@ -3,6 +3,7 @@ package com.avg.lawsuitmanagement.lawsuit.repository.param;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
+import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import java.util.Date;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class UpdateLawsuitInfoParam {
     private String result;
     private Date judgement_date;
 
-    public static UpdateLawsuitInfoParam of(Long lawsuitId, UpdateLawsuitInfoForm form) {
+    public static UpdateLawsuitInfoParam of(Long lawsuitId, UpdateLawsuitInfoForm form, LawsuitStatus status) {
         return UpdateLawsuitInfoParam.builder()
             .lawsuitId(lawsuitId)
             .lawsuit_type(form.getLawsuit_type())
@@ -31,7 +32,7 @@ public class UpdateLawsuitInfoParam {
             .court_id(form.getCourt_id())
             .commission_fee(form.getCommission_fee())
             .contingent_fee(form.getContingent_fee())
-            .lawsuit_status(form.getLawsuit_status())
+            .lawsuit_status(status.name())
             .lawsuit_num(form.getLawsuit_num())
             .result(form.getResult())
             .judgement_date(form.getJudgement_date())
