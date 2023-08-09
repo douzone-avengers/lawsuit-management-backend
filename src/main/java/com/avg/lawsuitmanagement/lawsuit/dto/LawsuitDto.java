@@ -9,15 +9,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LawsuitDto {
     private Long id;
-    private String lawsuit_type;
+    private String lawsuitType;
     private String name;
-    private int court_id;
-    private int commission_fee;
-    private int contingent_fee;
-    private String lawsuit_status;
-    private String lawsuit_num;
+    private int courtId;
+    private int commissionFee;
+    private int contingentFee;
+    private String lawsuitStatus;
+    private String lawsuitNum;
     private String result;
-    private String judgement_date;
-    private String created_at;
-    private String updated_at;
+    private String judgementDate;
+    private String createdAt;
+    private String updatedAt;
 }
