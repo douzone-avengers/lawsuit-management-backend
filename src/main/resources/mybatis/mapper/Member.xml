@@ -40,4 +40,75 @@
         where id = #{id};
     </update>
 
+    <select id="selectEmployeeListBySearchCondition"
+      parameterType="searchEmployeeListParam"
+      resultType="MemberDtoNonPass">
+        select
+        id, email, name, hierarchy_id, phone, address, role_id, created_at, updated_at
+        from
+        member
+        <where>
+            <if test="searchWord != null and searchWord != ''">
+                and (name like concat('%', #{searchWord}, '%')
+                or email like concat('%', #{searchWord}, '%')
+                or phone like concat('%', #{searchWord}, '%'))
+            </if>
+
+            <if test="hierarchyId != 0">
+                and hierarchy_id = #{hierarchyId}
+            </if>
+
+            <if test="roleId != 0">
+                and role_id = #{roleId}
+            </if>
+            <if test="roleId == 0">
+                and role_id != 1
+            </if>
+            and is_deleted = false
+        </where>
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'">
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'">
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by created_at desc
+            </otherwise>
+        </choose>
+
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectEmployeeListBySearchConditionCount" parameterType="searchEmployeeListParam"
+      resultType="int">
+        select
+        count(*)
+        from
+        member
+        <where>
+            <if test="searchWord != null and searchWord != ''">
+                and (name like concat('%', #{searchWord}, '%')
+                or email like concat('%', #{searchWord}, '%')
+                or phone like concat('%', #{searchWord}, '%'))
+            </if>
+
+            <if test="hierarchyId != 0">
+                and hierarchy_id = #{hierarchyId}
+            </if>
+
+            <if test="roleId != 0">
+                and role_id = #{roleId}
+            </if>
+            <if test="roleId == 0">
+                and role_id != 1
+            </if>
+
+            and is_deleted = false
+        </where>
+    </select>
+
 </mapper>
