@@ -25,5 +25,6 @@ public interface LawsuitMapperRepository {
     void deleteLawsuitMemberMap(long lawsuitId);
     void deleteLawsuitClientMapByClientId(long clientId);
     List<ClientLawsuitCountDto> selectLawsuitCountByClientId(long clientId);
+    List<LawsuitDto> selectLawsuitByClientId(long clientId);
 
 }
