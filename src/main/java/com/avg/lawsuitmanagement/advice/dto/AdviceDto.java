@@ -16,7 +16,7 @@ public class AdviceDto {
     private long id;
     private String title; //상담 제목
     private String contents; //상담 내용
-    private String adviceAt; // 상담 일시
+    private String advicedAt; // 상담 일시
     private String createdAt; // 생성일
     private String updatedAt; // 수정일
     private boolean isDeleted; //삭제여부

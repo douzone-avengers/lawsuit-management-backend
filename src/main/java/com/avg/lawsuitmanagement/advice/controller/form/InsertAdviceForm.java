@@ -13,9 +13,9 @@ public class InsertAdviceForm {
 
 
     @NotNull
-    private List<Long> memberId;
+    private List<Long> memberIdList;
     @NotNull
-    private List<Long> clientId;
+    private List<Long> clientIdList;
     @NotNull
     private long lawsuitId;
     @NotBlank

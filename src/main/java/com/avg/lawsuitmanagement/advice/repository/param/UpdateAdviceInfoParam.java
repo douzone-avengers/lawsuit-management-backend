@@ -16,7 +16,7 @@ public class UpdateAdviceInfoParam {
     private Long adviceId;
     private String title; //상담 제목
     private String contents; //상담 내용
-    private String adviceAt; // 상담 일시
+    private String advicedAt; // 상담 일시
     private List<Long> memberId;
     private List<Long> clientId;
     private long lawsuitId;
@@ -26,7 +26,7 @@ public class UpdateAdviceInfoParam {
                 .adviceId(adviceId)
                 .title(form.getTitle())
                 .contents(form.getContents())
-                .adviceAt(form.getAdvicedAt())
+                .advicedAt(form.getAdvicedAt())
                 .memberId(form.getMemberId())
                 .build();
 
