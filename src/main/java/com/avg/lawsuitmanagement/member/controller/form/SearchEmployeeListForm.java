@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.controller.form;
 
 import com.avg.lawsuitmanagement.member.type.MemberSortKey;
 import com.avg.lawsuitmanagement.member.type.MemberSortOrder;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,16 +10,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class GetEmployeeListForm {
+public class SearchEmployeeListForm {
 
     //검색 및 정렬
     private String searchWord;
-    private long hierarchyId;
-    private long roleId;
-    private MemberSortKey memberSortKey;
-    private MemberSortOrder memberSortOrder;
+    private Long hierarchyId;
+    private Long roleId;
+    private MemberSortKey sortKey;
+    private MemberSortOrder sortOrder;
 
     //페이징
-    private int page;
-    private int rowsPerPage;
+    @NotNull
+    private Integer page;
+    @NotNull
+    private Integer rowsPerPage;
 }

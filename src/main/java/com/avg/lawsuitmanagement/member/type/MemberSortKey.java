@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum MemberSortKey {
 
     CREATED_AT("가입일", "created_at"),
-    HIERARCHY("직급", "hierarchy"),
-    ROLE("권한", "role"),
+    HIERARCHY("직급", "hierarchy_id"),
+    ROLE("권한", "role_id"),
     EMAIL("이메일", "email");
 
     private final String nameKr;

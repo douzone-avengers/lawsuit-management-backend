@@ -19,5 +19,4 @@ public class MemberDtoNonPass {
     private long roleId; //역할 아이디
     private String createdAt; //생성일
     private String updatedAt; //수정일
-    private boolean isDeleted; //삭제여부
 }
