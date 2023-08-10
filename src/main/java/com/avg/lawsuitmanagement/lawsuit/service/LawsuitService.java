@@ -150,4 +150,15 @@ public class LawsuitService {
         lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
     }
+
+    // 해당 의뢰인에 대한 사건 조회
+    public List<LawsuitDto> selectLawsuitByClientId(long clientId) {
+        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
+
+        if (clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        return lawsuitMapperRepository.selectLawsuitByClientId(clientId);
+    }
 }
