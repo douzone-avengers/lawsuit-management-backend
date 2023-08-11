@@ -30,13 +30,14 @@ public class LawsuitController {
     private final ClientService clientService;
 
     // 의뢰인 사건 리스트, 페이징 정보
-    @GetMapping("/clients/{clientId}")  // url 수정 필요
+    @GetMapping("/clients/{clientId}")
     public ResponseEntity<ClientLawsuitDto> selectClientLawsuitList(
         @PathVariable("clientId") Long clientId,
         @ModelAttribute GetClientLawsuitForm form) {
 
         return ResponseEntity.ok(lawsuitService.selectClientLawsuitList(clientId, form));
     }
+
     // 사건 등록
     @PostMapping()
     public ResponseEntity<Void> insertLawsuit(@RequestBody @Valid InsertLawsuitForm form) {
