@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.ADVICE_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,21 +55,25 @@ public class AdviceService {
         Long adviceId = adviceMapperRepository.getLastInsertedAdviceId();
 
         // advice_client_map 테이블에 데이터 삽입
-        List<Long> filteredClientIds = form.getClientIdList().stream()
-                .filter(clientIdList::contains)
-                .toList();
+        List<Long> formClientIdList = form.getClientIdList();
 
-        for (Long clientId : filteredClientIds) {
+        for(Long clientId : formClientIdList){
+            if(!clientIdList.contains(clientId)){
+                throw new CustomRuntimeException(CLIENT_NOT_FOUND_IN_LAWSUIT);
+            }
             InsertAdviceClientMemberIdParam clientParam = InsertAdviceClientMemberIdParam.of(adviceId, Collections.singletonList(clientId), null);
             adviceMapperRepository.insertAdviceClientMap(clientParam);
         }
 
-        // advice_member_map 테이블에 데이터 삽입
-        List<Long> filteredMemberIds = form.getMemberIdList().stream()
-                .filter(memberIdList::contains)
-                .toList();
 
-        for (Long memberId : filteredMemberIds) {
+
+        // advice_member_map 테이블에 데이터 삽입
+       List<Long> formMemberIdList = form.getMemberIdList();
+
+        for(Long memberId : formMemberIdList){
+            if(!memberIdList.contains(memberId)){
+                throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+            }
             InsertAdviceClientMemberIdParam memberParam = InsertAdviceClientMemberIdParam.of(adviceId, null, Collections.singletonList(memberId));
             adviceMapperRepository.insertAdviceMemberMap(memberParam);
         }

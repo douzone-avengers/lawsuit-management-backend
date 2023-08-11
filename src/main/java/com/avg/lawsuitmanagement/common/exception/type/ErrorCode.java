@@ -32,6 +32,7 @@ public enum ErrorCode {
     //의뢰인 관련 예외
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
     CLIENT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 의뢰인입니다."),
+    CLIENT_NOT_FOUND_IN_LAWSUIT(HttpStatus.NOT_FOUND, "해당 사건에 존재하지 않는 의뢰인 입니다."),
 
     //사원 관련 예외
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사원입니다."),

@@ -20,7 +20,7 @@ public interface LawsuitMapperRepository {
     List<LawsuitDto> selectLawsuitList();
     void updateLawsuitInfo(UpdateLawsuitInfoParam param);
     List<Long> selectMemberByLawsuitId(long lawsuitId);
-    List<Long> selectClientByLawsuitId(long lawsuitd);
+    List<Long> selectClientByLawsuitId(long lawsuitId);
     void deleteLawsuitInfo(long lawsuitId);
     void deleteLawsuitClientMap(long lawsuitId);
     void deleteLawsuitMemberMap(long lawsuitId);
