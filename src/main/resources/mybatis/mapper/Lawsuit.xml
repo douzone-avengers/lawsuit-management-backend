@@ -103,4 +103,15 @@
         set is_deleted = true
         where client_id = #{clientId};
     </update>
+
+    <!-- 의뢰인에 대한 사건 조회 -->
+    <select id="selectLawsuitByClientId" parameterType="java.lang.Long">
+        select *
+        from lawsuit
+        where id in (
+            select lawsuit_id
+            from lawsuit_client_map
+            where lawsuit.is_deleted = false and client_id = #{clientId}
+            );
+    </select>
 </mapper>
