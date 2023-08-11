@@ -46,8 +46,8 @@ public class AdviceService {
         }
 
         // 클라이언트와 멤버 ID 검색
-        List<Long> clientIdList = lawsuitMapperRepository.selectClientIdByLawsuitId(lawsuitId);
-        List<Long> memberIdList = lawsuitMapperRepository.selectMemberIdByLawsuitId(lawsuitId);
+        List<Long> clientIdList = lawsuitMapperRepository.selectClientByLawsuitId(lawsuitId);
+        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
 
         // Advice 정보를 삽입
         adviceMapperRepository.insertAdvice(InsertAdviceParam.of(form));
