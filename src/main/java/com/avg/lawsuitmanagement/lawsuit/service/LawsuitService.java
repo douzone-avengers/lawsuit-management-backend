@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.lawsuit.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_STATUS_NOT_FOUND;
 
@@ -12,6 +13,7 @@ import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
+import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.common.util.dto.PageRangeDto;
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
@@ -126,4 +128,37 @@ public class LawsuitService {
         lawsuitMapperRepository.updateLawsuitInfo(UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
     }
 
+    @Transactional
+    public void deleteLawsuitInfo(long lawsuitId) {
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+
+        // lawsuitId에 해당하는 사건이 없다면
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+
+        // 해당 사건의 담당자가 아니라면
+        String email = SecurityUtil.getCurrentLoginEmail();
+        MemberDto loginMemberInfo = memberMapperRepository.selectMemberByEmail(email);
+
+        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
+        if (!memberIdList.contains(loginMemberInfo.getId())) {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+        }
+
+        lawsuitMapperRepository.deleteLawsuitInfo(lawsuitId);
+        lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
+        lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
+    }
+
+    // 해당 의뢰인에 대한 사건 조회
+    public List<LawsuitDto> selectLawsuitByClientId(long clientId) {
+        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
+
+        if (clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        return lawsuitMapperRepository.selectLawsuitByClientId(clientId);
+    }
 }

@@ -5,9 +5,8 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam;
-import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface LawsuitMapperRepository {
@@ -18,9 +17,14 @@ public interface LawsuitMapperRepository {
     void insertLawsuitClientMap(InsertLawsuitClientMemberIdParam param);
     void insertLawsuitMemberMap(InsertLawsuitClientMemberIdParam param);
     List<LawsuitDto> selectLawsuitList();
-    List<Long> selectClientIdByLawsuitId(long LawsuitId);
-    List<Long> selectMemberIdByLawsuitId(long LawsuitId);
+    List<Long> selectClientByLawsuitId(long LawsuitId);
     void updateLawsuitInfo(UpdateLawsuitInfoParam param);
-
+    List<Long> selectMemberByLawsuitId(long lawsuitId);
+    void deleteLawsuitInfo(long lawsuitId);
+    void deleteLawsuitClientMap(long lawsuitId);
+    void deleteLawsuitMemberMap(long lawsuitId);
+    void deleteLawsuitClientMapByClientId(long clientId);
+    List<ClientLawsuitCountDto> selectLawsuitCountByClientId(long clientId);
+    List<LawsuitDto> selectLawsuitByClientId(long clientId);
 
 }

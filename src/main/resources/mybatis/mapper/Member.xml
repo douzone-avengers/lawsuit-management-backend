@@ -6,15 +6,13 @@
 <mapper namespace="com.avg.lawsuitmanagement.member.repository.MemberMapperRepository">
 
     <select id="selectMemberByEmail" parameterType="java.lang.String">
-        select m.*, h.name_eng as hierarchy, r.name_eng as role
+        select *
         from member m
-                 join hierarchy h on m.hierarchy_id = h.id
-                 join role r on m.role_id = r.id
         where m.email = #{email}
           and m.is_deleted = false
     </select>
 
-    <insert id="insertMember" parameterType="InsertMemberParam" >
+    <insert id="insertMember" parameterType="InsertMemberParam">
         insert into member (email, password, name, phone, hierarchy_id, address, role_id)
         values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
         <selectKey keyProperty="id" resultType="java.lang.Long">
@@ -29,6 +27,88 @@
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </select>
+
+    <update id="updateMember" parameterType="UpdateMemberParam">
+        update member
+        set email        = #{email},
+            name         = #{name},
+            phone        = #{phone},
+            address      = #{address},
+            hierarchy_id = #{hierarchyId},
+            role_id      = #{roleId}
+        where id = #{id};
+    </update>
+
+    <select id="selectEmployeeListBySearchCondition"
+      parameterType="searchEmployeeListParam"
+      resultType="MemberDtoNonPass">
+        select
+        id, email, name, hierarchy_id, phone, address, role_id, created_at, updated_at
+        from
+        member
+        <where>
+            <if test="searchWord != null and searchWord != ''">
+                and (name like concat('%', #{searchWord}, '%')
+                or email like concat('%', #{searchWord}, '%')
+                or phone like concat('%', #{searchWord}, '%'))
+            </if>
+
+            <if test="hierarchyId != 0">
+                and hierarchy_id = #{hierarchyId}
+            </if>
+
+            <if test="roleId != 0">
+                and role_id = #{roleId}
+            </if>
+            <if test="roleId == 0">
+                and role_id != 1
+            </if>
+            and is_deleted = false
+        </where>
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'">
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'">
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by created_at desc
+            </otherwise>
+        </choose>
+
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectEmployeeListBySearchConditionCount" parameterType="searchEmployeeListParam"
+      resultType="int">
+        select
+        count(*)
+        from
+        member
+        <where>
+            <if test="searchWord != null and searchWord != ''">
+                and (name like concat('%', #{searchWord}, '%')
+                or email like concat('%', #{searchWord}, '%')
+                or phone like concat('%', #{searchWord}, '%'))
+            </if>
+
+            <if test="hierarchyId != 0">
+                and hierarchy_id = #{hierarchyId}
+            </if>
+
+            <if test="roleId != 0">
+                and role_id = #{roleId}
+            </if>
+            <if test="roleId == 0">
+                and role_id != 1
+            </if>
+
+            and is_deleted = false
+        </where>
     </select>
 
 </mapper>

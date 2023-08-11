@@ -9,10 +9,9 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class MemberDto {
+public class MemberDtoNonPass {
     private long id;
     private String email; //이메일
-    private String password; //비밀번호
     private String name; //이름
     private long hierarchyId; //직급 아이디
     private String phone; //전화번호
@@ -20,5 +19,4 @@ public class MemberDto {
     private long roleId; //역할 아이디
     private String createdAt; //생성일
     private String updatedAt; //수정일
-    private boolean isDeleted; //삭제여부
 }
