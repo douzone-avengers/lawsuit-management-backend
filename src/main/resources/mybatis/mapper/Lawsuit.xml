@@ -12,7 +12,9 @@
         where map.client_id = #{clientId}
           and l.is_deleted = false
         order by l.created_at desc
-        limit #{limit} offset #{offset}
+        <if test="limit != 0 or offset != 0">
+            limit #{limit} offset #{offset}
+        </if>
     </select>
 
     <select id="selectLawsuitById" parameterType="java.lang.Long">

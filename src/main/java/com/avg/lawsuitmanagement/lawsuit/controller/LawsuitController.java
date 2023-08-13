@@ -48,12 +48,6 @@ public class LawsuitController {
         return ResponseEntity.ok(lawsuitService.selectLawsuitList());
     }
 
-    // 의뢰인에 대한 사건 조회
-    @GetMapping("/{clientId}")
-    public ResponseEntity<List<LawsuitDto>> selectLawsuitByClientId(@PathVariable("clientId") Long clientId) {
-        return ResponseEntity.ok(lawsuitService.selectLawsuitByClientId(clientId));
-    }
-
     // 사건 수정
     @PutMapping("/{lawsuitId}")
     public ResponseEntity<Void> updateLawsuitInfo(@PathVariable("lawsuitId") Long lawsuitId, @RequestBody @Valid UpdateLawsuitInfoForm form) {

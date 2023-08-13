@@ -46,7 +46,7 @@
         where is_deleted = false;
     </select>
 
-    <select id="getLawsuitCountByClientId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    <select id="getLawsuitCountByClientId" parameterType="java.lang.Long">
         select count(*)
         from lawsuit l
                  join lawsuit_client_map map on l.id = map.lawsuit_id

@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GetClientLawsuitForm {
-    private int curPage;
-    private int itemsPerPage;
+    private Integer curPage;
+    private Integer rowsPerPage;
 }
