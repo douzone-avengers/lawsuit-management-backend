@@ -8,4 +8,5 @@ import lombok.Setter;
 public class GetClientLawsuitForm {
     private Integer curPage;
     private Integer rowsPerPage;
+    private String searchWord;
 }

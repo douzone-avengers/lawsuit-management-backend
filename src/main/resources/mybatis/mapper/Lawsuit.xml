@@ -11,6 +11,12 @@
                  join lawsuit_client_map map on l.id = map.lawsuit_id
         where map.client_id = #{clientId}
           and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+                name like concat('%', #{searchWord}, '%') or
+                lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
         order by l.created_at desc
         <if test="limit != 0 or offset != 0">
             limit #{limit} offset #{offset}

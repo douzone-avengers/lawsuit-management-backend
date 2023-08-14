@@ -46,12 +46,18 @@
         where is_deleted = false;
     </select>
 
-    <select id="getLawsuitCountByClientId" parameterType="java.lang.Long">
+    <select id="selectClientLawsuitCountBySearchWord" parameterType="SelectClientLawsuitListParam">
         select count(*)
         from lawsuit l
-                 join lawsuit_client_map map on l.id = map.lawsuit_id
+        join lawsuit_client_map map on l.id = map.lawsuit_id
         where map.client_id = #{clientId}
-          and l.is_deleted = false
+        and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
     </select>
 
     <select id="selectClientListById" parameterType="java.util.List">

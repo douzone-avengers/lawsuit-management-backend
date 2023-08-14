@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.client.repository;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
+import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdParam;
 import java.util.List;
@@ -17,6 +18,6 @@ public interface ClientMapperRepository {
     void updateClientInfo(UpdateClientInfoParam param);
     void deleteClientInfo(long clientId);
     List<ClientDto> selectClientList();
-    int getLawsuitCountByClientId(long clientId);
+    int selectClientLawsuitCountBySearchWord(SelectClientLawsuitListParam param);
     List<ClientDto> selectClientListById(List<Long> clientIdList);
 }

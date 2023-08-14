@@ -47,10 +47,9 @@ public class LawsuitService {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
         }
 
-        int count = clientMapperRepository.getLawsuitCountByClientId(clientId);
 
         PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage());
-        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto);
+        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto, form.getSearchWord());
 
         if (form.getCurPage() == null || form.getRowsPerPage() == null) {
             param.setOffset(0);
@@ -58,6 +57,7 @@ public class LawsuitService {
         }
         // 한 페이지에 나타나는 사건 리스트 목록
         List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectClientLawsuitList(param);
+        int count = clientMapperRepository.selectClientLawsuitCountBySearchWord(param);
 
         return ClientLawsuitDto.builder()
                 .lawsuitList(lawsuitList)
