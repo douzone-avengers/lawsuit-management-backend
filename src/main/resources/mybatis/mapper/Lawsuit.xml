@@ -11,8 +11,16 @@
                  join lawsuit_client_map map on l.id = map.lawsuit_id
         where map.client_id = #{clientId}
           and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+                name like concat('%', #{searchWord}, '%') or
+                lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
         order by l.created_at desc
-        limit #{limit} offset #{offset}
+        <if test="limit != 0 or offset != 0">
+            limit #{limit} offset #{offset}
+        </if>
     </select>
 
     <select id="selectLawsuitById" parameterType="java.lang.Long">
@@ -28,13 +36,13 @@
 
     <!-- 추가한 데이터의 id 값을 가져옴 -->
     <select id="getLastInsertedLawsuitId" resultType="java.lang.Long">
-        select LAST_INSERT_ID();
+        SELECT LAST_INSERT_ID();
     </select>
 
     <!-- lawsuit_client_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitClientMap" parameterType="InsertLawsuitClientMemberIdParam">
-        insert into lawsuit_client_map (lawsuit_id, client_id)
-        values
+        INSERT INTO lawsuit_client_map (lawsuit_id, client_id)
+        VALUES
         <foreach item="clientId" collection="clientId" separator=",">
             (#{lawsuitId}, #{clientId})
         </foreach>
@@ -42,8 +50,8 @@
 
     <!-- lawsuit_member_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitMemberMap" parameterType="InsertLawsuitClientMemberIdParam">
-        insert into lawsuit_member_map (lawsuit_id, member_id)
-        values
+        INSERT INTO lawsuit_member_map (lawsuit_id, member_id)
+        VALUES
         <foreach item="memberId" collection="memberId" separator=",">
             (#{lawsuitId}, #{memberId})
         </foreach>
@@ -63,6 +71,13 @@
             result = #{result}, judgement_date = #{judgement_date}
         where id = #{lawsuitId};
     </update>
+
+    <select id="selectClientByLawsuitId" parameterType="java.lang.Long">
+        select client_id
+        from lawsuit_client_map
+        where lawsuit_id = #{lawsuitId};
+
+    </select>
 
     <select id="selectMemberByLawsuitId" parameterType="java.lang.Long">
         select member_id
