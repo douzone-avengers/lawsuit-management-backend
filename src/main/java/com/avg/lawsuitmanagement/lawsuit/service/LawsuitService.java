@@ -14,7 +14,6 @@ import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitList
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
-import com.avg.lawsuitmanagement.common.util.dto.PageRangeDto;
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
@@ -48,18 +47,22 @@ public class LawsuitService {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
         }
 
-        long total = clientMapperRepository.getLawsuitCountByClientId(clientId);
-        System.out.println("total = " + total);
 
-        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getItemsPerPage());
-        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto);
+        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage());
+        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto, form.getSearchWord());
+
+        if (form.getCurPage() == null || form.getRowsPerPage() == null) {
+            param.setOffset(0);
+            param.setLimit(0);
+        }
         // 한 페이지에 나타나는 사건 리스트 목록
         List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectClientLawsuitList(param);
+        int count = clientMapperRepository.selectClientLawsuitCountBySearchWord(param);
 
-        // startPage, endPage 저장
-        PageRangeDto pageRangeDto = PagingUtil.calculatePageRange(form.getCurPage(), total);
-
-        return ClientLawsuitDto.of(lawsuitList, pageRangeDto);
+        return ClientLawsuitDto.builder()
+                .lawsuitList(lawsuitList)
+                .count(count)
+                .build();
     }
 
     @Transactional
@@ -149,16 +152,5 @@ public class LawsuitService {
         lawsuitMapperRepository.deleteLawsuitInfo(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
-    }
-
-    // 해당 의뢰인에 대한 사건 조회
-    public List<LawsuitDto> selectLawsuitByClientId(long clientId) {
-        ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
-
-        if (clientDto == null) {
-            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
-        }
-
-        return lawsuitMapperRepository.selectLawsuitByClientId(clientId);
     }
 }
