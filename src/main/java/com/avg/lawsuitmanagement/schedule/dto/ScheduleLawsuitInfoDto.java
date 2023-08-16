@@ -19,6 +19,8 @@ public class ScheduleLawsuitInfoDto {
     private String num;
     private String name;
     private String type;
+    private String courtName;
+    private String status;
     private Long commissionFee;
     private Long contingentFee;
 

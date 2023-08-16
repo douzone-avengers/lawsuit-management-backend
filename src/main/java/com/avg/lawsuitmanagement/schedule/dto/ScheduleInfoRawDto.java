@@ -20,6 +20,8 @@ public class ScheduleInfoRawDto {
     private String lawsuitNum;
     private String lawsuitName;
     private String lawsuitType;
+    private String lawsuitStatus;
+    private String courtName;
     private Long lawsuitCommissionFee;
     private Long lawsuitContingentFee;
     private Long memberId;

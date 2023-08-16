@@ -85,6 +85,8 @@ public class ScheduleService {
                     .num(item.getLawsuitNum())
                     .name(item.getLawsuitName())
                     .type(item.getLawsuitType())
+                    .courtName(item.getCourtName())
+                    .status(item.getLawsuitStatus())
                     .commissionFee(item.getLawsuitCommissionFee())
                     .contingentFee(item.getLawsuitContingentFee())
                     .build())
