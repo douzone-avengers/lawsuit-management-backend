@@ -6,9 +6,9 @@
 <mapper namespace="com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository" >
 
     <select id="selectAdviceById" parameterType="java.lang.Long">
-    select *
-    from advice
-    where id = #{adviceId} and is_deleted=false;
+        select *
+        from advice
+        where id = #{adviceId} and is_deleted=false;
     </select>
 
 
@@ -22,7 +22,7 @@
         SELECT LAST_INSERT_ID();
     </select>
 
-    <insert id="insertAdviceClientMap" parameterType="InsertAdviceClientMemberIdParam">
+    <insert id="insertAdviceClientMap" parameterType="InsertAdviceClientIdParam">
     INSERT INTO advice_client_map (advice_id, client_id)
     VALUES
         <foreach item="clientId" collection="clientId" separator=",">
@@ -30,7 +30,7 @@
         </foreach>
     </insert>
 
-    <insert id="insertAdviceMemberMap" parameterType="InsertAdviceClientMemberIdParam">
+    <insert id="insertAdviceMemberMap" parameterType="InsertAdviceMemberIdParam">
     INSERT INTO advice_member_map (advice_id, member_id)
     VALUES
         <foreach item="memberId" collection="memberId"  separator=",">

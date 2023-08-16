@@ -9,18 +9,14 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class InsertAdviceClientMemberIdParam {
-
-
+public class InsertAdviceClientIdParam {
     private Long adviceId;
     private List<Long> clientId;
-    private List<Long> memberId;
 
-    public static InsertAdviceClientMemberIdParam of(long adviceId, List<Long> clientIdList, List<Long> memberIdList){
-        return InsertAdviceClientMemberIdParam.builder()
+    public static InsertAdviceClientIdParam of(long adviceId, List<Long> clientIdList){
+        return InsertAdviceClientIdParam.builder()
                 .adviceId(adviceId)
                 .clientId(clientIdList)
-                .memberId(memberIdList)
                 .build();
     }
 }

@@ -4,9 +4,7 @@ import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
-import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceClientMemberIdParam;
-import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceParam;
-import com.avg.lawsuitmanagement.advice.repository.param.UpdateAdviceInfoParam;
+import com.avg.lawsuitmanagement.advice.repository.param.*;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
@@ -14,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.*;
@@ -37,16 +35,16 @@ public class AdviceService {
         return adviceDto;
     }
 
-    public void insertAdvice(long lawsuitId, InsertAdviceForm form) {
+    public void insertAdvice(InsertAdviceForm form) {
         // 소송 정보를 확인
-        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(form.getLawsuitId());
         if (lawsuitDto == null) {
             throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
         }
 
         // 클라이언트와 멤버 ID 검색
-        List<Long> clientIdList = lawsuitMapperRepository.selectClientByLawsuitId(lawsuitId);
-        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
+        List<Long> clientIdList = lawsuitMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
+        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(form.getLawsuitId());
 
         // Advice 정보를 삽입
         adviceMapperRepository.insertAdvice(InsertAdviceParam.of(form));
@@ -56,27 +54,31 @@ public class AdviceService {
 
         // advice_client_map 테이블에 데이터 삽입
         List<Long> formClientIdList = form.getClientIdList();
+        List<Long> insertClientIdList = new ArrayList<>();
 
         for(Long clientId : formClientIdList){
             if(!clientIdList.contains(clientId)){
                 throw new CustomRuntimeException(CLIENT_NOT_FOUND_IN_LAWSUIT);
             }
-            InsertAdviceClientMemberIdParam clientParam = InsertAdviceClientMemberIdParam.of(adviceId, Collections.singletonList(clientId), null);
-            adviceMapperRepository.insertAdviceClientMap(clientParam);
+            insertClientIdList.add(clientId);
         }
+        InsertAdviceClientIdParam clientIdParam = InsertAdviceClientIdParam.of(adviceId, insertClientIdList);
+        adviceMapperRepository.insertAdviceClientMap(clientIdParam);
 
 
 
         // advice_member_map 테이블에 데이터 삽입
        List<Long> formMemberIdList = form.getMemberIdList();
-
+        List<Long> insertMemberIdList = new ArrayList<>();
         for(Long memberId : formMemberIdList){
             if(!memberIdList.contains(memberId)){
                 throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
             }
-            InsertAdviceClientMemberIdParam memberParam = InsertAdviceClientMemberIdParam.of(adviceId, null, Collections.singletonList(memberId));
-            adviceMapperRepository.insertAdviceMemberMap(memberParam);
+            insertMemberIdList.add(memberId);
         }
+        InsertAdviceMemberIdParam memberIdParam = InsertAdviceMemberIdParam.of(adviceId, insertMemberIdList);
+
+        adviceMapperRepository.insertAdviceMemberMap(memberIdParam);
     }
 
 

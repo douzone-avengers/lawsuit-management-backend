@@ -26,7 +26,7 @@ public class AdviceController {
     // 상담 등록
     @PostMapping()
     public ResponseEntity<Void> insertAdvice(@RequestBody @Valid InsertAdviceForm form){
-        adviceService.insertAdvice(form.getLawsuitId(), form);
+        adviceService.insertAdvice(form);
         return ResponseEntity.ok().build();
     }
 
