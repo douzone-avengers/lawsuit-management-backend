@@ -4,6 +4,7 @@ import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/lawsuits")
 public class LawsuitController {
+
     private final LawsuitService lawsuitService;
 
     // 의뢰인 사건 리스트, 페이징 정보
@@ -50,7 +52,8 @@ public class LawsuitController {
 
     // 사건 수정
     @PutMapping("/{lawsuitId}")
-    public ResponseEntity<Void> updateLawsuitInfo(@PathVariable("lawsuitId") Long lawsuitId, @RequestBody @Valid UpdateLawsuitInfoForm form) {
+    public ResponseEntity<Void> updateLawsuitInfo(@PathVariable("lawsuitId") Long lawsuitId,
+        @RequestBody @Valid UpdateLawsuitInfoForm form) {
         lawsuitService.updateLawsuitInfo(lawsuitId, form);
         return ResponseEntity.ok().build();
     }
@@ -60,6 +63,12 @@ public class LawsuitController {
     public ResponseEntity<Void> deleteLawsuitInfo(@PathVariable("lawsuitId") Long lawsuitId) {
         lawsuitService.deleteLawsuitInfo(lawsuitId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{lawsuitId}/basic")
+    public ResponseEntity<?> getBasicLawsuitInfo(@PathVariable Long lawsuitId) {
+        LawsuitBasicDto result = lawsuitService.getBasicLawsuitInfo(lawsuitId);
+        return ResponseEntity.ok(result);
     }
 
 }
