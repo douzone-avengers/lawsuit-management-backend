@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository" >
+
+    <select id="selectAdviceById" parameterType="java.lang.Long">
+        select *
+        from advice
+        where id = #{adviceId} and is_deleted=false;
+    </select>
+
+
+    <insert id="insertAdvice" parameterType="InsertAdviceParam">
+        insert into advice (title, contents, adviced_at, lawsuit_id)
+        values
+            (#{title}, #{contents}, #{advicedAt}, #{lawsuitId});
+    </insert>
+
+    <select id="getLastInsertedAdviceId" resultType="java.lang.Long">
+        SELECT LAST_INSERT_ID();
+    </select>
+
+    <insert id="insertAdviceClientMap" parameterType="InsertAdviceClientIdParam">
+    INSERT INTO advice_client_map (advice_id, client_id)
+    VALUES
+        <foreach item="clientId" collection="clientId" separator=",">
+            (#{adviceId}, #{clientId})
+        </foreach>
+    </insert>
+
+    <insert id="insertAdviceMemberMap" parameterType="InsertAdviceMemberIdParam">
+    INSERT INTO advice_member_map (advice_id, member_id)
+    VALUES
+        <foreach item="memberId" collection="memberId"  separator=",">
+            (#{adviceId}, #{memberId})
+        </foreach>
+    </insert>
+
+    <update id="updateAdviceInfo" parameterType="UpdateAdviceInfoParam">
+        update advice
+        set title = #{title},
+        contents = #{contents},
+        adviced_at = #{advicedAt},
+        member_id = (
+        <foreach collection="memberId" item="memberId" separator=",">
+            #{memberId}
+        </foreach>
+        ),
+        client_id = (
+        <foreach collection="clientId" item="clientId" separator=",">
+            #{clientId}
+        </foreach>
+        )
+        where id = #{adviceId}
+    </update>
+
+    <update id="deleteAdviceInfo" parameterType="java.lang.Long">
+        update advice
+        set is_deleted = true
+        where id = #{adviceId};
+    </update>
+
+</mapper>
