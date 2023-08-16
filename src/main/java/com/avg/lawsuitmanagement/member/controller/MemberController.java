@@ -6,12 +6,14 @@ import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.SearchEmployeeListForm;
 import com.avg.lawsuitmanagement.member.dto.GetMemberListDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,12 +53,17 @@ public class MemberController {
     @GetMapping("/employees")
     public ResponseEntity<GetMemberListDto> searchEmployee(
         @ModelAttribute SearchEmployeeListForm form) {
-        if(form.getHierarchyId() == null) {
+        if (form.getHierarchyId() == null) {
             form.setHierarchyId(0L);
         }
-        if(form.getRoleId() == null) {
+        if (form.getRoleId() == null) {
             form.setRoleId(0L);
         }
         return ResponseEntity.ok(memberService.searchEmployeeList(form));
+    }
+
+    @GetMapping("/employees/{employeeId}")
+    public ResponseEntity<MemberDtoNonPass> getEmployee(@PathVariable int employeeId) {
+        return ResponseEntity.ok(memberService.getMemberInfoById(employeeId));
     }
 }

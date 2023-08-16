@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_REGISTERED;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_EMAIL_ALREADY_EXIST;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
@@ -100,6 +101,15 @@ public class MemberService {
             .memberDtoNonPassList(list)
             .build();
     }
+
+    public MemberDtoNonPass getMemberInfoById(int id) {
+        MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
+        if(dto == null) {
+            throw new CustomRuntimeException(MEMBER_NOT_FOUND);
+        }
+        return dto;
+    }
+
 
     private long insertMember(InsertMemberParam param) {
         //이메일 중복체크
