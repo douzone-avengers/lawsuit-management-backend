@@ -80,7 +80,9 @@
             </otherwise>
         </choose>
 
-        limit #{offset}, #{limit}
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
     </select>
 
     <select id="selectEmployeeListBySearchConditionCount" parameterType="searchEmployeeListParam"

@@ -82,8 +82,14 @@ public class MemberService {
     @Transactional
     public GetMemberListDto searchEmployeeList(SearchEmployeeListForm form) {
 
-        SearchEmployeeListParam param = SearchEmployeeListParam.of(form,
-            PagingUtil.calculatePaging(form.getPage(), form.getRowsPerPage()));
+        SearchEmployeeListParam param;
+
+        if (form.getPage() == null || form.getRowsPerPage() == null) {
+            param = SearchEmployeeListParam.of(form);
+        } else {
+            param = SearchEmployeeListParam.of(form,
+                PagingUtil.calculatePaging(form.getPage(), form.getRowsPerPage()));
+        }
 
         List<MemberDtoNonPass> list =
             memberMapperRepository.selectEmployeeListBySearchCondition(param);
