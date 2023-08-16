@@ -1,5 +1,7 @@
 package com.avg.lawsuitmanagement.reception.service;
 
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.reception.controller.form.ReceptionCreateForm;
 import com.avg.lawsuitmanagement.reception.controller.form.ReceptionEditForm;
 import com.avg.lawsuitmanagement.reception.controller.form.ReceptionSearchForm;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class ReceptionService {
 
     private final ReceptionMapperRepository receptionRepository;
+    private final MemberService memberService;
 
     public List<ReceptionDto> search(ReceptionSearchForm form) {
         ReceptionSelectParam param = form.toParam();
@@ -31,7 +34,8 @@ public class ReceptionService {
     }
 
     public ReceptionDto create(ReceptionCreateForm form) {
-        ReceptionInsertParam param = form.toParam();
+        MemberDto member = memberService.getLoginMemberInfo();
+        ReceptionInsertParam param = form.toParam(member.getId());
         receptionRepository.insert(param);
         Long id = param.getId();
         ReceptionDto result = receptionRepository.selectById(id);
