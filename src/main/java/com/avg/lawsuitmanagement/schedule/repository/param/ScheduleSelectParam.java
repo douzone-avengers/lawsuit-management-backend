@@ -16,6 +16,7 @@ import lombok.ToString;
 @ToString
 public class ScheduleSelectParam {
 
+    private Long memberId;
     private LocalDate startDeadline;
     private LocalDate endDeadline;
 

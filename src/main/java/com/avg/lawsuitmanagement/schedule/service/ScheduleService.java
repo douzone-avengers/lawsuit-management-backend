@@ -1,5 +1,7 @@
 package com.avg.lawsuitmanagement.schedule.service;
 
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.schedule.controller.form.ScheduleSearchForm;
 import com.avg.lawsuitmanagement.schedule.dto.ScheduleClientInfoDto;
 import com.avg.lawsuitmanagement.schedule.dto.ScheduleDto;
@@ -25,9 +27,11 @@ import org.springframework.stereotype.Service;
 public class ScheduleService {
 
     private final ScheduleMapperRepository scheduleRepository;
+    private final MemberService memberService;
 
     public List<ScheduleDto> search(ScheduleSearchForm form) {
-        ScheduleSelectParam param = form.toParam();
+        MemberDto member = memberService.getLoginMemberInfo();
+        ScheduleSelectParam param = form.toParam(member.getId());
 
         List<ScheduleRawDto> rawDto = scheduleRepository.select(param);
 

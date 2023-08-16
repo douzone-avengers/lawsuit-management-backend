@@ -18,6 +18,7 @@
                  JOIN lawsuit_member_map map ON l.id = map.lawsuit_id
                  JOIN member m ON m.id = map.member_id
         WHERE r.is_deleted = false
+          AND r.member_id = #{memberId}
           AND deadline >= #{startDeadline}
           AND #{endDeadline} >= deadline
     </select>
