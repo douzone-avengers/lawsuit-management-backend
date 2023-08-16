@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.controller;
 
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.MemberUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.SearchEmployeeListForm;
 import com.avg.lawsuitmanagement.member.dto.GetMemberListDto;
@@ -65,5 +66,12 @@ public class MemberController {
     @GetMapping("/employees/{employeeId}")
     public ResponseEntity<MemberDtoNonPass> getEmployee(@PathVariable int employeeId) {
         return ResponseEntity.ok(memberService.getMemberInfoById(employeeId));
+    }
+
+    @PutMapping("/employees/{employeeId}")
+    public ResponseEntity<Void> updateEmployee(@PathVariable int employeeId, @RequestBody @Valid
+        MemberUpdateForm form) {
+        memberService.updateMemberInfo(employeeId, form);
+        return ResponseEntity.ok().build();
     }
 }

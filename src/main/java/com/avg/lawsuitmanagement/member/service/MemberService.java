@@ -12,6 +12,7 @@ import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.MemberUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.SearchEmployeeListForm;
 import com.avg.lawsuitmanagement.member.dto.GetMemberListDto;
@@ -48,7 +49,6 @@ public class MemberService {
 
     public void updatePrivateInfo(PrivateUpdateForm form) {
         MemberDto me = getLoginMemberInfo();
-
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, me.getId()));
     }
 
@@ -110,6 +110,14 @@ public class MemberService {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);
         }
         return dto;
+    }
+
+    public void updateMemberInfo(int id, MemberUpdateForm form) {
+        MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
+        if(dto == null) {
+            throw new CustomRuntimeException(MEMBER_NOT_FOUND);
+        }
+        memberMapperRepository.updateMember(UpdateMemberParam.of(form, id));
     }
 
 
