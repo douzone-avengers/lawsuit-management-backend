@@ -27,7 +27,7 @@ public class LawsuitController {
     private final LawsuitService lawsuitService;
 
     // 의뢰인 사건 리스트, 페이징 정보
-    @GetMapping("/clients/{clientId}")  // url 수정 필요
+    @GetMapping("/clients/{clientId}")
     public ResponseEntity<ClientLawsuitDto> selectClientLawsuitList(
         @PathVariable("clientId") Long clientId,
         @ModelAttribute GetClientLawsuitForm form) {
@@ -46,12 +46,6 @@ public class LawsuitController {
     @GetMapping("/employees")
     public ResponseEntity<List<LawsuitDto>> selectLawsuitList() {
         return ResponseEntity.ok(lawsuitService.selectLawsuitList());
-    }
-
-    // 의뢰인에 대한 사건 조회
-    @GetMapping("/{clientId}")
-    public ResponseEntity<List<LawsuitDto>> selectLawsuitByClientId(@PathVariable("clientId") Long clientId) {
-        return ResponseEntity.ok(lawsuitService.selectLawsuitByClientId(clientId));
     }
 
     // 사건 수정
