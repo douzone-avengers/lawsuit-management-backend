@@ -1,6 +1,5 @@
-package com.avg.lawsuitmanagement.schedule.dto;
+package com.avg.lawsuitmanagement.lawsuit.dto;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,25 +13,21 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ScheduleInfoRawDto {
+public class LawsuitBasicRawDto {
 
     private Long lawsuitId;
     private String lawsuitNum;
     private String lawsuitName;
     private String lawsuitType;
-    private String lawsuitStatus;
-    private String courtName;
     private Long lawsuitCommissionFee;
     private Long lawsuitContingentFee;
-    private Long memberId;
-    private String memberName;
+    private String lawsuitStatus;
+    private String courtName;
+    private Long employeeId;
+    private String employeeName;
+    private String employeeEmail;
     private Long clientId;
     private String clientName;
-    private Long receptionId;
-    private Boolean receptionStatus;
-    private String receptionCategory;
-    private String receptionContents;
-    private LocalDate receptionReceivedAt;
-    private LocalDate receptionDeadline;
+    private String clientEmail;
 
 }
