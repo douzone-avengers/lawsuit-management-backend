@@ -13,22 +13,41 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface LawsuitMapperRepository {
+
     List<LawsuitDto> selectClientLawsuitList(SelectClientLawsuitListParam param);
+
     LawsuitDto selectLawsuitById(long lawsuitId);
+
     void insertLawsuit(InsertLawsuitParam param);
+
     Long getLastInsertedLawsuitId();
+
     void insertLawsuitClientMap(InsertLawsuitClientMemberIdParam param);
+
+    List<Long> selectClientByLawsuitId(long lawsuitId);
+
     void insertLawsuitMemberMap(InsertLawsuitClientMemberIdParam param);
+
     List<LawsuitDto> selectLawsuitList();
+
     void updateLawsuitInfo(UpdateLawsuitInfoParam param);
+
     List<Long> selectMemberByLawsuitId(long lawsuitId);
+
     void deleteLawsuitInfo(long lawsuitId);
+
     void deleteLawsuitClientMap(long lawsuitId);
+
     void deleteLawsuitMemberMap(long lawsuitId);
+
     void deleteLawsuitClientMapByClientId(long clientId);
+
     List<ClientLawsuitCountDto> selectLawsuitCountByClientId(long clientId);
+
     List<LawsuitDto> selectLawsuitByClientId(long clientId);
+
     List<LawsuitBasicRawDto> selectBasicLawInfo(Long lawsuitId);
+
     void updateLawsuitStatus(LawsuitStatusUpdateParam param);
 
 }
