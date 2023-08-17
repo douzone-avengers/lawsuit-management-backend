@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.common.config;
 
 
+import com.avg.lawsuitmanagement.common.custom.CustomAccessDeniedHandler;
 import com.avg.lawsuitmanagement.common.custom.CustomAuthenticationEntryPoint;
 import com.avg.lawsuitmanagement.token.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,6 +61,8 @@ public class SecurityConfig {
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(customAuthenticationEntryPoint)
+            //인가 예외처리
+            .accessDeniedHandler(customAccessDeniedHandler)
 
             .and()
             .addFilterBefore(new JwtFilter(tokenProvider),
