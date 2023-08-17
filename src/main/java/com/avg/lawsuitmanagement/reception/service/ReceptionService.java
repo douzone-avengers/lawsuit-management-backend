@@ -1,5 +1,7 @@
 package com.avg.lawsuitmanagement.reception.service;
 
+import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
+import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.reception.controller.form.ReceptionCreateForm;
@@ -13,6 +15,7 @@ import com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class ReceptionService {
 
     private final ReceptionMapperRepository receptionRepository;
     private final MemberService memberService;
+    private final LawsuitService lawsuitService;
 
     public List<ReceptionDto> search(ReceptionSearchForm form) {
         ReceptionSelectParam param = form.toParam();
@@ -33,12 +37,14 @@ public class ReceptionService {
         return size;
     }
 
+    @Transactional
     public ReceptionDto create(ReceptionCreateForm form) {
         MemberDto member = memberService.getLoginMemberInfo();
         ReceptionInsertParam param = form.toParam(member.getId());
         receptionRepository.insert(param);
         Long id = param.getId();
         ReceptionDto result = receptionRepository.selectById(id);
+        lawsuitService.updateStatus(form.getLawsuitId(), LawsuitStatus.PROCEEDING);
         return result;
     }
 
