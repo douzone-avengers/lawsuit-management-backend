@@ -25,6 +25,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
@@ -181,6 +182,7 @@ public class LawsuitService {
             .lawsuitCommissionFee(lawsuitItem.getLawsuitCommissionFee())
             .lawsuitContingentFee(lawsuitItem.getLawsuitContingentFee())
             .lawsuitStatus(lawsuitItem.getLawsuitStatus())
+            .courtName(lawsuitItem.getCourtName())
             .build();
 
         Map<Long, BasicUserDto> clientMap = new HashMap<>();
@@ -212,4 +214,10 @@ public class LawsuitService {
         return result;
     }
 
+    public void updateStatus(Long id, LawsuitStatus status) {
+        lawsuitMapperRepository.updateLawsuitStatus(LawsuitStatusUpdateParam.builder()
+            .id(id)
+            .status(status.getStatusKr())
+            .build());
+    }
 }

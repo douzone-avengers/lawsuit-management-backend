@@ -6,6 +6,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -44,5 +45,7 @@ public interface LawsuitMapperRepository {
     List<LawsuitDto> selectLawsuitByClientId(long clientId);
 
     List<LawsuitBasicRawDto> selectBasicLawInfo(Long lawsuitId);
+
+    void updateLawsuitStatus(LawsuitStatusUpdateParam param);
 
 }
