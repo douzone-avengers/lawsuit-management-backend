@@ -19,6 +19,7 @@ public class ReceptionDto {
 
     private Long id;
     private Long lawsuitId;
+    private Long memberId;
     private Boolean status;
     private String category;
     private String contents;

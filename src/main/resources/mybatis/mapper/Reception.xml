@@ -9,6 +9,7 @@
       resultType="com.avg.lawsuitmanagement.reception.dto.ReceptionDto">
         SELECT id,
         lawsuit_id,
+        member_id,
         status,
         category,
         contents,
@@ -75,6 +76,7 @@
       resultType="com.avg.lawsuitmanagement.reception.dto.ReceptionDto">
         SELECT id,
                lawsuit_id,
+               member_id,
                status,
                category,
                contents,
@@ -92,8 +94,10 @@
       useGeneratedKeys="true"
       keyProperty="id"
     >
-        INSERT INTO reception (lawsuit_id, status, category, contents, received_at, deadline)
-        VALUES (#{lawsuitId}, #{status}, #{category}, #{contents}, #{receivedAt}, #{deadline})
+        INSERT INTO reception (lawsuit_id, member_id, status, category, contents, received_at,
+                               deadline)
+        VALUES (#{lawsuitId}, #{memberId}, #{status}, #{category}, #{contents}, #{receivedAt},
+                #{deadline})
     </insert>
     <update id="update"
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam">
