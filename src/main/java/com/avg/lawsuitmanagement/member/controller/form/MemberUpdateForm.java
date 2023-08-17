@@ -12,8 +12,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class MemberUpdateForm {
-    @NotNull
-    private long id;
     @Email
     private String email;
     @Size(min=2, max=10)

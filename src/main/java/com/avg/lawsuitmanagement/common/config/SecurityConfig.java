@@ -46,6 +46,7 @@ public class SecurityConfig {
             .antMatchers(HttpMethod.POST, "/promotions/clients").hasRole("EMPLOYEE")
             .antMatchers(HttpMethod.GET, "/members/employees").hasRole("EMPLOYEE")
             .antMatchers(HttpMethod.POST, "/promotions/employees").hasRole("ADMIN")
+            .antMatchers(HttpMethod.PUT, "/employees/**").hasRole("ADMIN")
 
             .anyRequest().authenticated() //나머지 요청은 인증 필요
 
