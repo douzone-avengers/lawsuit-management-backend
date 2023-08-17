@@ -217,7 +217,7 @@ public class LawsuitService {
     public void updateStatus(Long id, LawsuitStatus status) {
         lawsuitMapperRepository.updateLawsuitStatus(LawsuitStatusUpdateParam.builder()
             .id(id)
-            .status(status.getStatusKr())
+            .status(status.toString())
             .build());
     }
 }
