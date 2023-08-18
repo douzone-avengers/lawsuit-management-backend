@@ -14,4 +14,5 @@ public interface ExpenseMapperRepository {
     void insertExpense(ExpenseInsertParam param);
     void updateExpense(ExpenseUpdateParam param);
     ExpenseDto selectExpenseById(Long expenseId);
+    void deleteExpense(Long expenseId);
 }

@@ -90,4 +90,11 @@
         where id = #{expenseId}
           and is_deleted = false
     </select>
+
+    <update id="deleteExpense" parameterType="java.lang.Long">
+        update expense
+        set is_deleted = true
+        where id = #{expenseId}
+        and is_deleted = false
+    </update>
 </mapper>

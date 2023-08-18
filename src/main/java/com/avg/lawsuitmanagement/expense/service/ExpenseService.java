@@ -37,4 +37,8 @@ public class ExpenseService {
         expenseRepository.updateExpense(ExpenseUpdateParam.of(expenseId, form));
         return expenseRepository.selectExpenseById(expenseId);
     }
+
+    public void deleteExpense(Long expenseId) {
+        expenseRepository.deleteExpense(expenseId);
+    }
 }
