@@ -2,10 +2,12 @@ package com.avg.lawsuitmanagement.expense.service;
 
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseInsertForm;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseSearchForm;
+import com.avg.lawsuitmanagement.expense.controller.form.ExpenseUpdateForm;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseDto;
 import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseInsertParam;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseUpdateParam;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,5 +31,10 @@ public class ExpenseService {
     public void insertExpense(ExpenseInsertForm form) {
         ExpenseInsertParam param = form.toParam();
         expenseRepository.insertExpense(param);
+    }
+
+    public ExpenseDto updateExpense(Long expenseId, ExpenseUpdateForm form) {
+        expenseRepository.updateExpense(ExpenseUpdateParam.of(expenseId, form));
+        return expenseRepository.selectExpenseById(expenseId);
     }
 }

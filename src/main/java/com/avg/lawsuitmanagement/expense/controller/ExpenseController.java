@@ -2,18 +2,20 @@ package com.avg.lawsuitmanagement.expense.controller;
 
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseInsertForm;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseSearchForm;
+import com.avg.lawsuitmanagement.expense.controller.form.ExpenseUpdateForm;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseDto;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseSearchDto;
 import com.avg.lawsuitmanagement.expense.service.ExpenseService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,6 +75,12 @@ public class ExpenseController {
     public ResponseEntity<Void> insertExpense(@Validated @RequestBody ExpenseInsertForm form) {
         expenseService.insertExpense(form);
         return ResponseEntity.ok().build();
+    }
+
+    // 지출 수정
+    @PutMapping("/update/{expenseId}")
+    public ResponseEntity<ExpenseDto> updateExpense(@PathVariable Long expenseId, @Validated @RequestBody ExpenseUpdateForm form) {
+        return ResponseEntity.ok(expenseService.updateExpense(expenseId, form));
     }
 
 }

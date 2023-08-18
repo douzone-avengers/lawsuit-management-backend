@@ -70,4 +70,24 @@
         insert into expense (lawsuit_id, contents, amount, spening_at)
         values (#{lawsuitId}, #{contents}, #{amount}, #{speningAt})
     </insert>
+
+    <update id="updateExpense" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseUpdateParam">
+        update expense
+        set spening_at = #{speningAt}, contents = #{contents}, amount = #{amount}
+        where id = #{expenseId}
+    </update>
+
+    <select id="selectExpenseById" parameterType="java.lang.Long" resultType="com.avg.lawsuitmanagement.expense.dto.ExpenseDto">
+        select id,
+               lawsuit_id,
+               spening_at,
+               contents,
+               amount,
+               created_at,
+               updated_at,
+               is_deleted
+        from expense
+        where id = #{expenseId}
+          and is_deleted = false
+    </select>
 </mapper>
