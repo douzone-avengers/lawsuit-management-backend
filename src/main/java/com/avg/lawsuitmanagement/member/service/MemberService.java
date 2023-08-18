@@ -104,7 +104,7 @@ public class MemberService {
             .build();
     }
 
-    public MemberDtoNonPass getMemberInfoById(int id) {
+    public MemberDtoNonPass getMemberInfoById(long id) {
         MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
         if(dto == null) {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);
@@ -112,7 +112,7 @@ public class MemberService {
         return dto;
     }
 
-    public void updateMemberInfo(int id, MemberUpdateForm form) {
+    public void updateMemberInfo(long id, MemberUpdateForm form) {
         MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
         if(dto == null) {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);

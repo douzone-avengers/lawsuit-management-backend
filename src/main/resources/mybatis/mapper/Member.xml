@@ -85,7 +85,7 @@
         </if>
     </select>
 
-    <select id="selectMemberById" parameterType="java.lang.Integer" resultType="MemberDtoNonPass">
+    <select id="selectMemberById" parameterType="java.lang.Long" resultType="MemberDtoNonPass">
         select id,
                email,
                name,
