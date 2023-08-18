@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.client.repository.param;
+package com.avg.lawsuitmanagement.lawsuit.repository.param;
 
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
 import lombok.Builder;

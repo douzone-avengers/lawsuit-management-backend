@@ -1,7 +1,8 @@
 package com.avg.lawsuitmanagement.lawsuit.repository;
 
-import com.avg.lawsuitmanagement.client.dto.ClientLawsuitCountDto;
-import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
+import com.avg.lawsuitmanagement.client.dto.ClientDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
@@ -44,10 +45,9 @@ public interface LawsuitMapperRepository {
 
     List<ClientLawsuitCountDto> selectLawsuitCountByClientId(long clientId);
 
-    List<LawsuitDto> selectLawsuitByClientId(long clientId);
-
     List<LawsuitBasicRawDto> selectBasicLawInfo(Long lawsuitId);
 
     void updateLawsuitStatus(LawsuitStatusUpdateParam param);
 
+    int selectClientLawsuitCountBySearchWord(SelectClientLawsuitListParam param);
 }

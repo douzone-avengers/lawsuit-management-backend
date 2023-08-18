@@ -1,17 +1,14 @@
 package com.avg.lawsuitmanagement.client.controller;
 
-import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
-import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
