@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.schedule.dto;
+package com.avg.lawsuitmanagement.lawsuit.repository.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,15 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ScheduleLawsuitInfoDto {
+public class LawsuitStatusUpdateParam {
 
     private Long id;
-    private String num;
-    private String name;
-    private String type;
-    private String courtName;
     private String status;
-    private Long commissionFee;
-    private Long contingentFee;
 
 }

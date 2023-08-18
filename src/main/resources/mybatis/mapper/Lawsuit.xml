@@ -5,16 +5,17 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository">
 
-    <select id="selectClientLawsuitList" parameterType="SelectClientLawsuitListParam" resultType="LawsuitDto">
+    <select id="selectClientLawsuitList" parameterType="SelectClientLawsuitListParam"
+      resultType="LawsuitDto">
         select l.*
         from lawsuit l
-                 join lawsuit_client_map map on l.id = map.lawsuit_id
+        join lawsuit_client_map map on l.id = map.lawsuit_id
         where map.client_id = #{clientId}
-          and l.is_deleted = false
+        and l.is_deleted = false
         <if test="searchWord != ''">
             and (
-                name like concat('%', #{searchWord}, '%') or
-                lawsuit_num like concat('%', #{searchWord}, '%')
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
         order by l.created_at desc
@@ -26,23 +27,26 @@
     <select id="selectLawsuitById" parameterType="java.lang.Long">
         select *
         from lawsuit
-        where id = #{lawsuitId} and is_deleted = false;
+        where id = #{lawsuitId}
+          and is_deleted = false;
     </select>
 
     <insert id="insertLawsuit" parameterType="InsertLawsuitParam">
-        insert into lawsuit (lawsuit_type, name, court_id, commission_fee, contingent_fee, lawsuit_status, lawsuit_num, result)
-        values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee}, #{lawsuitStatus}, #{lawsuitNum}, null);
+        insert into lawsuit (lawsuit_type, name, court_id, commission_fee, contingent_fee,
+                             lawsuit_status, lawsuit_num, result)
+        values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee},
+                #{lawsuitStatus}, #{lawsuitNum}, null);
     </insert>
 
     <!-- 추가한 데이터의 id 값을 가져옴 -->
     <select id="getLastInsertedLawsuitId" resultType="java.lang.Long">
-        select LAST_INSERT_ID();
+        SELECT LAST_INSERT_ID();
     </select>
 
     <!-- lawsuit_client_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitClientMap" parameterType="InsertLawsuitClientMemberIdParam">
-        insert into lawsuit_client_map (lawsuit_id, client_id)
-        values
+        INSERT INTO lawsuit_client_map (lawsuit_id, client_id)
+        VALUES
         <foreach item="clientId" collection="clientId" separator=",">
             (#{lawsuitId}, #{clientId})
         </foreach>
@@ -50,8 +54,8 @@
 
     <!-- lawsuit_member_map 테이블에 데이터 추가 -->
     <insert id="insertLawsuitMemberMap" parameterType="InsertLawsuitClientMemberIdParam">
-        insert into lawsuit_member_map (lawsuit_id, member_id)
-        values
+        INSERT INTO lawsuit_member_map (lawsuit_id, member_id)
+        VALUES
         <foreach item="memberId" collection="memberId" separator=",">
             (#{lawsuitId}, #{memberId})
         </foreach>
@@ -65,12 +69,24 @@
 
     <update id="updateLawsuitInfo">
         update lawsuit
-        set lawsuit_type = #{lawsuit_type}, name = #{name}, court_id = #{court_id},
-            commission_fee = #{commission_fee}, contingent_fee = #{contingent_fee},
-            lawsuit_status = #{lawsuit_status}, lawsuit_num = #{lawsuit_num},
-            result = #{result}, judgement_date = #{judgement_date}
+        set lawsuit_type   = #{lawsuit_type},
+            name           = #{name},
+            court_id       = #{court_id},
+            commission_fee = #{commission_fee},
+            contingent_fee = #{contingent_fee},
+            lawsuit_status = #{lawsuit_status},
+            lawsuit_num    = #{lawsuit_num},
+            result         = #{result},
+            judgement_date = #{judgement_date}
         where id = #{lawsuitId};
     </update>
+
+    <select id="selectClientByLawsuitId" parameterType="java.lang.Long">
+        select client_id
+        from lawsuit_client_map
+        where lawsuit_id = #{lawsuitId};
+
+    </select>
 
     <select id="selectMemberByLawsuitId" parameterType="java.lang.Long">
         select member_id
@@ -101,7 +117,8 @@
         select lcm1.lawsuit_id, count(*)
         from lawsuit_client_map lcm1
                  join lawsuit_client_map lcm2 on lcm1.lawsuit_id = lcm2.lawsuit_id
-        where lcm1.is_deleted = false and lcm1.client_id = #{clientId}
+        where lcm1.is_deleted = false
+          and lcm1.client_id = #{clientId}
         group by lcm1.lawsuit_id;
     </select>
 
@@ -116,10 +133,44 @@
     <select id="selectLawsuitByClientId" parameterType="java.lang.Long">
         select *
         from lawsuit
-        where id in (
-            select lawsuit_id
-            from lawsuit_client_map
-            where lawsuit.is_deleted = false and client_id = #{clientId}
-            );
+        where id in (select lawsuit_id
+                     from lawsuit_client_map
+                     where lawsuit.is_deleted = false
+                       and client_id = #{clientId});
     </select>
+
+    <select id="selectBasicLawInfo"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto">
+        SELECT l.id             `lawsuit_id`,
+               l.lawsuit_num    `lawsuit_num`,
+               l.name           `lawsuit_name`,
+               l.lawsuit_type   `lawsuit_type`,
+               l.lawsuit_status `lawsuit_status`,
+               l.commission_fee `lawsuit_commission_fee`,
+               l.contingent_fee `lawsuit_contingent_fee`,
+               co.name_kr       `court_name`,
+               m.id             `employee_id`,
+               m.name           `employee_name`,
+               m.email          `employee_email`,
+               c.id             `client_id`,
+               c.name           `client_name`,
+               c.email          `client_email`
+        FROM lawsuit l
+                 LEFT JOIN court co ON l.court_id = co.id
+                 LEFT JOIN lawsuit_member_map lm ON lm.lawsuit_id = l.id
+                 LEFT JOIN member m ON lm.member_id = m.id
+                 LEFT JOIN lawsuit_client_map lc ON lc.lawsuit_id = l.id
+                 LEFT JOIN client c ON lc.client_id = c.id
+        WHERE l.is_deleted = 0
+          AND l.id = #{lawsuitId};
+    </select>
+
+    <update id="updateLawsuitStatus"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam">
+        UPDATE lawsuit l
+        SET l.lawsuit_status = #{status}
+        WHERE l.is_deleted = 0
+          AND l.id = #{id}
+    </update>
 </mapper>

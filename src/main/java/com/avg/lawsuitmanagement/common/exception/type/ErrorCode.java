@@ -16,6 +16,7 @@ public enum ErrorCode {
 
     //계정관련
     BAD_CREDENTIAL(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     MEMBER_EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 
     //PROMOTION
@@ -32,6 +33,7 @@ public enum ErrorCode {
     //의뢰인 관련 예외
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
     CLIENT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 의뢰인입니다."),
+    CLIENT_NOT_FOUND_IN_LAWSUIT(HttpStatus.NOT_FOUND, "해당 사건에 존재하지 않는 의뢰인 입니다."),
 
     //사원 관련 예외
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사원입니다."),
@@ -40,6 +42,12 @@ public enum ErrorCode {
     //사건 관련 예외
     LAWSUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사건입니다."),
     LAWSUIT_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상태입니다."),
+
+
+    //상담 관련 예외
+    ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상담입니다."),
+
+
 
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),

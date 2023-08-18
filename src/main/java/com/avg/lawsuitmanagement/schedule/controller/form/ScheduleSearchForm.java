@@ -20,8 +20,9 @@ public class ScheduleSearchForm {
     private LocalDate startDeadline;
     private LocalDate endDeadline;
 
-    public ScheduleSelectParam toParam() {
+    public ScheduleSelectParam toParam(Long memberId) {
         return ScheduleSelectParam.builder()
+            .memberId(memberId)
             .startDeadline(startDeadline)
             .endDeadline(endDeadline)
             .build();

@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.member.repository.param;
 
+import com.avg.lawsuitmanagement.member.controller.form.MemberUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,18 @@ public class UpdateMemberParam {
     private long roleId;
 
     public static UpdateMemberParam of(PrivateUpdateForm form, long id) {
+        return UpdateMemberParam.builder()
+            .id(id)
+            .email(form.getEmail())
+            .name(form.getName())
+            .phone(form.getPhone())
+            .address(form.getAddress())
+            .hierarchyId(form.getHierarchyId())
+            .roleId(form.getRoleId())
+            .build();
+    }
+
+    public static UpdateMemberParam of(MemberUpdateForm form, long id) {
         return UpdateMemberParam.builder()
             .id(id)
             .email(form.getEmail())

@@ -8,6 +8,7 @@ import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
@@ -76,6 +77,26 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.BAD_CREDENTIAL;
         log.error(
             "BadCredentialsException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+            errorCode.name(), errorCode.getHttpStatus().toString(),
+            errorCode.getMessage(), ex.toString());
+
+        return new ResponseEntity<>(
+            ExceptionDto.builder()
+                .code(errorCode.name())
+                .message(errorCode.getMessage())
+                .build()
+            , errorCode.getHttpStatus()
+        );
+    }
+
+    /**
+     * 인가 관련 예외처리(권한 없을 시)
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ExceptionDto> accessDeniedException(AccessDeniedException ex) {
+        ErrorCode errorCode = ErrorCode.FORBIDDEN;
+        log.error(
+            "AccessDeniedException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
             errorCode.name(), errorCode.getHttpStatus().toString(),
             errorCode.getMessage(), ex.toString());
 

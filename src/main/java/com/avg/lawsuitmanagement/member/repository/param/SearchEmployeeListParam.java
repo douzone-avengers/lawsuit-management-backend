@@ -19,8 +19,21 @@ public class SearchEmployeeListParam {
     private String sortOrder;
 
     //페이징
-    private int offset;
-    private int limit;
+    private Integer offset;
+    private Integer limit;
+
+    public static SearchEmployeeListParam of(SearchEmployeeListForm form) {
+        return SearchEmployeeListParam.builder()
+            .searchWord(form.getSearchWord())
+            .hierarchyId(form.getHierarchyId())
+            .roleId(form.getRoleId())
+            .sortKey(
+                form.getSortKey() != null ? form.getSortKey().getQueryString() : null)
+            .sortOrder(
+                form.getSortOrder() != null ? form.getSortOrder().getQueryString()
+                    : null)
+            .build();
+    }
 
     public static SearchEmployeeListParam of(SearchEmployeeListForm form, PagingDto pagingDto) {
         return SearchEmployeeListParam.builder()

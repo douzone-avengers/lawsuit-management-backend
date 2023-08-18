@@ -41,7 +41,7 @@ public class ScheduleController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/info/{id}")
+    @GetMapping("/{id}/info")
     public ResponseEntity<?> searchInfo(@PathVariable(name = "id") Long receptionId) {
         ScheduleInfoDto result = scheduleService.searchInfo(receptionId);
         return ResponseEntity.ok(result);
