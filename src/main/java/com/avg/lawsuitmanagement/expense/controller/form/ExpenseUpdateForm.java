@@ -1,6 +1,5 @@
 package com.avg.lawsuitmanagement.expense.controller.form;
 
-import com.avg.lawsuitmanagement.expense.repository.param.ExpenseUpdateParam;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
