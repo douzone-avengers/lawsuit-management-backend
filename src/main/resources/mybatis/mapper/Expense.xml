@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository">
+    <select id="selectSearchExpense"
+      parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam"
+      resultType="com.avg.lawsuitmanagement.expense.dto.ExpenseDto">
+        select id,
+               lawsuit_id,
+               contents,
+               amount,
+               spening_at,
+               created_at,
+               updated_at,
+               is_deleted
+        from expense
+        where lawsuit_id = #{lawsuitId}
+        and is_deleted = false
+        <if test="startSpeningAt != null">
+            and spening_at >= #{startSpeningAt}
+        </if>
+        <if test="endSpeningAt != null">
+            and #{endSpeningAt} >= spening_at
+        </if>
+        <if test="contents != null">
+            and contents like concat('%', #{contents}, '%')
+        </if>
+        <if test="startAmount != 0">
+            and amount >= #{startAmount}
+        </if>
+        <if test="endAmount != 0">
+            and #{endAmount} >= amount
+        </if>
+        order by id desc
+        <choose>
+            <when test="page != null">
+                limit ${page * 5}, #{count}
+            </when>
+            <otherwise>
+                limit 0, #{count}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="searchCount" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam" resultType="java.lang.Long">
+        select count(*)
+        from expense
+        where lawsuit_id = #{lawsuitId}
+        and is_deleted = false
+        <if test="startSpeningAt != null">
+            and spening_at >= #{startSpeningAt}
+        </if>
+        <if test="endSpeningAt != null">
+            and #{endSpeningAt} >= spening_at
+        </if>
+        <if test="contents != null">
+            and contents like concat('%', #{contents}, '%')
+        </if>
+        <if test="startAmount != 0">
+            and amount >= #{startAmount}
+        </if>
+        <if test="endAmount != 0">
+            and #{endAmount} >= amount
+        </if>
+    </select>
+
+    <insert id="insertExpense" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseInsertParam">
+        insert into expense (lawsuit_id, contents, amount, spening_at)
+        values (#{lawsuitId}, #{contents}, #{amount}, #{speningAt})
+    </insert>
+</mapper>
