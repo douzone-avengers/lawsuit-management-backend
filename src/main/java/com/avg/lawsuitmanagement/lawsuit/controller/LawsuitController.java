@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.lawsuit.controller;
 
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
@@ -33,13 +34,13 @@ public class LawsuitController {
 
         return ResponseEntity.ok(lawsuitService.selectClientLawsuitList(clientId, form));
     }
-//
-//    // 사원 별 사건 목록 조회
-//    @GetMapping("/employees/{employeeId}")
-//    public ResponseEntity<List<LawsuitDto>> selectEmployeeLawsuitList(
-//        @PathVariable("employeeId") Long employeeId, @ModelAttribute GetEmployeeLawsuitForm form) {
-//        return ResponseEntity.ok(lawsuitService.selectEmployeeLawsuitList(employeeId, form));
-//    }
+
+    // 사원 별 사건 목록 조회
+    @GetMapping("/employees/{employeeId}")
+    public ResponseEntity<GetLawsuitListDto> selectEmployeeLawsuitList(
+        @PathVariable("employeeId") Long employeeId, @ModelAttribute GetEmployeeLawsuitForm form) {
+        return ResponseEntity.ok(lawsuitService.selectEmployeeLawsuitList(employeeId, form));
+    }
 
     // 사건 등록
     @PostMapping()
