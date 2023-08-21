@@ -207,7 +207,7 @@ public class MemberServiceTest {
         long hierarchyId = 2L;
         long roleId = 2L;
 
-        String promotionKey = promotionService.createEmployeePromotionKey();
+        String promotionKey = promotionService.createEmployeePromotionKey("", false);
 
         //when
         memberService.employeeSignUp(EmployeeSignUpForm.builder()

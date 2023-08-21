@@ -3,6 +3,7 @@ package com.avg.lawsuitmanagement.promotion.service;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionMailDto;
+import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionMailDto;
 import java.io.UnsupportedEncodingException;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -52,6 +53,35 @@ public class PromotionMailService {
         } catch (MessagingException | UnsupportedEncodingException e) {
             throw new CustomRuntimeException(ErrorCode.CANNOT_SEND_MAIL);
         }
+    }
 
+    public void sendEmployeePromotionMail(EmployeePromotionMailDto dto) {
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            mimeMessage.addRecipients(RecipientType.TO, dto.getTo());
+            mimeMessage.setSubject(
+                "[더존 사건관리 서비스] " + dto.getIssuer() + " 님이 직원초대 코드를 발급하였습니다.");
+
+            StringBuilder text = new StringBuilder();
+            text.append("<div style='margin:100px;'>");
+            text.append(
+                "<div align='center' style='border:1px solid black; font-family:verdana';>");
+            text.append("<h2'>").append(dto.getIssuer())
+                .append(" 님이 직원초대 코드를 발급하였습니다.</h2>");
+            text.append("<h3 style='color:blue;'>회원가입 코드입니다.</h3>");
+            text.append("<div style='font-size:130%'>");
+            text.append("CODE : <strong>");
+            text.append(dto.getPromotionKey()).append("</strong><div><br/> ");
+            text.append("<a href=").append(VALIDATE_URL).append(">가입페이지로 이동 </a>");
+            text.append("</div>");
+
+            mimeMessage.setText(text.toString(), "utf-8", "html");
+            mimeMessage.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new CustomRuntimeException(ErrorCode.CANNOT_SEND_MAIL);
+        }
     }
 }

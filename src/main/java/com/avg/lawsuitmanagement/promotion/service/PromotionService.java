@@ -12,6 +12,7 @@ import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionMailDto;
 import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionMailDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
 import com.avg.lawsuitmanagement.promotion.repository.param.InsertClientPromotionKeyParam;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class PromotionService {
             .value(promotionKey)
             .clientId(clientDto.getId())
             .build());
-        if(isSendMail) {
+        if (isSendMail) {
             sendClientPromotionMail(clientDto, promotionKey);
         }
         //return
@@ -60,8 +61,12 @@ public class PromotionService {
         return clientService.getClientById(clientPromotionKeyDto.getClientId());
     }
 
-    public String createEmployeePromotionKey() {
+    public String createEmployeePromotionKey(String email, boolean isSendMail) {
         String promotionKey = getRandomPromotionKey();
+
+        if(isSendMail) {
+            sendEmployeePromotionService(email, promotionKey);
+        }
 
         promotionMapperRepository.insertEmployeePromotionKey(promotionKey);
         return promotionKey;
@@ -117,6 +122,17 @@ public class PromotionService {
             .build());
     }
 
+    private void sendEmployeePromotionService(String emailTo, String promotionKey) {
+        //메일 전송
+        String issuer = memberMapperRepository.selectMemberByEmail(
+            SecurityUtil.getCurrentLoginEmail()).getName();
+
+        promotionMailService.sendEmployeePromotionMail(EmployeePromotionMailDto.builder()
+            .to(emailTo)
+            .promotionKey(promotionKey)
+            .issuer(issuer)
+            .build());
+    }
 
     private String getRandomPromotionKey() {
         return RandomStringUtils.randomAlphabetic(10);
