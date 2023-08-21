@@ -120,7 +120,6 @@ public class MemberService {
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, id));
     }
 
-
     private long insertMember(InsertMemberParam param) {
         //이메일 중복체크
         MemberDto member = memberMapperRepository.selectMemberByEmail(param.getEmail());
@@ -130,5 +129,4 @@ public class MemberService {
         memberMapperRepository.insertMember(param);
         return param.getId();
     }
-
 }

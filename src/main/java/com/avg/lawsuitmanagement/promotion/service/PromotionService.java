@@ -7,7 +7,10 @@ import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
+import com.avg.lawsuitmanagement.common.util.SecurityUtil;
+import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionKeyDto;
+import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionMailDto;
 import com.avg.lawsuitmanagement.promotion.dto.EmployeePromotionKeyDto;
 import com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository;
 import com.avg.lawsuitmanagement.promotion.repository.param.InsertClientPromotionKeyParam;
@@ -23,10 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PromotionService {
 
     private final PromotionMapperRepository promotionMapperRepository;
+    private final MemberMapperRepository memberMapperRepository;
     private final ClientService clientService;
+    private final PromotionMailService promotionMailService;
 
     @Transactional
-    public String createClientPromotionKey(long clientId) {
+    public String createClientPromotionKey(long clientId, boolean isSendMail) {
         String promotionKey = getRandomPromotionKey();
 
         //존재하는 유저인지? -> ClientService에서 검증
@@ -41,7 +46,9 @@ public class PromotionService {
             .value(promotionKey)
             .clientId(clientDto.getId())
             .build());
-
+        if(isSendMail) {
+            sendClientPromotionMail(clientDto, promotionKey);
+        }
         //return
         return promotionKey;
     }
@@ -93,6 +100,21 @@ public class PromotionService {
         if (!dto.isActive()) {
             throw new CustomRuntimeException(PROMOTION_NOT_ACTIVE);
         }
+    }
+
+    //메일
+    private void sendClientPromotionMail(ClientDto clientDto, String promotionKey) {
+        //메일 전송
+        String issuer = memberMapperRepository.selectMemberByEmail(
+            SecurityUtil.getCurrentLoginEmail()).getName();
+
+        promotionMailService.sendClientPromotionMail(ClientPromotionMailDto.builder()
+            .to(clientDto.getEmail())
+            .clientName(clientDto.getName())
+            .clientPhone(clientDto.getPhone())
+            .promotionKey(promotionKey)
+            .issuer(issuer)
+            .build());
     }
 
 

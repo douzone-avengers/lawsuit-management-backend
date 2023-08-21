@@ -20,7 +20,7 @@ public class PromotionController {
 
     @PostMapping("/clients")
     public ResponseEntity<String> createClientPromotionKey(@Valid @NotBlank long clientId) {
-        return ResponseEntity.ok(promotionService.createClientPromotionKey(clientId));
+        return ResponseEntity.ok(promotionService.createClientPromotionKey(clientId, true));
     }
 
     @GetMapping("/clients")

@@ -35,7 +35,9 @@ public class PromotionMailService {
             text.append("<div style='margin:100px;'>");
             text.append(
                 "<div align='center' style='border:1px solid black; font-family:verdana';>");
-            text.append("<h2'>").append(dto.getClientName()).append(" 고객님 환영합니다!!</h2>");
+            text.append("<h2'>").append(dto.getClientName())
+                .append("(").append(dto.getClientPhone()).append(")")
+                .append(" 고객님 환영합니다!!</h2>");
             text.append("<h3 style='color:blue;'>회원가입 코드입니다.</h3>");
             text.append("<div style='font-size:130%'>");
             text.append("CODE : <strong>");
