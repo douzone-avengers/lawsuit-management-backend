@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     //valid exception
     VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "입력값 형식이 잘못되었습니다."),
+    PARAMETER_MISSING(HttpStatus.BAD_REQUEST, "필수값이 누락되었습니다."),
 
     //계정관련
     BAD_CREDENTIAL(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),

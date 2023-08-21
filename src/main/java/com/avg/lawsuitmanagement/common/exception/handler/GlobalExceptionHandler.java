@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -68,6 +69,31 @@ public class GlobalExceptionHandler {
             errorCode.getHttpStatus()
         );
     }
+
+    /**
+     * 필수값 누락에 대한 예외처리
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ExceptionDto> handleMissingParams(MissingServletRequestParameterException ex) {
+        ErrorCode errorCode = ErrorCode.PARAMETER_MISSING;
+
+        String missingParamName = ex.getParameterName();
+        String errorMessage = String.format("필수값 이 누락되었습니다. 누락된 필드 : '%s'", missingParamName);
+
+        log.error(
+            "MissingServletRequestParameterException 발생 : {} \n HttpStatus : {} \n Message : {} \n Missing Parameter : {} \n ExceptionDetail : {}",
+            errorCode.name(), errorCode.getHttpStatus().toString(),
+            errorCode.getMessage(), missingParamName, ex.toString());
+
+        return new ResponseEntity<>(
+            ExceptionDto.builder()
+                .code(errorCode.name())
+                .message(errorMessage)
+                .build(),
+            errorCode.getHttpStatus()
+        );
+    }
+
 
     /**
      * 로그인 실패 시
