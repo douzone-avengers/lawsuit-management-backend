@@ -1,13 +1,12 @@
 package com.avg.lawsuitmanagement.lawsuit.controller;
 
-import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
-import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.dto.GetLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
-import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +29,17 @@ public class LawsuitController {
 
     // 의뢰인 사건 리스트, 페이징 정보
     @GetMapping("/clients/{clientId}")
-    public ResponseEntity<ClientLawsuitDto> selectClientLawsuitList(
-        @PathVariable("clientId") Long clientId,
-        @ModelAttribute GetClientLawsuitForm form) {
+    public ResponseEntity<GetLawsuitListDto> selectClientLawsuitList(
+        @PathVariable("clientId") Long clientId, @ModelAttribute GetClientLawsuitForm form) {
 
         return ResponseEntity.ok(lawsuitService.selectClientLawsuitList(clientId, form));
+    }
+
+    // 사원 별 사건 목록 조회
+    @GetMapping("/employees/{employeeId}")
+    public ResponseEntity<GetLawsuitListDto> selectEmployeeLawsuitList(
+        @PathVariable("employeeId") Long employeeId, @ModelAttribute GetEmployeeLawsuitForm form) {
+        return ResponseEntity.ok(lawsuitService.selectEmployeeLawsuitList(employeeId, form));
     }
 
     // 사건 등록
@@ -42,12 +47,6 @@ public class LawsuitController {
     public ResponseEntity<Void> insertLawsuit(@RequestBody @Valid InsertLawsuitForm form) {
         lawsuitService.insertLawsuit(form);
         return ResponseEntity.ok().build();
-    }
-
-    // 사건 목록 조회
-    @GetMapping("/employees")
-    public ResponseEntity<List<LawsuitDto>> selectLawsuitList() {
-        return ResponseEntity.ok(lawsuitService.selectLawsuitList());
     }
 
     // 사건 수정
