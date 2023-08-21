@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.mail;
 
 import com.avg.lawsuitmanagement.promotion.dto.ClientPromotionMailDto;
-import com.avg.lawsuitmanagement.promotion.service.MailService;
+import com.avg.lawsuitmanagement.promotion.service.PromotionMailService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class MailServiceTest {
+public class PromotionMailServiceTest {
 
     @Autowired
-    MailService mailService;
+    PromotionMailService promotionMailService;
 
     @Test
     @DisplayName("메일 서비스 테스트")
@@ -28,7 +28,7 @@ public class MailServiceTest {
             .build();
 
         //when then
-        Assertions.assertThatCode(() -> mailService.sendClientPromotionMail(clientPromotionMailDto))
+        Assertions.assertThatCode(() -> promotionMailService.sendClientPromotionMail(clientPromotionMailDto))
             .doesNotThrowAnyException();
     }
 }
