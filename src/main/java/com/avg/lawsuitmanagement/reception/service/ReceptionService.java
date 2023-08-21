@@ -49,6 +49,9 @@ public class ReceptionService {
     }
 
     public ReceptionDto edit(Long id, ReceptionEditForm form) {
+        if ("incomplete".equals(form.getStatus())) {
+            form.setReceivedAt(null);
+        }
         ReceptionUpdateParam param = form.toParam(id);
         receptionRepository.update(param);
         ReceptionDto result = receptionRepository.selectById(id);

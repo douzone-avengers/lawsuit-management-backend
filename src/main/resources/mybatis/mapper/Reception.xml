@@ -103,6 +103,8 @@
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam">
         UPDATE reception
         SET updated_at = now()
+        , received_at = #{receivedAt}
+          
         <if test="status != null">
             , status = #{status}
         </if>
@@ -111,9 +113,6 @@
         </if>
         <if test="contents != null">
             , contents = #{contents}
-        </if>
-        <if test="receivedAt != null">
-            , received_at = #{receivedAt}
         </if>
         <if test="deadline != null">
             , deadline = #{deadline}

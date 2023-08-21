@@ -9,6 +9,7 @@
       resultType="com.avg.lawsuitmanagement.schedule.dto.ScheduleRawDto">
         SELECT r.id           `reception_id`,
                r.deadline     `deadline`,
+               r.status       `reception_status`,
                l.id           `lawsuit_id`,
                l.lawsuit_type `lawsuit_type`,
                l.name         `lawsuit_name`,

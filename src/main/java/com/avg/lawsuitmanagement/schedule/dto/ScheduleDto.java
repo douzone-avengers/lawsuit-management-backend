@@ -19,6 +19,7 @@ import lombok.ToString;
 public class ScheduleDto {
 
     private Long receptionId;
+    private Boolean receptionStatus;
     private LocalDate deadline;
     private Long lawsuitId;
     private String lawsuitType;
