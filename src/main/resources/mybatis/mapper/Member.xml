@@ -50,8 +50,7 @@
         <where>
             <if test="searchWord != null and searchWord != ''">
                 and (name like concat('%', #{searchWord}, '%')
-                or email like concat('%', #{searchWord}, '%')
-                or phone like concat('%', #{searchWord}, '%'))
+                or email like concat('%', #{searchWord}, '%'))
             </if>
 
             <if test="hierarchyId != 0">
@@ -109,8 +108,7 @@
         <where>
             <if test="searchWord != null and searchWord != ''">
                 and (name like concat('%', #{searchWord}, '%')
-                or email like concat('%', #{searchWord}, '%')
-                or phone like concat('%', #{searchWord}, '%'))
+                or email like concat('%', #{searchWord}, '%'))
             </if>
 
             <if test="hierarchyId != 0">
