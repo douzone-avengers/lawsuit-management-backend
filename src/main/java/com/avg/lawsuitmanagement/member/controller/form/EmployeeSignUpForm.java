@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.member.controller.form;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,7 +26,9 @@ public class EmployeeSignUpForm {
     @NotBlank
     private String address;
     @NotNull
+    @Min(1)
     private long hierarchyId;
     @NotNull
+    @Min(1)
     private long roleId;
 }

@@ -6,19 +6,19 @@ import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
-import com.avg.lawsuitmanagement.client.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
-import com.avg.lawsuitmanagement.client.dto.ClientLawsuitDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
-import com.avg.lawsuitmanagement.client.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicUserDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.GetLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
@@ -26,9 +26,12 @@ import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectClientLawsuitListParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectEmployeeLawsuitListParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +50,7 @@ public class LawsuitService {
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
 
-    public ClientLawsuitDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
+    public GetLawsuitListDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
 
         // 해당 clientId의 의뢰인이 없을 경우
@@ -65,9 +68,35 @@ public class LawsuitService {
         }
         // 한 페이지에 나타나는 사건 리스트 목록
         List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectClientLawsuitList(param);
-        int count = clientMapperRepository.selectClientLawsuitCountBySearchWord(param);
+        int count = lawsuitMapperRepository.selectClientLawsuitCountBySearchWord(param);
 
-        return ClientLawsuitDto.builder()
+        return GetLawsuitListDto.builder()
+            .lawsuitList(lawsuitList)
+            .count(count)
+            .build();
+    }
+
+    public GetLawsuitListDto selectEmployeeLawsuitList(long employeeId, GetEmployeeLawsuitForm form) {
+
+        MemberDtoNonPass memberDto = memberMapperRepository.selectMemberById(employeeId);
+
+        if (memberDto == null) {
+            throw new CustomRuntimeException(MEMBER_NOT_FOUND);
+        }
+
+        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage());
+        SelectEmployeeLawsuitListParam param = SelectEmployeeLawsuitListParam.of(employeeId, pagingDto,
+            form.getSearchWord());
+
+        if (form.getCurPage() == null || form.getRowsPerPage() == null) {
+            param.setOffset(0);
+            param.setLimit(0);
+        }
+        // 한 페이지에 나타나는 사건 리스트 목록
+        List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectEmployeeLawsuitList(param);
+        int count = lawsuitMapperRepository.selectEmployeeLawsuitCountBySearchWord(param);
+
+        return GetLawsuitListDto.builder()
             .lawsuitList(lawsuitList)
             .count(count)
             .build();
@@ -111,10 +140,6 @@ public class LawsuitService {
         lawsuitMapperRepository.insertLawsuitMemberMap(
             InsertLawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
 
-    }
-
-    public List<LawsuitDto> selectLawsuitList() {
-        return lawsuitMapperRepository.selectLawsuitList();
     }
 
     public void updateLawsuitInfo(long lawsuitId, UpdateLawsuitInfoForm form) {

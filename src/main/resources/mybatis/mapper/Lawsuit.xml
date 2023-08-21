@@ -24,6 +24,53 @@
         </if>
     </select>
 
+    <select id="selectEmployeeLawsuitList" parameterType="SelectEmployeeLawsuitListParam"
+      resultType="LawsuitDto">
+        select l.*
+        from lawsuit l
+        join lawsuit_member_map map on l.id = map.lawsuit_id
+        where map.member_id= #{memberId}
+        and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+        order by l.created_at desc
+        <if test="limit != 0 or offset != 0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="selectClientLawsuitCountBySearchWord" parameterType="SelectClientLawsuitListParam">
+        select count(*)
+        from lawsuit l
+        join lawsuit_client_map map on l.id = map.lawsuit_id
+        where map.client_id = #{clientId}
+        and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+    </select>
+
+    <select id="selectEmployeeLawsuitCountBySearchWord" parameterType="SelectEmployeeLawsuitListParam">
+        select count(*)
+        from lawsuit l
+        join lawsuit_member_map map on l.id = map.lawsuit_id
+        where map.member_id = #{memberId}
+        and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+    </select>
+
     <select id="selectLawsuitById" parameterType="java.lang.Long">
         select *
         from lawsuit
@@ -173,4 +220,5 @@
         WHERE l.is_deleted = 0
           AND l.id = #{id}
     </update>
+
 </mapper>
