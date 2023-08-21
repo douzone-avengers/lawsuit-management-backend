@@ -42,6 +42,7 @@ public class ScheduleService {
         List<ScheduleDto> result = rawDto.stream()
             .map(item -> ScheduleDto.builder()
                 .receptionId(item.getReceptionId())
+                .receptionStatus(item.getReceptionStatus())
                 .deadline(item.getDeadline())
                 .lawsuitId(item.getLawsuitId())
                 .lawsuitType(item.getLawsuitType())
