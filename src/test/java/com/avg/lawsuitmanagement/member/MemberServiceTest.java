@@ -68,7 +68,7 @@ public class MemberServiceTest {
 
         long clientId = insertClientAndGetClientId(param);
         String promotionKey = promotionService.createClientPromotionKey(
-            clientId);
+            clientId, false);
 
         //when
         memberService.clientSignUp(ClientSignUpForm.builder()
@@ -119,7 +119,7 @@ public class MemberServiceTest {
 
         long clientId = insertClientAndGetClientId(param);
         String promotionKey = promotionService.createClientPromotionKey(
-            clientId);
+            clientId, false);
         clientMapperRepository.updateClientMemberId(UpdateClientMemberIdParam.builder()
             .clientId(clientId)
             .memberId(33)
@@ -160,7 +160,7 @@ public class MemberServiceTest {
 
         long clientId = insertClientAndGetClientId(param);
         String promotionKey = promotionService.createClientPromotionKey(
-            clientId);
+            clientId, false);
 
         memberMapperRepository.insertMember(InsertMemberParam.builder()
             .email(email)
@@ -207,7 +207,7 @@ public class MemberServiceTest {
         long hierarchyId = 2L;
         long roleId = 2L;
 
-        String promotionKey = promotionService.createEmployeePromotionKey();
+        String promotionKey = promotionService.createEmployeePromotionKey("", false);
 
         //when
         memberService.employeeSignUp(EmployeeSignUpForm.builder()

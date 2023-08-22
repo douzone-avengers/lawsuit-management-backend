@@ -6,7 +6,7 @@ import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_N
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
-import com.avg.lawsuitmanagement.client.dto.ClientLawsuitCountDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;

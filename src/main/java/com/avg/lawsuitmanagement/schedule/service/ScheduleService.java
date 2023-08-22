@@ -1,5 +1,7 @@
 package com.avg.lawsuitmanagement.schedule.service;
 
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.schedule.controller.form.ScheduleSearchForm;
 import com.avg.lawsuitmanagement.schedule.dto.ScheduleClientInfoDto;
 import com.avg.lawsuitmanagement.schedule.dto.ScheduleDto;
@@ -25,9 +27,11 @@ import org.springframework.stereotype.Service;
 public class ScheduleService {
 
     private final ScheduleMapperRepository scheduleRepository;
+    private final MemberService memberService;
 
     public List<ScheduleDto> search(ScheduleSearchForm form) {
-        ScheduleSelectParam param = form.toParam();
+        MemberDto member = memberService.getLoginMemberInfo();
+        ScheduleSelectParam param = form.toParam(member.getId());
 
         List<ScheduleRawDto> rawDto = scheduleRepository.select(param);
 
@@ -38,6 +42,7 @@ public class ScheduleService {
         List<ScheduleDto> result = rawDto.stream()
             .map(item -> ScheduleDto.builder()
                 .receptionId(item.getReceptionId())
+                .receptionStatus(item.getReceptionStatus())
                 .deadline(item.getDeadline())
                 .lawsuitId(item.getLawsuitId())
                 .lawsuitType(item.getLawsuitType())
@@ -81,6 +86,8 @@ public class ScheduleService {
                     .num(item.getLawsuitNum())
                     .name(item.getLawsuitName())
                     .type(item.getLawsuitType())
+                    .courtName(item.getCourtName())
+                    .status(item.getLawsuitStatus())
                     .commissionFee(item.getLawsuitCommissionFee())
                     .contingentFee(item.getLawsuitContingentFee())
                     .build())

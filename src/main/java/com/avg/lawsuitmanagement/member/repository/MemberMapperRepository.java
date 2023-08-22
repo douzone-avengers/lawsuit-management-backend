@@ -17,5 +17,6 @@ public interface MemberMapperRepository {
     void updateMember(UpdateMemberParam param);
     List<MemberDtoNonPass> selectEmployeeListBySearchCondition(SearchEmployeeListParam param);
     int selectEmployeeListBySearchConditionCount(SearchEmployeeListParam param);
+    MemberDtoNonPass selectMemberById(long employeeId);
 
 }

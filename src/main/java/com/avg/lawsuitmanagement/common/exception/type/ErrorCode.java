@@ -13,9 +13,11 @@ public enum ErrorCode {
 
     //valid exception
     VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "입력값 형식이 잘못되었습니다."),
+    PARAMETER_MISSING(HttpStatus.BAD_REQUEST, "필수값이 누락되었습니다."),
 
     //계정관련
     BAD_CREDENTIAL(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     MEMBER_EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 
     //PROMOTION
@@ -23,11 +25,13 @@ public enum ErrorCode {
     PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "가입키가 존재하지 않습니다."),
     PROMOTION_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "만료된 가입키입니다."),
 
-
     //JWT 관련 예외
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     TOKEN_WRONG(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다"),
+
+    //메일 관련 예외
+    CANNOT_SEND_MAIL(HttpStatus.BAD_REQUEST, "메일을 전송할 수 없습니다."),
 
     //의뢰인 관련 예외
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),

@@ -50,8 +50,7 @@
         <where>
             <if test="searchWord != null and searchWord != ''">
                 and (name like concat('%', #{searchWord}, '%')
-                or email like concat('%', #{searchWord}, '%')
-                or phone like concat('%', #{searchWord}, '%'))
+                or email like concat('%', #{searchWord}, '%'))
             </if>
 
             <if test="hierarchyId != 0">
@@ -80,7 +79,24 @@
             </otherwise>
         </choose>
 
-        limit #{offset}, #{limit}
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="selectMemberById" parameterType="java.lang.Long" resultType="MemberDtoNonPass">
+        select id,
+               email,
+               name,
+               hierarchy_id,
+               phone,
+               address,
+               role_id,
+               created_at,
+               updated_at
+        from member
+        where id = #{id}
+
     </select>
 
     <select id="selectEmployeeListBySearchConditionCount" parameterType="searchEmployeeListParam"
@@ -92,8 +108,7 @@
         <where>
             <if test="searchWord != null and searchWord != ''">
                 and (name like concat('%', #{searchWord}, '%')
-                or email like concat('%', #{searchWord}, '%')
-                or phone like concat('%', #{searchWord}, '%'))
+                or email like concat('%', #{searchWord}, '%'))
             </if>
 
             <if test="hierarchyId != 0">

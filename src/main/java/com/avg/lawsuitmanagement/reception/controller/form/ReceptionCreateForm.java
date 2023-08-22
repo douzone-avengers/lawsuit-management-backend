@@ -29,9 +29,10 @@ public class ReceptionCreateForm {
     private LocalDate receivedAt;
     private LocalDate deadline;
 
-    public ReceptionInsertParam toParam() {
+    public ReceptionInsertParam toParam(Long memberId) {
         return ReceptionInsertParam.builder()
             .lawsuitId(lawsuitId)
+            .memberId(memberId)
             .status(status.equals("complete"))
             .category(category)
             .contents(contents)

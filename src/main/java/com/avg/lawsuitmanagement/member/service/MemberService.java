@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_REGISTERED;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_EMAIL_ALREADY_EXIST;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
@@ -11,6 +12,7 @@ import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
+import com.avg.lawsuitmanagement.member.controller.form.MemberUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.PrivateUpdateForm;
 import com.avg.lawsuitmanagement.member.controller.form.SearchEmployeeListForm;
 import com.avg.lawsuitmanagement.member.dto.GetMemberListDto;
@@ -47,7 +49,6 @@ public class MemberService {
 
     public void updatePrivateInfo(PrivateUpdateForm form) {
         MemberDto me = getLoginMemberInfo();
-
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, me.getId()));
     }
 
@@ -84,8 +85,14 @@ public class MemberService {
     @Transactional
     public GetMemberListDto searchEmployeeList(SearchEmployeeListForm form) {
 
-        SearchEmployeeListParam param = SearchEmployeeListParam.of(form,
-            PagingUtil.calculatePaging(form.getPage(), form.getRowsPerPage()));
+        SearchEmployeeListParam param;
+
+        if (form.getPage() == null || form.getRowsPerPage() == null) {
+            param = SearchEmployeeListParam.of(form);
+        } else {
+            param = SearchEmployeeListParam.of(form,
+                PagingUtil.calculatePaging(form.getPage(), form.getRowsPerPage()));
+        }
 
         List<MemberDtoNonPass> list =
             memberMapperRepository.selectEmployeeListBySearchCondition(param);
@@ -97,6 +104,22 @@ public class MemberService {
             .build();
     }
 
+    public MemberDtoNonPass getMemberInfoById(long id) {
+        MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
+        if(dto == null) {
+            throw new CustomRuntimeException(MEMBER_NOT_FOUND);
+        }
+        return dto;
+    }
+
+    public void updateMemberInfo(long id, MemberUpdateForm form) {
+        MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
+        if(dto == null) {
+            throw new CustomRuntimeException(MEMBER_NOT_FOUND);
+        }
+        memberMapperRepository.updateMember(UpdateMemberParam.of(form, id));
+    }
+
     private long insertMember(InsertMemberParam param) {
         //이메일 중복체크
         MemberDto member = memberMapperRepository.selectMemberByEmail(param.getEmail());
@@ -106,5 +129,4 @@ public class MemberService {
         memberMapperRepository.insertMember(param);
         return param.getId();
     }
-
 }
