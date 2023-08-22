@@ -45,9 +45,9 @@ public enum ErrorCode {
 
     //상담 관련 예외
     ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상담입니다."),
-
-
-
+    MEMBER_NOT_ASSIGNED_TO_ADVICE(HttpStatus.NOT_FOUND, "해당 상담을 담당하는 사원이 아닙니다."),
+    ADVICE_MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 상담관입니다."),
+    ADVICE_CLIENT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 상담자입니다."),
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 역할입니다."),

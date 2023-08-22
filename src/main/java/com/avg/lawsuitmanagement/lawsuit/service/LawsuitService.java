@@ -154,3 +154,4 @@ public class LawsuitService {
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
     }
 }
+

@@ -39,7 +39,7 @@
     </insert>
 
     <update id="updateAdviceInfo" parameterType="UpdateAdviceInfoParam">
-        update advice
+        update advice, advice_client_map, advice_member_map
         set title = #{title},
         contents = #{contents},
         adviced_at = #{advicedAt},
@@ -53,7 +53,7 @@
             #{clientId}
         </foreach>
         )
-        where id = #{adviceId}
+        where id = #{adviceId};
     </update>
 
     <update id="deleteAdviceInfo" parameterType="java.lang.Long">
@@ -61,5 +61,15 @@
         set is_deleted = true
         where id = #{adviceId};
     </update>
-
+    <update id="delectAdviceClientMap" parameterType="java.lang.Long">
+        update advice_client_map
+        set is_deleted = true
+        where advice_id = #{adviceId};
+    </update>
+    
+    <update id="delectAdviceMemberMap" parameterType="java.lang.Long">
+        update  advice_member_map
+        set is_deleted = true
+        where  advice_id = #{adviceId};
+    </update>
 </mapper>
