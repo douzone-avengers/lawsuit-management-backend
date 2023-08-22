@@ -37,7 +37,7 @@ public class PromotionServiceTest {
 
         //when
         String key = promotionService.createClientPromotionKey(
-            targetClientId);
+            targetClientId, false);
 
         //then
         assertNotNull(key);
@@ -59,7 +59,7 @@ public class PromotionServiceTest {
         //when
         CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
             () -> promotionService.createClientPromotionKey(
-                targetClientId));
+                targetClientId, false));
 
         //then
         assertEquals(ErrorCode.CLIENT_ALREADY_REGISTERED, exception.getErrorCode());
@@ -73,7 +73,7 @@ public class PromotionServiceTest {
         //given
         long targetClientId = insertClientAndGetClientId();
         String key = promotionService.createClientPromotionKey(
-            targetClientId);
+            targetClientId, false);
 
         //when
         ClientDto clientDto = promotionService.resolveClientPromotionKey(key);
@@ -91,7 +91,7 @@ public class PromotionServiceTest {
         //given
         long targetClientId = insertClientAndGetClientId();
         String key = promotionService.createClientPromotionKey(
-            targetClientId);
+            targetClientId, false);
 
         //when
         CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
@@ -109,7 +109,7 @@ public class PromotionServiceTest {
         //given
 
         //when
-        String key = promotionService.createEmployeePromotionKey();
+        String key = promotionService.createEmployeePromotionKey("", false);
 
         //then
         assertNotNull(key);
@@ -122,7 +122,7 @@ public class PromotionServiceTest {
     void validateEmployeePromotionKeySuccess() {
 
         //given
-        String key = promotionService.createEmployeePromotionKey();
+        String key = promotionService.createEmployeePromotionKey("", false);
 
         //when then
         assertDoesNotThrow(() -> promotionService.validateEmployeePromotionKey(key));
@@ -134,7 +134,7 @@ public class PromotionServiceTest {
     void validateEmployeePromotionKeyNotFound() {
 
         //given
-        String key = promotionService.createEmployeePromotionKey();
+        String key = promotionService.createEmployeePromotionKey("", false);
 
         //when
         CustomRuntimeException exception = assertThrows(CustomRuntimeException.class,
