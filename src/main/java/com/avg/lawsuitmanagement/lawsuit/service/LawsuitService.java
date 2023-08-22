@@ -22,6 +22,11 @@ import com.avg.lawsuitmanagement.lawsuit.dto.GetLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintAdviceDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintExpenseDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintLawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
@@ -33,6 +38,7 @@ import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +82,8 @@ public class LawsuitService {
             .build();
     }
 
-    public GetLawsuitListDto selectEmployeeLawsuitList(long employeeId, GetEmployeeLawsuitForm form) {
+    public GetLawsuitListDto selectEmployeeLawsuitList(long employeeId,
+        GetEmployeeLawsuitForm form) {
 
         MemberDtoNonPass memberDto = memberMapperRepository.selectMemberById(employeeId);
 
@@ -85,7 +92,8 @@ public class LawsuitService {
         }
 
         PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage());
-        SelectEmployeeLawsuitListParam param = SelectEmployeeLawsuitListParam.of(employeeId, pagingDto,
+        SelectEmployeeLawsuitListParam param = SelectEmployeeLawsuitListParam.of(employeeId,
+            pagingDto,
             form.getSearchWord());
 
         if (form.getCurPage() == null || form.getRowsPerPage() == null) {
@@ -244,5 +252,81 @@ public class LawsuitService {
             .id(id)
             .status(status.toString())
             .build());
+    }
+
+    public LawsuitPrintResponseDto getPrintInfo(Long lawsuitId) {
+        List<LawsuitPrintRawDto> raws = lawsuitMapperRepository.selectPrintInfo(
+            lawsuitId);
+
+        if (raws.isEmpty()) {
+            throw new RuntimeException("");
+        }
+        LawsuitPrintRawDto lawsuit = raws.get(0);
+
+        Map<Long, LawsuitPrintAdviceDto> adviceMap = new HashMap<>();
+        Map<Long, LawsuitPrintExpenseDto> expenseMap = new HashMap<>();
+        for (LawsuitPrintRawDto raw : raws) {
+            Long adviceId = raw.getAdviceId();
+            if (adviceId != null) {
+                if (!adviceMap.containsKey(adviceId)) {
+                    List<String> memberNames = new ArrayList<>();
+                    if (raw.getMemberName() != null) {
+                        memberNames.add(raw.getMemberName());
+                    }
+                    List<String> clientNames = new ArrayList<>();
+                    if (raw.getClientName() != null) {
+                        clientNames.add(raw.getClientName());
+                    }
+                    adviceMap.put(adviceId, LawsuitPrintAdviceDto.builder()
+                        .id(raw.getAdviceId())
+                        .title(raw.getAdviceTitle())
+                        .contents(raw.getAdviceContents())
+                        .date(raw.getAdviceDate())
+                        .memberNames(memberNames)
+                        .clientNames(clientNames)
+                        .build());
+                } else {
+                    LawsuitPrintAdviceDto lawsuitPrintAdviceDto = adviceMap.get(adviceId);
+                    List<String> memberNames = lawsuitPrintAdviceDto.getMemberNames();
+                    if (raw.getMemberName() != null) {
+                        memberNames.add(raw.getMemberName());
+                    }
+
+                    List<String> clientNames = lawsuitPrintAdviceDto.getClientNames();
+                    if (raw.getClientName() != null) {
+                        clientNames.add(raw.getClientName());
+                    }
+                }
+            }
+
+            Long expenseId = raw.getExpenseId();
+            if (expenseId != null) {
+                if (!expenseMap.containsKey(expenseId)) {
+                    expenseMap.put(expenseId, LawsuitPrintExpenseDto.builder()
+                        .id(raw.getExpenseId())
+                        .contents(raw.getAdviceContents())
+                        .amount(raw.getExpenseAmount())
+                        .date(raw.getAdviceDate())
+                        .build());
+                }
+            }
+        }
+
+        LawsuitPrintResponseDto result = LawsuitPrintResponseDto.builder()
+            .lawsuit(LawsuitPrintLawsuitDto.builder()
+                .id(lawsuit.getLawsuitId())
+                .name(lawsuit.getLawsuitName())
+                .num(lawsuit.getLawsuitNum())
+                .court(lawsuit.getCourtName())
+                .commissionFee(lawsuit.getLawsuitCommissionFee())
+                .contingentFee(lawsuit.getLawsuitContingentFee())
+                .judgementResult(lawsuit.getLawsuitJudgementResult())
+                .judgementDate(lawsuit.getLawsuitJudgementDate())
+                .build())
+            .advices(adviceMap.values().stream().toList())
+            .expenses(expenseMap.values().stream().toList())
+            .build();
+
+        return result;
     }
 }

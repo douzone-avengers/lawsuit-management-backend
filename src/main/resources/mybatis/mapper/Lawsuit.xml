@@ -57,7 +57,8 @@
         </if>
     </select>
 
-    <select id="selectEmployeeLawsuitCountBySearchWord" parameterType="SelectEmployeeLawsuitListParam">
+    <select id="selectEmployeeLawsuitCountBySearchWord"
+      parameterType="SelectEmployeeLawsuitListParam">
         select count(*)
         from lawsuit l
         join lawsuit_member_map map on l.id = map.lawsuit_id
@@ -221,4 +222,38 @@
           AND l.id = #{id}
     </update>
 
+    <select id="selectPrintInfo"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto">
+        SELECT l.id             `lawsuit_id`,
+               l.name           `lawsuit_name`,
+               l.lawsuit_num    `lawsuit_num`,
+               l.commission_fee `lawsuit_commission_fee`,
+               l.contingent_fee `lawsuit_contingent_fee`,
+               l.result         `lawsuit_judgement_result`,
+               l.judgement_date `lawsuit_judgement_date`,
+               co.name_kr       `court_name`,
+               a.id             `advice_id`,
+               a.title          `advice_title`,
+               a.contents       `advice_contents`,
+               a.adviced_at     `advice_date`,
+               m.id             `member_id`,
+               m.name           `member_name`,
+               c.id             `client_id`,
+               c.name           `client_name`,
+               e.id             `expense_id`,
+               e.contents       `expense_contents`,
+               e.amount         `expense_amount`,
+               e.spening_at     `expense_date`
+        FROM lawsuit l
+                 LEFT JOIN court co ON co.id = l.court_id
+                 LEFT JOIN expense e ON l.id = e.lawsuit_id
+                 LEFT JOIN advice a ON l.id = a.lawsuit_id
+                 LEFT JOIN advice_client_map ac ON a.id = ac.advice_id
+                 LEFT JOIN client c ON c.id = ac.client_id
+                 LEFT JOIN advice_member_map am ON a.id = am.advice_id
+                 LEFT JOIN member m ON m.id = am.member_id
+        WHERE l.is_deleted = 0
+          AND l.id = #{id}
+    </select>
 </mapper>
