@@ -37,6 +37,13 @@ public class AdviceService {
         return adviceDto;
     }
 
+    public List<AdviceDto> getAdviceByLawsuitId(long lawsuitId) {
+        List<AdviceDto> adviceList = adviceMapperRepository.selectAdviceByLawsuitId(lawsuitId);
+        if(adviceList == null){
+            throw new CustomRuntimeException(ADVICE_NOT_FOUND);
+        }
+        return adviceList;
+    }
     public void insertAdvice(InsertAdviceForm form) {
         // 소송 정보를 확인
         LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(form.getLawsuitId());

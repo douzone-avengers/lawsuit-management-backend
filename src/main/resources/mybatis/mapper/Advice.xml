@@ -10,6 +10,14 @@
         from advice
         where id = #{adviceId} and is_deleted=false;
     </select>
+    
+    <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long"
+    resultType="com.avg.lawsuitmanagement.advice.dto.AdviceDto">
+        select title, contents, adviced_at
+        from advice
+        where lawsuit_id = #{lawsuitId} and is_deleted=false;
+    </select>
+
 
 
     <insert id="insertAdvice" parameterType="InsertAdviceParam">

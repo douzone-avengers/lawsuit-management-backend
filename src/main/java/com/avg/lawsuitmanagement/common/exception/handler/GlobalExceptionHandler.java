@@ -140,6 +140,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDto> unknownException(Exception ex) {
+        ex.printStackTrace();
         ErrorCode errorCode = ErrorCode.UNKNOWN_EXCEPTION;
         log.error(
             "UnknownException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",

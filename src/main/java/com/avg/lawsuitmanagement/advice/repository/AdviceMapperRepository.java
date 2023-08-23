@@ -10,6 +10,7 @@ import java.util.List;
 public interface AdviceMapperRepository {
 
     AdviceDto selectAdviceById(long adviceId);
+    List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
 
     void insertAdvice(InsertAdviceParam param);
     void insertAdviceClientMap(InsertAdviceClientIdParam param);
