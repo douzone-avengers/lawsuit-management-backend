@@ -20,7 +20,6 @@ import com.avg.lawsuitmanagement.lawsuit.dto.BasicLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicUserDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
-import com.avg.lawsuitmanagement.lawsuit.dto.GetLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.IdNameDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
@@ -43,6 +42,7 @@ import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +60,8 @@ public class LawsuitService {
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
 
-    public GetClientLawsuitListDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
+    public GetClientLawsuitListDto selectClientLawsuitList(long clientId,
+        GetClientLawsuitForm form) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
 
         // 해당 clientId의 의뢰인이 없을 경우
