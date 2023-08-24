@@ -18,10 +18,13 @@ import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicUserDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.IdNameDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintAdviceDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintAdvicePreDto;
@@ -40,7 +43,6 @@ import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,7 @@ public class LawsuitService {
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
 
-    public GetLawsuitListDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
+    public GetClientLawsuitListDto selectClientLawsuitList(long clientId, GetClientLawsuitForm form) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
 
         // 해당 clientId의 의뢰인이 없을 경우
@@ -66,25 +68,19 @@ public class LawsuitService {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
         }
 
-        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage());
-        SelectClientLawsuitListParam param = SelectClientLawsuitListParam.of(clientId, pagingDto,
-            form.getSearchWord());
+        SelectClientLawsuitListParam param = getParam(form, clientId);
 
-        if (form.getCurPage() == null || form.getRowsPerPage() == null) {
-            param.setOffset(0);
-            param.setLimit(0);
-        }
         // 한 페이지에 나타나는 사건 리스트 목록
         List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectClientLawsuitList(param);
-        int count = lawsuitMapperRepository.selectClientLawsuitCountBySearchWord(param);
+        LawsuitCountDto countDto = lawsuitMapperRepository.countLawsuitsStatusByClientId(param);
 
-        return GetLawsuitListDto.builder()
+        return GetClientLawsuitListDto.builder()
             .lawsuitList(lawsuitList)
-            .count(count)
+            .countDto(countDto)
             .build();
     }
 
-    public GetLawsuitListDto selectEmployeeLawsuitList(long employeeId,
+    public GetEmployeeLawsuitListDto selectEmployeeLawsuitList(long employeeId,
         GetEmployeeLawsuitForm form) {
 
         MemberDtoNonPass memberDto = memberMapperRepository.selectMemberById(employeeId);
@@ -106,7 +102,7 @@ public class LawsuitService {
         List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectEmployeeLawsuitList(param);
         int count = lawsuitMapperRepository.selectEmployeeLawsuitCountBySearchWord(param);
 
-        return GetLawsuitListDto.builder()
+        return GetEmployeeLawsuitListDto.builder()
             .lawsuitList(lawsuitList)
             .count(count)
             .build();
@@ -376,5 +372,18 @@ public class LawsuitService {
             .build();
 
         return result;
+    }
+
+    private SelectClientLawsuitListParam getParam(GetClientLawsuitForm form, long clientId) {
+
+        if (form.getCurPage() == null || form.getRowsPerPage() == null) {
+            return SelectClientLawsuitListParam.of(clientId, form.getSearchWord(),
+                form.getLawsuitStatus());
+        }
+
+        return SelectClientLawsuitListParam.of(clientId,
+            PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage()),
+            form.getSearchWord(), form.getLawsuitStatus());
+
     }
 }

@@ -18,9 +18,31 @@
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
         order by l.created_at desc
         <if test="limit != 0 or offset != 0">
             limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="countLawsuitsStatusByClientId" parameterType="SelectClientLawsuitListParam" resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto">
+        select count(*) as total,
+        sum(case when `lawsuit_status` = 'REGISTRATION' then 1 else 0 end) as
+        registration,
+        sum(case when `lawsuit_status` = 'PROCEEDING' then 1 else 0 end) as proceeding,
+        sum(case when `lawsuit_status` = 'CLOSING' then 1 else 0 end) as closing
+        from `lawsuit`
+        where `id` in (select `lawsuit_id`
+                        from `lawsuit_client_map`
+                        where `client_id` = #{clientId})
+        and `is_deleted` = 0
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
         </if>
     </select>
 
@@ -43,7 +65,7 @@
         </if>
     </select>
 
-    <select id="selectClientLawsuitCountBySearchWord" parameterType="SelectClientLawsuitListParam">
+    <select id="selectClientLawsuitCountBySearchWordAndLawsuitStatus" parameterType="SelectClientLawsuitListParam">
         select count(*)
         from lawsuit l
         join lawsuit_client_map map on l.id = map.lawsuit_id
@@ -54,6 +76,9 @@
             name like concat('%', #{searchWord}, '%') or
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
+        </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
         </if>
     </select>
 
@@ -69,6 +94,9 @@
             name like concat('%', #{searchWord}, '%') or
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
+        </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
         </if>
     </select>
 
