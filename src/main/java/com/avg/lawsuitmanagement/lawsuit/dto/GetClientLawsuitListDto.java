@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class GetLawsuitListDto {
+public class GetClientLawsuitListDto {
     private List<LawsuitDto> lawsuitList;
-    private int count;
+    private LawsuitCountDto countDto;
 }
