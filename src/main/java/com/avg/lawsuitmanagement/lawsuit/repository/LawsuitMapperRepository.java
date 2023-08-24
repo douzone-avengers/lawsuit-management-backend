@@ -4,6 +4,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
@@ -57,4 +58,6 @@ public interface LawsuitMapperRepository {
     List<LawsuitBasicRawDto> selectBasicLawInfo(Long lawsuitId);
 
     void updateLawsuitStatus(LawsuitStatusUpdateParam param);
+
+    List<LawsuitPrintRawDto> selectPrintInfo(Long lawsuitId);
 }
