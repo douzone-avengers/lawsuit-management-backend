@@ -19,9 +19,9 @@ public class LawsuitPrintRawDto {
     private Long lawsuitId;
     private String lawsuitName;
     private String lawsuitNum;
+    private String lawsuitType;
     private Long lawsuitCommissionFee;
     private Long lawsuitContingentFee;
-    private String lawsuitResult;
     private String lawsuitJudgementResult;
     private LocalDate lawsuitJudgementDate;
     private String courtName;

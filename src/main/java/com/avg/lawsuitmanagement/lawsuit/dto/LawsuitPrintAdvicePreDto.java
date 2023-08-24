@@ -15,18 +15,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class LawsuitPrintLawsuitDto {
+public class LawsuitPrintAdvicePreDto {
 
     private Long id;
-    private String name;
-    private String num;
-    private String type;
-    private String court;
-    private Long commissionFee;
-    private Long contingentFee;
-    private String judgementResult;
-    private LocalDate judgementDate;
-    private List<String> clients;
-    private List<String> members;
+    private String title;
+    private String contents;
+    private LocalDate date;
+    private List<IdNameDto> memberIdNames;
+    private List<IdNameDto> clientIdNames;
 
 }

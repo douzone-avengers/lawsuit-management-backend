@@ -228,24 +228,27 @@
         SELECT l.id             `lawsuit_id`,
                l.name           `lawsuit_name`,
                l.lawsuit_num    `lawsuit_num`,
+               l.lawsuit_type   `lawsuit_type`,
                l.commission_fee `lawsuit_commission_fee`,
                l.contingent_fee `lawsuit_contingent_fee`,
                l.result         `lawsuit_judgement_result`,
                l.judgement_date `lawsuit_judgement_date`,
+               c.id             `client_id`,
+               c.name           `client_name`,
+               m.id             `member_id`,
+               m.name           `member_name`,
                co.name_kr       `court_name`,
                a.id             `advice_id`,
                a.title          `advice_title`,
                a.contents       `advice_contents`,
                a.adviced_at     `advice_date`,
-               m.id             `member_id`,
-               m.name           `member_name`,
-               c.id             `client_id`,
-               c.name           `client_name`,
                e.id             `expense_id`,
                e.contents       `expense_contents`,
                e.amount         `expense_amount`,
                e.spening_at     `expense_date`
         FROM lawsuit l
+                 LEFT JOIN lawsuit_client_map lc ON l.id = lc.lawsuit_id
+                 LEFT JOIN lawsuit_member_map lm ON l.id = lm.lawsuit_id
                  LEFT JOIN court co ON co.id = l.court_id
                  LEFT JOIN expense e ON l.id = e.lawsuit_id
                  LEFT JOIN advice a ON l.id = a.lawsuit_id
