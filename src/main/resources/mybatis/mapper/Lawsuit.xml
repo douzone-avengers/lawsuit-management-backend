@@ -18,9 +18,31 @@
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
         order by l.created_at desc
         <if test="limit != 0 or offset != 0">
             limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="countLawsuitsStatusByClientId" parameterType="SelectClientLawsuitListParam" resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto">
+        select count(*) as total,
+        sum(case when `lawsuit_status` = 'REGISTRATION' then 1 else 0 end) as
+        registration,
+        sum(case when `lawsuit_status` = 'PROCEEDING' then 1 else 0 end) as proceeding,
+        sum(case when `lawsuit_status` = 'CLOSING' then 1 else 0 end) as closing
+        from `lawsuit`
+        where `id` in (select `lawsuit_id`
+                        from `lawsuit_client_map`
+                        where `client_id` = #{clientId})
+        and `is_deleted` = 0
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
         </if>
     </select>
 
@@ -43,7 +65,7 @@
         </if>
     </select>
 
-    <select id="selectClientLawsuitCountBySearchWord" parameterType="SelectClientLawsuitListParam">
+    <select id="selectClientLawsuitCountBySearchWordAndLawsuitStatus" parameterType="SelectClientLawsuitListParam">
         select count(*)
         from lawsuit l
         join lawsuit_client_map map on l.id = map.lawsuit_id
@@ -55,9 +77,13 @@
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
     </select>
 
-    <select id="selectEmployeeLawsuitCountBySearchWord" parameterType="SelectEmployeeLawsuitListParam">
+    <select id="selectEmployeeLawsuitCountBySearchWord"
+      parameterType="SelectEmployeeLawsuitListParam">
         select count(*)
         from lawsuit l
         join lawsuit_member_map map on l.id = map.lawsuit_id
@@ -68,6 +94,9 @@
             name like concat('%', #{searchWord}, '%') or
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
+        </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
         </if>
     </select>
 
@@ -221,4 +250,41 @@
           AND l.id = #{id}
     </update>
 
+    <select id="selectPrintInfo"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto">
+        SELECT l.id             `lawsuit_id`,
+               l.name           `lawsuit_name`,
+               l.lawsuit_num    `lawsuit_num`,
+               l.lawsuit_type   `lawsuit_type`,
+               l.commission_fee `lawsuit_commission_fee`,
+               l.contingent_fee `lawsuit_contingent_fee`,
+               l.result         `lawsuit_judgement_result`,
+               l.judgement_date `lawsuit_judgement_date`,
+               c.id             `client_id`,
+               c.name           `client_name`,
+               m.id             `member_id`,
+               m.name           `member_name`,
+               co.name_kr       `court_name`,
+               a.id             `advice_id`,
+               a.title          `advice_title`,
+               a.contents       `advice_contents`,
+               a.adviced_at     `advice_date`,
+               e.id             `expense_id`,
+               e.contents       `expense_contents`,
+               e.amount         `expense_amount`,
+               e.spening_at     `expense_date`
+        FROM lawsuit l
+                 LEFT JOIN lawsuit_client_map lc ON l.id = lc.lawsuit_id
+                 LEFT JOIN lawsuit_member_map lm ON l.id = lm.lawsuit_id
+                 LEFT JOIN court co ON co.id = l.court_id
+                 LEFT JOIN expense e ON l.id = e.lawsuit_id
+                 LEFT JOIN advice a ON l.id = a.lawsuit_id
+                 LEFT JOIN advice_client_map ac ON a.id = ac.advice_id
+                 LEFT JOIN client c ON c.id = ac.client_id
+                 LEFT JOIN advice_member_map am ON a.id = am.advice_id
+                 LEFT JOIN member m ON m.id = am.member_id
+        WHERE l.is_deleted = 0
+          AND l.id = #{id}
+    </select>
 </mapper>
