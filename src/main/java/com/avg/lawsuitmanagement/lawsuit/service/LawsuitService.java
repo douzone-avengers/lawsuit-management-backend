@@ -384,7 +384,7 @@ public class LawsuitService {
 
         return SelectClientLawsuitListParam.of(clientId,
             PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage()),
-            form.getSearchWord(), form.getLawsuitStatus());
+            form.getSearchWord(), form.getLawsuitStatus(), form.getSortKey(), form.getSortOrder());
 
     }
 }
