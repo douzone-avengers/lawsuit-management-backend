@@ -94,9 +94,6 @@
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
-        <if test="lawsuitStatus != null">
-            and lawsuit_status = #{lawsuitStatus}
-        </if>
     </select>
 
     <select id="selectLawsuitById" parameterType="java.lang.Long">
