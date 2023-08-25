@@ -1,11 +1,13 @@
 package com.avg.lawsuitmanagement.expense.controller;
 
+import com.avg.lawsuitmanagement.common.type.SortOrder;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseInsertForm;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseSearchForm;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseUpdateForm;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseDto;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseSearchDto;
 import com.avg.lawsuitmanagement.expense.service.ExpenseService;
+import com.avg.lawsuitmanagement.expense.type.ExpenseSortKey;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +48,12 @@ public class ExpenseController {
         @RequestParam(name = "start-amount", required = false)
         Long startAmount,
         @RequestParam(name = "end-amount", required = false)
-        Long endAmount
+        Long endAmount,
+        @RequestParam(name = "sortKey", required = false)
+        ExpenseSortKey sortKey,
+        @RequestParam(name = "sortOrder", required = false)
+        SortOrder sortOrder
     ) {
-        System.out.println("page = " + page);
         ExpenseSearchForm form = ExpenseSearchForm.builder()
             .lawsuitId(lawsuitId)
             .page(page)
@@ -58,11 +63,13 @@ public class ExpenseController {
             .endSpeningAt(endSpeningAt)
             .startAmount(startAmount)
             .endAmount(endAmount)
+            .sortKey(sortKey)
+            .sortOrder(sortOrder)
             .build();
 
         List<ExpenseDto> expenses  = expenseService.searchExpense(form);
-
         Long size = expenseService.searchSize(form);
+
         ExpenseSearchDto result = ExpenseSearchDto.builder()
             .expenses(expenses)
             .size(size)

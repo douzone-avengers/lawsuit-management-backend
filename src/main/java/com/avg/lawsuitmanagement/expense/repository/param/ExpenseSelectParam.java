@@ -23,4 +23,6 @@ public class ExpenseSelectParam {
     private LocalDate endSpeningAt;
     private Long startAmount;
     private Long endAmount;
+    private String sortKey;
+    private String sortOrder;
 }
