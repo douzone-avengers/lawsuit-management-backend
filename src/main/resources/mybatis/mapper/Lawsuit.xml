@@ -18,7 +18,21 @@
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
-        order by l.created_at desc
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'"
+            >
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'"
+            >
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by l.created_at desc
+            </otherwise>
+        </choose>
         <if test="limit != 0 or offset != 0">
             limit #{limit} offset #{offset}
         </if>
