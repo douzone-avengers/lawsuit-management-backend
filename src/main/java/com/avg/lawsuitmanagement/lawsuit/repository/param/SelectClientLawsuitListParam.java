@@ -1,6 +1,8 @@
 package com.avg.lawsuitmanagement.lawsuit.repository.param;
 
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
+import com.avg.lawsuitmanagement.lawsuit.type.LawsuitSortKey;
+import com.avg.lawsuitmanagement.lawsuit.type.LawsuitSortOrder;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,14 +17,21 @@ public class SelectClientLawsuitListParam {
     private int limit;
     private String searchWord;
     private LawsuitStatus lawsuitStatus;
+    private String sortKey;
+    private String sortOrder;
 
-    public static SelectClientLawsuitListParam of(long clientId, PagingDto pagingDto, String searchWord, LawsuitStatus lawsuitStatus) {
+    public static SelectClientLawsuitListParam of(long clientId, PagingDto pagingDto, String searchWord, LawsuitStatus lawsuitStatus, LawsuitSortKey sortKey, LawsuitSortOrder sortOrder) {
         return SelectClientLawsuitListParam.builder()
             .clientId(clientId)
             .offset(pagingDto.getOffset())
             .limit(pagingDto.getLimit())
             .searchWord(searchWord)
             .lawsuitStatus(lawsuitStatus)
+            .sortKey(
+                sortKey != null ? sortKey.getQueryString() : null)
+            .sortOrder(
+                sortOrder != null ? sortOrder.getQueryString()
+                    : null)
             .build();
     }
 
