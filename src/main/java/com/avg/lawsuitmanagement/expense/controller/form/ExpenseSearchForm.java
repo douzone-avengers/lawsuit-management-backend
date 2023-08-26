@@ -1,6 +1,8 @@
 package com.avg.lawsuitmanagement.expense.controller.form;
 
+import com.avg.lawsuitmanagement.common.type.SortOrder;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam;
+import com.avg.lawsuitmanagement.expense.type.ExpenseSortKey;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +26,8 @@ public class ExpenseSearchForm {
     private LocalDate endSpeningAt;
     private Long startAmount;
     private Long endAmount;
+    private ExpenseSortKey sortKey;
+    private SortOrder sortOrder;
 
     public ExpenseSelectParam toParam() {
         return ExpenseSelectParam.builder()
@@ -35,6 +39,11 @@ public class ExpenseSearchForm {
             .endSpeningAt(endSpeningAt)
             .startAmount(startAmount)
             .endAmount(endAmount)
+            .sortKey(
+                sortKey != null ? sortKey.getQueryString() : null)
+            .sortOrder(
+                sortOrder != null ? sortOrder.getQueryString()
+                    : null)
             .build();
     }
 }

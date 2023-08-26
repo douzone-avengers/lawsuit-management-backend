@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.member.controller.form;
 
+import com.avg.lawsuitmanagement.common.type.SortOrder;
 import com.avg.lawsuitmanagement.member.type.MemberSortKey;
-import com.avg.lawsuitmanagement.member.type.MemberSortOrder;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class SearchEmployeeListForm {
     private Long hierarchyId;
     private Long roleId;
     private MemberSortKey sortKey;
-    private MemberSortOrder sortOrder;
+    private SortOrder sortOrder;
 
     //페이징
     @NotNull

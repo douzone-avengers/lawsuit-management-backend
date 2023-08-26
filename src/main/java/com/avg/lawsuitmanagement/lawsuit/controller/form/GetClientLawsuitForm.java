@@ -1,6 +1,6 @@
 package com.avg.lawsuitmanagement.lawsuit.controller.form;
 
-import com.avg.lawsuitmanagement.lawsuit.type.LawsuitSortOrder;
+import com.avg.lawsuitmanagement.common.type.SortOrder;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitSortKey;
 import lombok.Builder;
@@ -15,7 +15,7 @@ public class GetClientLawsuitForm {
     private String searchWord;
     private LawsuitStatus lawsuitStatus;
     private LawsuitSortKey sortKey;
-    private LawsuitSortOrder sortOrder;
+    private SortOrder sortOrder;
 
     // 페이징
     private Integer curPage;
