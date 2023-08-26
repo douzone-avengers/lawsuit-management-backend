@@ -33,7 +33,21 @@
         <if test="endAmount != 0">
             and #{endAmount} >= amount
         </if>
-        order by id desc
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'"
+            >
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'"
+            >
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by l.created_at desc
+            </otherwise>
+        </choose>
         <choose>
             <when test="page != null">
                 limit ${page * 5}, #{count}
