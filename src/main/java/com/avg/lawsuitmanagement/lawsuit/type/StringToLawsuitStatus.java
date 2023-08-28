@@ -1,6 +1,5 @@
 package com.avg.lawsuitmanagement.lawsuit.type;
 
-import com.avg.lawsuitmanagement.member.type.MemberSortOrder;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
