@@ -125,7 +125,7 @@ public class MemberService {
         LawsuitBasicDto basicLawsuitInfo = lawsuitService.getBasicLawsuitInfo(lawsuitId);
 
         List<BasicUserDto> employees = basicLawsuitInfo.getEmployees();
-        if (isEmployeeInLawsuit(employeeId, employees)) {
+        if (!isEmployeeInLawsuit(employeeId, employees)) {
             throw new CustomRuntimeException(ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
 
