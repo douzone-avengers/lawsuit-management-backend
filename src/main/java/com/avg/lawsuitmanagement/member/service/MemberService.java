@@ -9,7 +9,7 @@ import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
-import com.avg.lawsuitmanagement.common.util.SecurityUtil;
+import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.MemberUpdateForm;
@@ -41,14 +41,11 @@ public class MemberService {
     private final PromotionService promotionService;
     private final ClientMapperRepository clientMapperRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public MemberDto getLoginMemberInfo() {
-        String email = SecurityUtil.getCurrentLoginEmail();
-        return memberMapperRepository.selectMemberByEmail(email);
-    }
+    private final LoginUserInfoService loginUserInfoService;
+    private final LawsuitService lawsuitService;
 
     public void updatePrivateInfo(PrivateUpdateForm form) {
-        MemberDto me = getLoginMemberInfo();
+        MemberDto me = loginUserInfoService.getLoginMemberInfo();
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, me.getId()));
     }
 
@@ -118,6 +115,10 @@ public class MemberService {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);
         }
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, id));
+    }
+
+    public void deleteEmployeeFromLawsuit(long employeeId, long lawsuitId) {
+        return;
     }
 
     private long insertMember(InsertMemberParam param) {
