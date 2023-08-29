@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.member.repository;
 
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
+import com.avg.lawsuitmanagement.member.repository.param.DeleteEmployeeFromLawsuitParam;
 import com.avg.lawsuitmanagement.member.repository.param.InsertMemberParam;
 import com.avg.lawsuitmanagement.member.repository.param.SearchEmployeeListParam;
 import com.avg.lawsuitmanagement.member.repository.param.UpdateMemberParam;
@@ -18,5 +19,6 @@ public interface MemberMapperRepository {
     List<MemberDtoNonPass> selectEmployeeListBySearchCondition(SearchEmployeeListParam param);
     int selectEmployeeListBySearchConditionCount(SearchEmployeeListParam param);
     MemberDtoNonPass selectMemberById(long employeeId);
+    void deleteEmployeeFromLawsuit(DeleteEmployeeFromLawsuitParam param);
 
 }

@@ -126,4 +126,11 @@
         </where>
     </select>
 
+    <update id="deleteEmployeeFromLawsuit" parameterType="DeleteEmployeeFromLawsuitParam">
+        update lawsuit_member_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId}
+          and member_id = #{employeeId}
+    </update>
+
 </mapper>
