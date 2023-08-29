@@ -41,7 +41,8 @@
         </if>
     </select>
 
-    <select id="countLawsuitsStatusByClientId" parameterType="SelectClientLawsuitListParam" resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto">
+    <select id="countLawsuitsStatusByClientId" parameterType="SelectClientLawsuitListParam"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto">
         select count(*) as total,
         sum(case when `lawsuit_status` = 'REGISTRATION' then 1 else 0 end) as
         registration,
@@ -49,8 +50,8 @@
         sum(case when `lawsuit_status` = 'CLOSING' then 1 else 0 end) as closing
         from `lawsuit`
         where `id` in (select `lawsuit_id`
-                        from `lawsuit_client_map`
-                        where `client_id` = #{clientId})
+        from `lawsuit_client_map`
+        where `client_id` = #{clientId})
         and `is_deleted` = 0
         <if test="searchWord != ''">
             and (
@@ -67,6 +68,7 @@
         join lawsuit_member_map map on l.id = map.lawsuit_id
         where map.member_id= #{memberId}
         and l.is_deleted = false
+        and map.is_deleted = false
         <if test="searchWord != ''">
             and (
             name like concat('%', #{searchWord}, '%') or
@@ -79,7 +81,8 @@
         </if>
     </select>
 
-    <select id="selectClientLawsuitCountBySearchWordAndLawsuitStatus" parameterType="SelectClientLawsuitListParam">
+    <select id="selectClientLawsuitCountBySearchWordAndLawsuitStatus"
+      parameterType="SelectClientLawsuitListParam">
         select count(*)
         from lawsuit l
         join lawsuit_client_map map on l.id = map.lawsuit_id
@@ -103,6 +106,7 @@
         join lawsuit_member_map map on l.id = map.lawsuit_id
         where map.member_id = #{memberId}
         and l.is_deleted = false
+        and map.is_deleted = false
         <if test="searchWord != ''">
             and (
             name like concat('%', #{searchWord}, '%') or
@@ -250,6 +254,8 @@
                  LEFT JOIN lawsuit_client_map lc ON lc.lawsuit_id = l.id
                  LEFT JOIN client c ON lc.client_id = c.id
         WHERE l.is_deleted = 0
+          AND lm.is_deleted = 0
+          AND lc.is_deleted = 0
           AND l.id = #{lawsuitId};
     </select>
 
