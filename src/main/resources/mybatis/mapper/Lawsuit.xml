@@ -254,6 +254,8 @@
                  LEFT JOIN lawsuit_client_map lc ON lc.lawsuit_id = l.id
                  LEFT JOIN client c ON lc.client_id = c.id
         WHERE l.is_deleted = 0
+          AND lm.is_deleted = 0
+          AND lc.is_deleted = 0
           AND l.id = #{lawsuitId};
     </select>
 
