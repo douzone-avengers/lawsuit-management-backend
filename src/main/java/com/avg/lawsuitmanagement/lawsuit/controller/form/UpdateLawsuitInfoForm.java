@@ -1,20 +1,23 @@
 package com.avg.lawsuitmanagement.lawsuit.controller.form;
 
+import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import java.util.Date;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class UpdateLawsuitInfoForm {
-    private String lawsuit_type;
+    private String lawsuitType;
     private String name;
-    private int court_id;
-    private int commission_fee;
-    private int contingent_fee;
-    private String lawsuit_status;
-    private String lawsuit_num;
+    private int courtId;
+    private int commissionFee;
+    private int contingentFee;
+    private String lawsuitStatus;
+    private String lawsuitNum;
     private String result;
-    private Date judgement_date;
-    private Date updated_at;
+    private Date judgementDate;
+    private List<Long> memberId;
+    private List<Long> clientId;
 }

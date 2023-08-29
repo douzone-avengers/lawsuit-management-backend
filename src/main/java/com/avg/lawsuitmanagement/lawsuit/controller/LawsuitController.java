@@ -7,6 +7,7 @@ import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import javax.validation.Valid;

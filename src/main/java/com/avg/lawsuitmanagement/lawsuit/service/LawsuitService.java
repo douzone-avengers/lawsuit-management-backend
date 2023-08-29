@@ -32,7 +32,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
-import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectClientLawsuitListParam;
@@ -42,6 +42,7 @@ import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import com.avg.lawsuitmanagement.member.service.MemberService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +60,7 @@ public class LawsuitService {
     private final ClientMapperRepository clientMapperRepository;
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
+    private final MemberService memberService;
 
     public GetClientLawsuitListDto selectClientLawsuitList(long clientId,
         GetClientLawsuitForm form) {
@@ -143,13 +145,26 @@ public class LawsuitService {
         }
 
         lawsuitMapperRepository.insertLawsuitClientMap(
-            InsertLawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
+            LawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
         lawsuitMapperRepository.insertLawsuitMemberMap(
-            InsertLawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
+            LawsuitClientMemberIdParam.of(lawsuitId, clientIdList, memberIdList));
 
     }
 
     public void updateLawsuitInfo(long lawsuitId, UpdateLawsuitInfoForm form) {
+//        System.out.println(form.getMemberId());
+//        System.out.println(form.getClientId());
+
+
+        List<Long> clientIdList = form.getClientId();
+        List<Long> memberIdList = form.getMemberId();
+
+        List<Long> originMemberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
+
+        if (!originMemberIdList.contains(memberService.getLoginMemberInfo().getId())) {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+        }
+
         LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
 
         // lawsuitId에 해당하는 사건이 없다면
@@ -160,7 +175,7 @@ public class LawsuitService {
         // 클라이언트에서 받아온 사건상태 정보를 enum 클래스의 사건 상태들과 비교
         LawsuitStatus lawsuitStatus = null;
         for (LawsuitStatus status : LawsuitStatus.values()) {
-            if (status.getStatusKr().equals(form.getLawsuit_status())) {
+            if (status.getStatusKr().equals(form.getLawsuitStatus())) {
                 lawsuitStatus = status;
             }
         }
@@ -171,6 +186,10 @@ public class LawsuitService {
 
         lawsuitMapperRepository.updateLawsuitInfo(
             UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
+
+        LawsuitClientMemberIdParam param = LawsuitClientMemberIdParam.of(lawsuitId, form.getClientId(), form.getMemberId());
+        lawsuitMapperRepository.deleteMemberLawsuitMemberMap(param);
+        lawsuitMapperRepository.deleteClientLawsuitClientMap(param);
     }
 
     @Transactional

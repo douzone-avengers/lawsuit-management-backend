@@ -8,13 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class InsertLawsuitClientMemberIdParam {
+public class LawsuitClientMemberIdParam {
     private Long lawsuitId;
     private List<Long> clientId;
     private List<Long> memberId;
 
-    public static InsertLawsuitClientMemberIdParam of(long lawsuitId, List<Long> clientIdList, List<Long> memberIdList) {
-        return InsertLawsuitClientMemberIdParam.builder()
+    public static LawsuitClientMemberIdParam of(long lawsuitId, List<Long> clientIdList, List<Long> memberIdList) {
+        return LawsuitClientMemberIdParam.builder()
             .lawsuitId(lawsuitId)
             .clientId(clientIdList)
             .memberId(memberIdList)

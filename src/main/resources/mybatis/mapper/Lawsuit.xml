@@ -134,7 +134,7 @@
     </select>
 
     <!-- lawsuit_client_map 테이블에 데이터 추가 -->
-    <insert id="insertLawsuitClientMap" parameterType="InsertLawsuitClientMemberIdParam">
+    <insert id="insertLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         INSERT INTO lawsuit_client_map (lawsuit_id, client_id)
         VALUES
         <foreach item="clientId" collection="clientId" separator=",">
@@ -143,7 +143,7 @@
     </insert>
 
     <!-- lawsuit_member_map 테이블에 데이터 추가 -->
-    <insert id="insertLawsuitMemberMap" parameterType="InsertLawsuitClientMemberIdParam">
+    <insert id="insertLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         INSERT INTO lawsuit_member_map (lawsuit_id, member_id)
         VALUES
         <foreach item="memberId" collection="memberId" separator=",">
@@ -157,18 +157,41 @@
         where is_deleted = false;
     </select>
 
-    <update id="updateLawsuitInfo">
+    <update id="updateLawsuitInfo" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam">
         update lawsuit
-        set lawsuit_type   = #{lawsuit_type},
-            name           = #{name},
-            court_id       = #{court_id},
-            commission_fee = #{commission_fee},
-            contingent_fee = #{contingent_fee},
-            lawsuit_status = #{lawsuit_status},
-            lawsuit_num    = #{lawsuit_num},
-            result         = #{result},
-            judgement_date = #{judgement_date}
-        where id = #{lawsuitId};
+        set lawsuit_type = #{lawsuitType},
+        name = #{name},
+        court_id = #{courtId},
+        commission_fee = #{commissionFee},
+        contingent_fee = #{contingentFee},
+        lawsuit_status = #{lawsuitStatus},
+        lawsuit_num = #{lawsuitNum},
+        updated_at = now()
+        <if test="result != null">
+            ,result = #{result}
+        </if>
+        <if test="judgementDate != null">
+            ,judgement_date = #{judgementDate}
+        </if>
+        where id = #{lawsuitId}
+    </update>
+
+    <!-- 기존에 있던 담당자 id 삭제 -->
+    <update id="deleteMemberLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        <if test="member_id != #{memberId}">
+            update lawsuit_member_map
+            set is_deleted = 1
+            where lawsuit_id = #{lawsuitId}
+        </if>
+    </update>
+
+    <!-- 기존에 있던 의로인 id 삭제 -->
+    <update id="deleteClientLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        <if test="client_id  != #{clientId}">
+            update lawsuit_client_map
+            set is_deleted = 1
+            where lawsuit_id = #{lawsuitId}
+        </if>
     </update>
 
     <select id="selectClientByLawsuitId" parameterType="java.lang.Long">
