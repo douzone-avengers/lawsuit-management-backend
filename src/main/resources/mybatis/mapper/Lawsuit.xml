@@ -11,6 +11,7 @@
         from lawsuit l
         join lawsuit_client_map map on l.id = map.lawsuit_id
         where map.client_id = #{clientId}
+          and map.is_deleted = false
         and l.is_deleted = false
         <if test="searchWord != ''">
             and (
@@ -130,23 +131,49 @@
         SELECT LAST_INSERT_ID();
     </select>
 
-    <!-- lawsuit_client_map 테이블에 데이터 추가 -->
+    <!-- lawsuit_client_map 테이블에 데이터 추가 (중복된 데이터가 있으면 is_deleted 값만 변경) -->
     <insert id="insertLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
-        INSERT INTO lawsuit_client_map (lawsuit_id, client_id)
-        VALUES
+        insert into lawsuit_client_map (lawsuit_id, client_id)
+        values
         <foreach item="clientId" collection="clientId" separator=",">
             (#{lawsuitId}, #{clientId})
         </foreach>
+        on duplicate key update lawsuit_id = VALUES(lawsuit_id),
+                                client_id = VALUES(client_id),
+                                is_deleted = 0;
     </insert>
 
-    <!-- lawsuit_member_map 테이블에 데이터 추가 -->
+    <!-- lawsuit_member_map 테이블에 데이터 추가 (중복된 데이터가 있으면 is_deleted 값만 변경) -->
     <insert id="insertLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
-        INSERT INTO lawsuit_member_map (lawsuit_id, member_id)
-        VALUES
+        insert into lawsuit_member_map (lawsuit_id, member_id)
+        values
         <foreach item="memberId" collection="memberId" separator=",">
             (#{lawsuitId}, #{memberId})
         </foreach>
+        on duplicate key update lawsuit_id = VALUES(lawsuit_id),
+                                member_id  = VALUES(member_id),
+                                is_deleted = 0;
     </insert>
+
+    <!-- 기존에 있던 담당자 id 삭제 -->
+    <update id="deleteMemberLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        update lawsuit_member_map
+        set is_deleted = 1
+        where lawsuit_id = #{lawsuitId} and
+        <foreach item="memberId" collection="memberId" separator="AND">
+            member_id != #{memberId}
+        </foreach>
+    </update>
+
+    <!-- 기존에 있던 의뢰인 id 삭제 -->
+    <update id="deleteClientLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        update lawsuit_client_map
+        set is_deleted = 1
+        where lawsuit_id = #{lawsuitId} and
+        <foreach item="clientId" collection="clientId" separator="AND">
+            client_id != #{clientId}
+        </foreach>
+    </update>
 
     <select id="selectLawsuitList">
         select *
@@ -173,34 +200,9 @@
         where id = #{lawsuitId}
     </update>
 
-    <!-- 기존에 있던 담당자 id 삭제 -->
-    <update id="deleteMemberLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
-        <if test="member_id != #{memberId}">
-            update lawsuit_member_map
-            set is_deleted = 1
-            where lawsuit_id = #{lawsuitId}
-        </if>
-    </update>
-
-    <!-- 기존에 있던 의로인 id 삭제 -->
-    <update id="deleteClientLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
-        <if test="client_id  != #{clientId}">
-            update lawsuit_client_map
-            set is_deleted = 1
-            where lawsuit_id = #{lawsuitId}
-        </if>
-    </update>
-
     <select id="selectClientByLawsuitId" parameterType="java.lang.Long">
         select client_id
         from lawsuit_client_map
-        where lawsuit_id = #{lawsuitId};
-
-    </select>
-
-    <select id="selectMemberByLawsuitId" parameterType="java.lang.Long">
-        select member_id
-        from lawsuit_member_map
         where lawsuit_id = #{lawsuitId};
     </select>
 

@@ -42,6 +42,7 @@ import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class LawsuitService {
     private final ClientMapperRepository clientMapperRepository;
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
-    private final MemberService memberService;
+    private final LoginUserInfoService loginUserInfoService;
 
     public GetClientLawsuitListDto selectClientLawsuitList(long clientId,
         GetClientLawsuitForm form) {
@@ -151,17 +152,15 @@ public class LawsuitService {
 
     }
 
+    // 사건 수정
+    @Transactional
     public void updateLawsuitInfo(long lawsuitId, UpdateLawsuitInfoForm form) {
-//        System.out.println(form.getMemberId());
-//        System.out.println(form.getClientId());
+        // 기존에 등록된 멤버 id 리스트
+        List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
+        List<Long> originClientIdList = clientMapperRepository.selectClientIdListByLawsuitId(lawsuitId);
 
-
-        List<Long> clientIdList = form.getClientId();
-        List<Long> memberIdList = form.getMemberId();
-
-        List<Long> originMemberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
-
-        if (!originMemberIdList.contains(memberService.getLoginMemberInfo().getId())) {
+        // 로그인한 사용자가 해당 사건의 담당자가 아니라면
+        if (!originMemberIdList.contains(loginUserInfoService.getLoginMemberInfo().getId())) {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
 
@@ -187,9 +186,46 @@ public class LawsuitService {
         lawsuitMapperRepository.updateLawsuitInfo(
             UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
 
-        LawsuitClientMemberIdParam param = LawsuitClientMemberIdParam.of(lawsuitId, form.getClientId(), form.getMemberId());
-        lawsuitMapperRepository.deleteMemberLawsuitMemberMap(param);
-        lawsuitMapperRepository.deleteClientLawsuitClientMap(param);
+        List<Long> insertMemberIdList = new ArrayList<Long>();
+        List<Long> deleteMemberIdList = new ArrayList<Long>();
+        List<Long> insertClientIdList = new ArrayList<Long>();
+        List<Long> deleteClientIdList = new ArrayList<Long>();
+
+        // 수정된 멤버 id에 기존에 등록된 멤버 id가 없으면 해당 id delete
+        for (long memberId : originMemberIdList) {
+            if (!form.getMemberId().contains(memberId)) {
+                deleteMemberIdList.add(memberId);
+            }
+        }
+
+        // 기존에 등록된 멤버에 수정된 멤버 id가 없으면 insert
+        for (long memberId : form.getMemberId()) {
+            if (!originMemberIdList.contains(memberId)) {
+                insertMemberIdList.add(memberId);
+            }
+        }
+
+        // 수정된 의뢰인 id에 기존에 등록된 의뢰인 id가 없으면 해당 id delete
+        for (long clientId : originClientIdList) {
+            if (!form.getClientId().contains(clientId)) {
+                deleteClientIdList.add(clientId);
+            }
+        }
+
+        // 기존에 등록된 의뢰인에 수정된 의뢰인 id가 없으면 insert
+        for (long clientId : form.getClientId()) {
+            if (!originClientIdList.contains(clientId)) {
+                insertClientIdList.add(clientId);
+            }
+        }
+
+        LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId, deleteClientIdList, deleteMemberIdList);
+        lawsuitMapperRepository.deleteMemberLawsuitMemberMap(deleteParam);
+        lawsuitMapperRepository.deleteClientLawsuitClientMap(deleteParam);
+
+        LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId, insertClientIdList, insertMemberIdList);
+        lawsuitMapperRepository.insertLawsuitMemberMap(insertParam);
+        lawsuitMapperRepository.insertLawsuitClientMap(insertParam);
     }
 
     @Transactional
@@ -205,7 +241,7 @@ public class LawsuitService {
         String email = SecurityUtil.getCurrentLoginEmail();
         MemberDto loginMemberInfo = memberMapperRepository.selectMemberByEmail(email);
 
-        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(lawsuitId);
+        List<Long> memberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
         if (!memberIdList.contains(loginMemberInfo.getId())) {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }

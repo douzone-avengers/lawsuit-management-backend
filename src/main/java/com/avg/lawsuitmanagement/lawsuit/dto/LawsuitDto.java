@@ -3,10 +3,12 @@ package com.avg.lawsuitmanagement.lawsuit.dto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
+@ToString
 public class LawsuitDto {
     private Long id;
     private String lawsuitType;
