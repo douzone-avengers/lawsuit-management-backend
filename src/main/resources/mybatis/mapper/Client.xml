@@ -55,4 +55,10 @@
         </foreach>
     </select>
 
+    <select id="selectClientIdListByLawsuitId" parameterType="java.lang.Long" resultType="java.util.List">
+        select clientId
+        from lawsuit_client_map
+        where lawsuit_id = #{lawsuitId}
+    </select>
+
 </mapper>
