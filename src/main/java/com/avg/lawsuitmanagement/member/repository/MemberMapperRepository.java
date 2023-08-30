@@ -18,5 +18,6 @@ public interface MemberMapperRepository {
     List<MemberDtoNonPass> selectEmployeeListBySearchCondition(SearchEmployeeListParam param);
     int selectEmployeeListBySearchConditionCount(SearchEmployeeListParam param);
     MemberDtoNonPass selectMemberById(long employeeId);
+    List<Long> selectMemberIdListByLawsuitId(long lawsuitId);
 
 }
