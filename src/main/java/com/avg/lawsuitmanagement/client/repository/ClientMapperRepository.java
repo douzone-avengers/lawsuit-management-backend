@@ -19,5 +19,6 @@ public interface ClientMapperRepository {
     List<ClientDto> selectClientList();
     List<ClientDto> selectClientListById(List<Long> clientIdList);
     List<Long> selectClientIdListByLawsuitId(long lawsuitId);
+    List<Long> selectClientByLawsuitId(long lawsuitId);
 
 }

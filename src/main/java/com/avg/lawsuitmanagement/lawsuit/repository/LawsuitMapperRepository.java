@@ -35,19 +35,15 @@ public interface LawsuitMapperRepository {
 
     void insertLawsuitClientMap(LawsuitClientMemberIdParam param);
 
-    List<Long> selectClientByLawsuitId(long lawsuitId);
-
     void insertLawsuitMemberMap(LawsuitClientMemberIdParam param);
-
-    List<LawsuitDto> selectLawsuitList();
-
-    void updateLawsuitInfo(UpdateLawsuitInfoParam param);
 
     void deleteMemberLawsuitMemberMap(LawsuitClientMemberIdParam param);
 
     void deleteClientLawsuitClientMap(LawsuitClientMemberIdParam param);
 
-    List<Long> selectMemberByLawsuitId(long lawsuitId);
+    List<LawsuitDto> selectLawsuitList();
+
+    void updateLawsuitInfo(UpdateLawsuitInfoParam param);
 
     void deleteLawsuitInfo(long lawsuitId);
 
