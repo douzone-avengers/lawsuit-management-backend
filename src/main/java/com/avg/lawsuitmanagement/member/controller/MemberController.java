@@ -78,10 +78,10 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/employee/{employeeId}/lawsuit/{lawsuitId}")
+    @PatchMapping("/employees/{employeeId}/lawsuits/{lawsuitId}")
     public ResponseEntity<Void> deleteEmployeeFromLawsuit(@PathVariable long employeeId,
         @PathVariable long lawsuitId) {
-
-        return null;
+        memberService.deleteEmployeeFromLawsuit(employeeId, lawsuitId);
+        return ResponseEntity.ok().build();
     }
 }

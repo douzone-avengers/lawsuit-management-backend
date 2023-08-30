@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    
+
     //500 발생
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 예외가 발생했습니다."),
 
@@ -45,11 +45,11 @@ public enum ErrorCode {
     //사건 관련 예외
     LAWSUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사건입니다."),
     LAWSUIT_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상태입니다."),
+    CANNOT_DELETE_SINGLE_EMPLOYEE_LAWSUIT(HttpStatus.BAD_REQUEST, "단일 담당자 사건은 삭제할 수 없습니다."),
 
 
     //상담 관련 예외
     ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상담입니다."),
-
 
 
     //직책, 역할, 법원
