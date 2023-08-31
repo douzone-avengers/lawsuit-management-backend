@@ -253,9 +253,11 @@
                  LEFT JOIN member m ON lm.member_id = m.id
                  LEFT JOIN lawsuit_client_map lc ON lc.lawsuit_id = l.id
                  LEFT JOIN client c ON lc.client_id = c.id
-        WHERE l.is_deleted = 0
-          AND lm.is_deleted = 0
-          AND lc.is_deleted = 0
+        WHERE l.is_deleted = false
+          AND lm.is_deleted = false
+          AND m.is_deleted = false
+          AND lc.is_deleted = false
+          AND c.is_deleted = false
           AND l.id = #{lawsuitId};
     </select>
 
@@ -263,7 +265,7 @@
       parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam">
         UPDATE lawsuit l
         SET l.lawsuit_status = #{status}
-        WHERE l.is_deleted = 0
+        WHERE l.is_deleted = false
           AND l.id = #{id}
     </update>
 
@@ -301,7 +303,15 @@
                  LEFT JOIN client c ON c.id = ac.client_id
                  LEFT JOIN advice_member_map am ON a.id = am.advice_id
                  LEFT JOIN member m ON m.id = am.member_id
-        WHERE l.is_deleted = 0
+        WHERE l.is_deleted = false
+          AND lc.is_deleted = false
+          AND lm.is_deleted = false
+          AND e.is_deleted = false
+          AND a.is_deleted = false
+          AND ac.is_deleted = false
+          AND c.is_deleted = false
+          AND am.is_deleted = false
+          AND m.is_deleted = false
           AND l.id = #{id}
     </select>
 </mapper>
