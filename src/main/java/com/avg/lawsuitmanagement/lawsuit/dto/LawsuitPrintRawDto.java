@@ -29,6 +29,10 @@ public class LawsuitPrintRawDto {
     private String adviceTitle;
     private String adviceContents;
     private LocalDate adviceDate;
+    private Long adviceMemberId;
+    private String adviceMemberName;
+    private Long adviceClientId;
+    private String adviceClientName;
     private Long memberId;
     private String memberName;
     private Long clientId;

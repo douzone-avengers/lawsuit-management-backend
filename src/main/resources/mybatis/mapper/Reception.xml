@@ -20,7 +20,7 @@
         is_deleted
         FROM reception
         WHERE lawsuit_id = #{lawsuitId}
-        AND is_deleted != true
+        AND is_deleted = false
         <choose>
             <when test='status != null and status.equals("all")'>
 
@@ -87,7 +87,7 @@
                is_deleted
         FROM reception
         WHERE id = #{id}
-          AND is_deleted != true
+          AND is_deleted = false
     </select>
     <insert id="insert"
       parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam"
@@ -118,7 +118,7 @@
             , deadline = #{deadline}
         </if>
         WHERE id = #{id}
-        AND is_deleted != true
+        AND is_deleted = false
     </update>
     <update id="delete"
       parameterType="java.lang.Long"
@@ -126,7 +126,7 @@
         UPDATE reception
         SET is_deleted=1
         WHERE id = #{id}
-          AND is_deleted != true
+          AND is_deleted = false
     </update>
     <delete id="truncate">
         TRUNCATE TABLE reception
@@ -134,13 +134,13 @@
     <select id="count">
         SELECT COUNT(*)
         FROM reception
-        WHERE is_deleted != true
+        WHERE is_deleted = false
     </select>
     <select id="searchCount">
         SELECT COUNT(*)
         FROM reception
         WHERE lawsuit_id = #{lawsuitId}
-        AND is_deleted != true
+        AND is_deleted = false
         <choose>
             <when test='status != null and status.equals("all")'>
 
