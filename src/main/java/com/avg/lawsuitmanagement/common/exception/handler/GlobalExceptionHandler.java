@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,8 +43,6 @@ public class GlobalExceptionHandler {
 
     /**
      * ModelAttribute(param) 일 때 형식 예외에 대한 처리
-     * RequestBody 일 때 형식 위반시 MethodArgumentNotValidException 이 발생한다.
-     * 그런데 BindException은 MethodArgumentNotValidExceptiond의 부모이므로 따로 처리할 필요가 없다.
      */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ExceptionDto> bindException(BindException ex) {
@@ -67,6 +66,27 @@ public class GlobalExceptionHandler {
                 .validExceptions(validExceptions)
                 .build(),
             errorCode.getHttpStatus()
+        );
+    }
+
+    /**
+     * RequestBody 등에서 유효하지 않은 파라미터일 경우 예외처리
+     */
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionDto> methodArgumentNotValidException(
+        MethodArgumentNotValidException ex) {
+        ErrorCode errorCode = ErrorCode.VALID_EXCEPTION;
+        log.error(
+            "methodArgumentNotValidException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+            errorCode.name(), errorCode.getHttpStatus().toString(),
+            errorCode.getMessage(), ex.toString());
+
+        return new ResponseEntity<>(
+            ExceptionDto.builder()
+                .code(errorCode.name())
+                .message(errorCode.getMessage())
+                .build()
+            , errorCode.getHttpStatus()
         );
     }
 
