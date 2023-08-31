@@ -32,6 +32,7 @@ public enum ErrorCode {
 
     //메일 관련 예외
     CANNOT_SEND_MAIL(HttpStatus.BAD_REQUEST, "메일을 전송할 수 없습니다."),
+    TO_LIST_EMPTY(HttpStatus.BAD_REQUEST, "수신자 리스트가 비었습니다."),
 
     //의뢰인 관련 예외
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
