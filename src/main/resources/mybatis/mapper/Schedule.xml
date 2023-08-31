@@ -18,10 +18,10 @@
                  JOIN lawsuit l ON r.lawsuit_id = l.id
                  JOIN lawsuit_member_map map ON l.id = map.lawsuit_id
                  JOIN member m ON m.id = map.member_id
-        WHERE r.is_deleted = false
-          AND l.is_deleted = false
-          AND map.is_deleted = false
-          AND m.is_deleted = false
+        WHERE r.is_deleted != true
+          AND l.is_deleted != true
+          AND map.is_deleted != true
+          AND m.is_deleted != true
           AND r.member_id = #{memberId}
           AND deadline >= #{startDeadline}
           AND #{endDeadline} >= deadline
@@ -55,12 +55,12 @@
                  JOIN member m ON lm.member_id = m.id
                  JOIN client c ON lc.client_id = c.id
                  JOIN court co ON co.id = l.court_id
-        WHERE l.is_deleted = false
-          AND r.is_deleted = false
-          AND lm.is_deleted = false
-          AND lc.is_deleted = false
-          AND m.is_deleted = false
-          AND c.is_deleted = false
+        WHERE l.is_deleted != true
+          AND r.is_deleted != true
+          AND lm.is_deleted != true
+          AND lc.is_deleted != true
+          AND m.is_deleted != true
+          AND c.is_deleted != true
           AND r.id = #{receptionId}
     </select>
 </mapper>
