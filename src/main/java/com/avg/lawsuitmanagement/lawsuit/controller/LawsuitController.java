@@ -7,7 +7,6 @@ import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
-import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -69,12 +68,6 @@ public class LawsuitController {
     @GetMapping("/{lawsuitId}/basic")
     public ResponseEntity<?> getBasicLawsuitInfo(@PathVariable Long lawsuitId) {
         LawsuitBasicDto result = lawsuitService.getBasicLawsuitInfo(lawsuitId);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/{lawsuitId}/print")
-    public ResponseEntity<?> getPrintLawsuitInfo(@PathVariable Long lawsuitId) {
-        LawsuitPrintResponseDto result = lawsuitService.getPrintInfo(lawsuitId);
         return ResponseEntity.ok(result);
     }
 
