@@ -7,6 +7,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintExpenseDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.MemberInfoDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,22 +33,34 @@ public class LawsuitPdfService {
         }
         LawsuitPrintRawDto lawsuit = raws.get(0);
 
-        Map<Long, String> clientNameMap = new HashMap<>();
-        Map<Long, String> memberNameMap = new HashMap<>();
+        Map<Long, MemberInfoDto> clientMap = new HashMap<>();
+        Map<Long, MemberInfoDto> memberMap = new HashMap<>();
         Map<Long, LawsuitPrintAdvicePreDto> adviceMap = new HashMap<>();
         Map<Long, LawsuitPrintExpenseDto> expenseMap = new HashMap<>();
         for (LawsuitPrintRawDto raw : raws) {
             Long clientId = raw.getClientId();
             if (clientId != null) {
-                if (!clientNameMap.containsKey(clientId)) {
-                    clientNameMap.put(clientId, raw.getClientName());
+                if (!clientMap.containsKey(clientId)) {
+                    clientMap.put(clientId, MemberInfoDto.builder()
+                        .id(raw.getClientId())
+                        .email(raw.getClientEmail())
+                        .name(raw.getClientName())
+                        .phone(raw.getClientPhone())
+                        .address(raw.getClientAddress())
+                        .build());
                 }
             }
 
             Long memberId = raw.getMemberId();
             if (memberId != null) {
-                if (!memberNameMap.containsKey(memberId)) {
-                    memberNameMap.put(memberId, raw.getMemberName());
+                if (!memberMap.containsKey(memberId)) {
+                    memberMap.put(memberId, MemberInfoDto.builder()
+                        .id(raw.getMemberId())
+                        .email(raw.getMemberEmail())
+                        .name(raw.getMemberName())
+                        .phone(raw.getMemberPhone())
+                        .address(raw.getMemberAddress())
+                        .build());
                 }
             }
 
@@ -57,15 +70,15 @@ public class LawsuitPdfService {
                     List<IdNameDto> memberIdNames = new ArrayList<>();
                     if (raw.getMemberName() != null) {
                         memberIdNames.add(IdNameDto.builder()
-                            .id(raw.getMemberId())
-                            .name(raw.getMemberName())
+                            .id(raw.getAdviceMemberId())
+                            .name(raw.getAdviceMemberName())
                             .build());
                     }
                     List<IdNameDto> clientIdNames = new ArrayList<>();
                     if (raw.getClientName() != null) {
                         clientIdNames.add(IdNameDto.builder()
-                            .id(raw.getClientId())
-                            .name(raw.getClientName())
+                            .id(raw.getAdviceClientId())
+                            .name(raw.getAdviceClientName())
                             .build());
                     }
                     adviceMap.put(adviceId, LawsuitPrintAdvicePreDto.builder()
@@ -81,8 +94,8 @@ public class LawsuitPdfService {
 
                     List<IdNameDto> memberIdNames = lawsuitPrintAdvicePreDto.getMemberIdNames();
                     IdNameDto memberIdName = IdNameDto.builder()
-                        .id(raw.getMemberId())
-                        .name(raw.getMemberName())
+                        .id(raw.getAdviceMemberId())
+                        .name(raw.getAdviceMemberName())
                         .build();
                     if (raw.getMemberName() != null && memberIdNames.stream()
                         .noneMatch(it -> it.getId()
@@ -92,8 +105,8 @@ public class LawsuitPdfService {
 
                     List<IdNameDto> clientIdNames = lawsuitPrintAdvicePreDto.getClientIdNames();
                     IdNameDto clientIdName = IdNameDto.builder()
-                        .id(raw.getClientId())
-                        .name(raw.getClientName())
+                        .id(raw.getAdviceClientId())
+                        .name(raw.getAdviceClientName())
                         .build();
                     if (raw.getClientName() != null && clientIdNames.stream()
                         .noneMatch(it -> it.getId()
@@ -116,7 +129,7 @@ public class LawsuitPdfService {
             }
         }
 
-        return LawsuitPrintResponseDto.builder()
+        LawsuitPrintResponseDto result = LawsuitPrintResponseDto.builder()
             .lawsuit(LawsuitPrintLawsuitDto.builder()
                 .id(lawsuit.getLawsuitId())
                 .name(lawsuit.getLawsuitName())
@@ -127,8 +140,8 @@ public class LawsuitPdfService {
                 .contingentFee(lawsuit.getLawsuitContingentFee())
                 .judgementResult(lawsuit.getLawsuitJudgementResult())
                 .judgementDate(lawsuit.getLawsuitJudgementDate())
-                .clients(clientNameMap.values().stream().toList())
-                .members(memberNameMap.values().stream().toList())
+                .clients(clientMap.values().stream().toList())
+                .members(memberMap.values().stream().toList())
                 .build())
             .advices(adviceMap.values().stream().map(it -> LawsuitPrintAdviceDto.builder()
                     .id(it.getId())
@@ -141,5 +154,7 @@ public class LawsuitPdfService {
                 .toList())
             .expenses(expenseMap.values().stream().toList())
             .build();
+
+        return result;
     }
 }
