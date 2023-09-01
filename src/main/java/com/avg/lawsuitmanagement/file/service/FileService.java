@@ -21,7 +21,8 @@ public class FileService {
 
     public String save(FileSaveDto dto) {
         String uuid = UUID.randomUUID().toString();
-        String fullFilePath = root+dto.getDetailPath()+dto.getFileName()+uuid;
+        String fullFilePath =
+            root + dto.getDetailPath() + dto.getFileName() + uuid + "." + dto.getExtension();
         byte[] pdfData = Base64.getDecoder().decode(dto.getData());
         try {
             File outputFile = new File(fullFilePath);
@@ -38,11 +39,11 @@ public class FileService {
 
     public void delete(String fullFilePath) {
         File file = new File(fullFilePath);
-        if(!file.exists()) {
+        if (!file.exists()) {
             throw new CustomRuntimeException(ErrorCode.FILE_NOT_FOUND);
         }
         boolean result = file.delete();
-        if(!result) {
+        if (!result) {
             throw new CustomRuntimeException(ErrorCode.FILE_DELETE_FAIL);
         }
     }

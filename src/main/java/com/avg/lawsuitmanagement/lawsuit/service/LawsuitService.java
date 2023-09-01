@@ -154,11 +154,14 @@ public class LawsuitService {
     @Transactional
     public void updateLawsuitInfo(long lawsuitId, UpdateLawsuitInfoForm form) {
         // 기존에 등록된 멤버 id 리스트
-        List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
-        List<Long> originClientIdList = clientMapperRepository.selectClientIdListByLawsuitId(lawsuitId);
+        List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(
+            lawsuitId);
+        List<Long> originClientIdList = clientMapperRepository.selectClientIdListByLawsuitId(
+            lawsuitId);
 
         // 로그인한 사용자가 해당 사건의 담당자 또는 관리자일 때
-        if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
+        if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(),
+            originMemberIdList)) {
             LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
 
             // lawsuitId에 해당하는 사건이 없다면
@@ -200,11 +203,13 @@ public class LawsuitService {
                 }
             }
 
-            LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId, deleteClientIdList, deleteMemberIdList);
+            LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId,
+                deleteClientIdList, deleteMemberIdList);
             lawsuitMapperRepository.deleteMemberLawsuitMemberMap(deleteParam);
             lawsuitMapperRepository.deleteClientLawsuitClientMap(deleteParam);
 
-            LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId, insertClientIdList, insertMemberIdList);
+            LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId,
+                insertClientIdList, insertMemberIdList);
             lawsuitMapperRepository.insertLawsuitMemberMap(insertParam);
             lawsuitMapperRepository.updateLawsuitMemberMap(insertParam);
             lawsuitMapperRepository.insertLawsuitClientMap(insertParam);
@@ -294,13 +299,14 @@ public class LawsuitService {
         //저장
         String fullFilePath = fileService.save(FileSaveDto.builder()
             .data(form.getPdfData())
-            .fileName(lawsuitDto.getLawsuitNum()+"사건집")
+            .extension("pdf")
+            .fileName(lawsuitDto.getLawsuitNum() + "사건집")
             .detailPath("lawsuit-book/")
             .build()
         );
-        
+
         //메일
-        lawsuitMailService.sendLawsuitBook(LawsuitBookMailDto.of(lawsuitDto,fullFilePath,form));
+        lawsuitMailService.sendLawsuitBook(LawsuitBookMailDto.of(lawsuitDto, fullFilePath, form));
     }
 
     public void updateStatus(Long id, LawsuitStatus status) {

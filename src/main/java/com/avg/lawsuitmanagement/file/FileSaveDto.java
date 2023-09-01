@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class FileSaveDto {
     private String fileName;
+    private String extension;
     private String detailPath; //파일 세부 경로
     private String data;
 }
