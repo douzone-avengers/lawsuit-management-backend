@@ -11,6 +11,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/lawsuits")
+@Slf4j
 public class LawsuitController {
 
     private final LawsuitService lawsuitService;
@@ -33,8 +35,10 @@ public class LawsuitController {
     @GetMapping("/clients/{clientId}")
     public ResponseEntity<GetClientLawsuitListDto> selectClientLawsuitList(
         @PathVariable("clientId") Long clientId, @ModelAttribute GetClientLawsuitForm form) {
+        GetClientLawsuitListDto getClientLawsuitListDto = lawsuitService.selectClientLawsuitList(
+            clientId, form);
 
-        return ResponseEntity.ok(lawsuitService.selectClientLawsuitList(clientId, form));
+        return ResponseEntity.ok(getClientLawsuitListDto);
     }
 
     // 사원 별 사건 목록 조회

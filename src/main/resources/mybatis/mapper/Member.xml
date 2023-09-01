@@ -126,6 +126,12 @@
         </where>
     </select>
 
+    <select id="selectMemberIdListByLawsuitId" parameterType="java.lang.Long">
+        select member_id
+        from lawsuit_member_map
+        where lawsuit_id = #{lawsuitId} and is_deleted = false;
+    </select>
+
     <update id="deleteEmployeeFromLawsuit" parameterType="DeleteEmployeeFromLawsuitParam">
         update lawsuit_member_map
         set is_deleted = true

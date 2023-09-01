@@ -5,9 +5,12 @@ import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
 import com.avg.lawsuitmanagement.advice.repository.param.*;
+import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
+import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
+import com.avg.lawsuitmanagement.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,8 @@ public class AdviceService {
 
     private final AdviceMapperRepository adviceMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
+    private final MemberService memberService;
+    private final ClientMapperRepository clientMapperRepository;
 
     public AdviceDto getAdviceById(long adviceId) {
         AdviceDto adviceDto = adviceMapperRepository.selectAdviceById(adviceId);
@@ -43,8 +48,8 @@ public class AdviceService {
         }
 
         // 클라이언트와 멤버 ID 검색
-        List<Long> clientIdList = lawsuitMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
-        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(form.getLawsuitId());
+        List<Long> clientIdList = clientMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
+        List<Long> memberIdList = memberService.selectMemberIdListByLawsuitId(form.getLawsuitId());
 
         // Advice 정보를 삽입
         adviceMapperRepository.insertAdvice(InsertAdviceParam.of(form));
