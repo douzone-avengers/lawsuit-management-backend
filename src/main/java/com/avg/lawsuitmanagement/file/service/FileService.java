@@ -6,6 +6,7 @@ import com.avg.lawsuitmanagement.file.FileSaveDto;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Base64;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public class FileService {
     private final String root = "src/main/resources/file/";
 
     public String save(FileSaveDto dto) {
-        String fullFilePath = root+dto.getDetailPath()+dto.getFileName();
+        String uuid = UUID.randomUUID().toString();
+        String fullFilePath = root+dto.getDetailPath()+dto.getFileName()+uuid;
         byte[] pdfData = Base64.getDecoder().decode(dto.getData());
         try {
             File outputFile = new File(fullFilePath);
