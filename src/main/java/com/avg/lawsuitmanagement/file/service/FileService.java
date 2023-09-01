@@ -33,4 +33,15 @@ public class FileService {
         }
         return fullFilePath;
     }
+
+    public void delete(String fullFilePath) {
+        File file = new File(fullFilePath);
+        if(!file.exists()) {
+            throw new CustomRuntimeException(ErrorCode.FILE_NOT_FOUND);
+        }
+        boolean result = file.delete();
+        if(!result) {
+            throw new CustomRuntimeException(ErrorCode.FILE_DELETE_FAIL);
+        }
+    }
 }

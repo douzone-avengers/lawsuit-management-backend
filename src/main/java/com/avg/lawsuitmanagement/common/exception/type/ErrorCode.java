@@ -32,6 +32,7 @@ public enum ErrorCode {
 
     //파일 관련 예외
     FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일 저장에 실패하였습니다."),
+    FILE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제에 실패하였습니다."),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
 
     //메일 관련 예외
