@@ -287,15 +287,15 @@ public class LawsuitService {
                     List<IdNameDto> memberIdNames = new ArrayList<>();
                     if (raw.getMemberName() != null) {
                         memberIdNames.add(IdNameDto.builder()
-                            .id(raw.getMemberId())
-                            .name(raw.getMemberName())
+                            .id(raw.getAdviceMemberId())
+                            .name(raw.getAdviceMemberName())
                             .build());
                     }
                     List<IdNameDto> clientIdNames = new ArrayList<>();
                     if (raw.getClientName() != null) {
                         clientIdNames.add(IdNameDto.builder()
-                            .id(raw.getClientId())
-                            .name(raw.getClientName())
+                            .id(raw.getAdviceClientId())
+                            .name(raw.getAdviceClientName())
                             .build());
                     }
                     adviceMap.put(adviceId, LawsuitPrintAdvicePreDto.builder()
@@ -311,8 +311,8 @@ public class LawsuitService {
 
                     List<IdNameDto> memberIdNames = lawsuitPrintAdvicePreDto.getMemberIdNames();
                     IdNameDto memberIdName = IdNameDto.builder()
-                        .id(raw.getMemberId())
-                        .name(raw.getMemberName())
+                        .id(raw.getAdviceMemberId())
+                        .name(raw.getAdviceMemberName())
                         .build();
                     if (raw.getMemberName() != null && memberIdNames.stream()
                         .noneMatch(it -> it.getId()
@@ -322,8 +322,8 @@ public class LawsuitService {
 
                     List<IdNameDto> clientIdNames = lawsuitPrintAdvicePreDto.getClientIdNames();
                     IdNameDto clientIdName = IdNameDto.builder()
-                        .id(raw.getClientId())
-                        .name(raw.getClientName())
+                        .id(raw.getAdviceClientId())
+                        .name(raw.getAdviceClientName())
                         .build();
                     if (raw.getClientName() != null && clientIdNames.stream()
                         .noneMatch(it -> it.getId()
