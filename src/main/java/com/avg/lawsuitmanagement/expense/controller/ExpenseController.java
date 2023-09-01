@@ -93,8 +93,8 @@ public class ExpenseController {
 
     // 지출 삭제
     @PatchMapping("/delete/{expenseId}")
-    public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId) {
-        expenseService.deleteExpense(expenseId);
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId, @Validated @RequestParam long lawsuitId) {
+        expenseService.deleteExpense(expenseId, lawsuitId);
         return ResponseEntity.ok(null);
     }
 
