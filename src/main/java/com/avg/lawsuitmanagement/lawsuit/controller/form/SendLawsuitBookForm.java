@@ -1,6 +1,5 @@
 package com.avg.lawsuitmanagement.lawsuit.controller.form;
 
-import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -12,7 +11,12 @@ import lombok.Setter;
 @Setter
 @Valid
 public class SendLawsuitBookForm {
+
     @Email
     @NotNull
     private List<String> toList;
+
+    @NotNull
+    private String pdfData;
+
 }
