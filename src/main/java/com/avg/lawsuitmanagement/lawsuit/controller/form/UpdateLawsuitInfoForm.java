@@ -1,6 +1,5 @@
 package com.avg.lawsuitmanagement.lawsuit.controller.form;
 
-import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;
