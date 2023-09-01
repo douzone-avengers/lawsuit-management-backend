@@ -43,7 +43,6 @@ import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
-import com.avg.lawsuitmanagement.member.service.MemberService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -159,73 +158,61 @@ public class LawsuitService {
         List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
         List<Long> originClientIdList = clientMapperRepository.selectClientIdListByLawsuitId(lawsuitId);
 
-        // 로그인한 사용자가 해당 사건의 담당자가 아니라면
-        if (!originMemberIdList.contains(loginUserInfoService.getLoginMemberInfo().getId())) {
+        // 로그인한 사용자가 해당 사건의 담당자 또는 관리자일 때
+        if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
+            LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+
+            // lawsuitId에 해당하는 사건이 없다면
+            if (lawsuitDto == null) {
+                throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+            }
+
+            // 클라이언트에서 받아온 사건상태 정보를 enum 클래스의 사건 상태들과 비교
+            LawsuitStatus lawsuitStatus = null;
+            for (LawsuitStatus status : LawsuitStatus.values()) {
+                if (status.getStatusKr().equals(form.getLawsuitStatus())) {
+                    lawsuitStatus = status;
+                }
+            }
+
+            if (lawsuitStatus == null) {
+                throw new CustomRuntimeException(LAWSUIT_STATUS_NOT_FOUND);
+            }
+
+            lawsuitMapperRepository.updateLawsuitInfo(
+                UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
+
+            List<Long> insertMemberIdList = new ArrayList<Long>(form.getMemberId());
+            List<Long> deleteMemberIdList = new ArrayList<Long>();
+            List<Long> insertClientIdList = new ArrayList<Long>(form.getClientId());
+            List<Long> deleteClientIdList = new ArrayList<Long>();
+
+            // 수정된 멤버 id에 기존에 등록된 멤버 id가 없으면 해당 id delete
+            for (long memberId : originMemberIdList) {
+                if (!form.getMemberId().contains(memberId)) {
+                    deleteMemberIdList.add(memberId);
+                }
+            }
+
+            // 수정된 의뢰인 id에 기존에 등록된 의뢰인 id가 없으면 해당 id delete
+            for (long clientId : originClientIdList) {
+                if (!form.getClientId().contains(clientId)) {
+                    deleteClientIdList.add(clientId);
+                }
+            }
+
+            LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId, deleteClientIdList, deleteMemberIdList);
+            lawsuitMapperRepository.deleteMemberLawsuitMemberMap(deleteParam);
+            lawsuitMapperRepository.deleteClientLawsuitClientMap(deleteParam);
+
+            LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId, insertClientIdList, insertMemberIdList);
+            lawsuitMapperRepository.insertLawsuitMemberMap(insertParam);
+            lawsuitMapperRepository.updateLawsuitMemberMap(insertParam);
+            lawsuitMapperRepository.insertLawsuitClientMap(insertParam);
+            lawsuitMapperRepository.updateLawsuitClientMap(insertParam);
+        } else {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
-
-        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
-
-        // lawsuitId에 해당하는 사건이 없다면
-        if (lawsuitDto == null) {
-            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
-        }
-
-        // 클라이언트에서 받아온 사건상태 정보를 enum 클래스의 사건 상태들과 비교
-        LawsuitStatus lawsuitStatus = null;
-        for (LawsuitStatus status : LawsuitStatus.values()) {
-            if (status.getStatusKr().equals(form.getLawsuitStatus())) {
-                lawsuitStatus = status;
-            }
-        }
-
-        if (lawsuitStatus == null) {
-            throw new CustomRuntimeException(LAWSUIT_STATUS_NOT_FOUND);
-        }
-
-        lawsuitMapperRepository.updateLawsuitInfo(
-            UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
-
-        List<Long> insertMemberIdList = new ArrayList<Long>();
-        List<Long> deleteMemberIdList = new ArrayList<Long>();
-        List<Long> insertClientIdList = new ArrayList<Long>();
-        List<Long> deleteClientIdList = new ArrayList<Long>();
-
-        // 수정된 멤버 id에 기존에 등록된 멤버 id가 없으면 해당 id delete
-        for (long memberId : originMemberIdList) {
-            if (!form.getMemberId().contains(memberId)) {
-                deleteMemberIdList.add(memberId);
-            }
-        }
-
-        // 기존에 등록된 멤버에 수정된 멤버 id가 없으면 insert
-        for (long memberId : form.getMemberId()) {
-            if (!originMemberIdList.contains(memberId)) {
-                insertMemberIdList.add(memberId);
-            }
-        }
-
-        // 수정된 의뢰인 id에 기존에 등록된 의뢰인 id가 없으면 해당 id delete
-        for (long clientId : originClientIdList) {
-            if (!form.getClientId().contains(clientId)) {
-                deleteClientIdList.add(clientId);
-            }
-        }
-
-        // 기존에 등록된 의뢰인에 수정된 의뢰인 id가 없으면 insert
-        for (long clientId : form.getClientId()) {
-            if (!originClientIdList.contains(clientId)) {
-                insertClientIdList.add(clientId);
-            }
-        }
-
-        LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId, deleteClientIdList, deleteMemberIdList);
-        lawsuitMapperRepository.deleteMemberLawsuitMemberMap(deleteParam);
-        lawsuitMapperRepository.deleteClientLawsuitClientMap(deleteParam);
-
-        LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId, insertClientIdList, insertMemberIdList);
-        lawsuitMapperRepository.insertLawsuitMemberMap(insertParam);
-        lawsuitMapperRepository.insertLawsuitClientMap(insertParam);
     }
 
     @Transactional
@@ -440,6 +427,14 @@ public class LawsuitService {
         return SelectClientLawsuitListParam.of(clientId,
             PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage()),
             form.getSearchWord(), form.getLawsuitStatus(), form.getSortKey(), form.getSortOrder());
+    }
 
+    private boolean isUserAuthorizedForLawsuit(long userId, List<Long> memberIds) {
+        if (SecurityUtil.getCurrentLoginRoleList().contains("ROLE_ADMIN")) {
+            return true;
+        }
+
+        // 로그인한 사용자가 해당 사건의 담당자가 아니라면
+        return memberIds.contains(userId);
     }
 }

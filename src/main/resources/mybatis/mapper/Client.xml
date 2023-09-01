@@ -55,8 +55,8 @@
         </foreach>
     </select>
 
-    <select id="selectClientIdListByLawsuitId" parameterType="java.lang.Long" resultType="java.util.List">
-        select clientId
+    <select id="selectClientIdListByLawsuitId" parameterType="java.lang.Long">
+        select client_id
         from lawsuit_client_map
         where lawsuit_id = #{lawsuitId}
     </select>

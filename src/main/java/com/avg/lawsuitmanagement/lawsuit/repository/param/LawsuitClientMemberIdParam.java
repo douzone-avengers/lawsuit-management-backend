@@ -10,14 +10,14 @@ import lombok.Setter;
 @Builder
 public class LawsuitClientMemberIdParam {
     private Long lawsuitId;
-    private List<Long> clientId;
-    private List<Long> memberId;
+    private List<Long> clientIdList;
+    private List<Long> memberIdList;
 
     public static LawsuitClientMemberIdParam of(long lawsuitId, List<Long> clientIdList, List<Long> memberIdList) {
         return LawsuitClientMemberIdParam.builder()
             .lawsuitId(lawsuitId)
-            .clientId(clientIdList)
-            .memberId(memberIdList)
+            .clientIdList(clientIdList)
+            .memberIdList(memberIdList)
             .build();
     }
 

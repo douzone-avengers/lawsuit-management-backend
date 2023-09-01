@@ -1,7 +1,9 @@
 package com.avg.lawsuitmanagement.common.util;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @Slf4j
@@ -17,5 +19,18 @@ public class SecurityUtil {
         }
 
         return authentication.getName();
+    }
+
+    public static List<String> getCurrentLoginRoleList() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null) {
+            throw  new RuntimeException("Security Context 에 인증 정보가 없습니다.");
+        }
+
+        return authentication.getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .toList();
     }
 }
