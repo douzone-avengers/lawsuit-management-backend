@@ -12,19 +12,22 @@ import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
+import com.avg.lawsuitmanagement.file.FileSaveDto;
+import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.SendLawsuitBookForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicUserDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
-import com.avg.lawsuitmanagement.lawsuit.dto.IdNameDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.mail.LawsuitBookMailDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintAdviceDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintAdvicePreDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintExpenseDto;
@@ -62,6 +65,8 @@ public class LawsuitService {
     private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
     private final LoginUserInfoService loginUserInfoService;
+    private final FileService fileService;
+    private final LawsuitMailService lawsuitMailService;
 
     public GetClientLawsuitListDto selectClientLawsuitList(long clientId,
         GetClientLawsuitForm form) {
@@ -186,10 +191,10 @@ public class LawsuitService {
             lawsuitMapperRepository.updateLawsuitInfo(
                 UpdateLawsuitInfoParam.of(lawsuitId, form, lawsuitStatus));
 
-            List<Long> insertMemberIdList = new ArrayList<Long>(form.getMemberId());
-            List<Long> deleteMemberIdList = new ArrayList<Long>();
-            List<Long> insertClientIdList = new ArrayList<Long>(form.getClientId());
-            List<Long> deleteClientIdList = new ArrayList<Long>();
+            List<Long> insertMemberIdList = new ArrayList<>(form.getMemberId());
+            List<Long> deleteMemberIdList = new ArrayList<>();
+            List<Long> insertClientIdList = new ArrayList<>(form.getClientId());
+            List<Long> deleteClientIdList = new ArrayList<>();
 
             // 수정된 멤버 id에 기존에 등록된 멤버 id가 없으면 해당 id delete
             for (long memberId : originMemberIdList) {
@@ -244,7 +249,6 @@ public class LawsuitService {
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
     }
 
-
     public LawsuitBasicDto getBasicLawsuitInfo(Long lawsuitId) {
         List<LawsuitBasicRawDto> raws = lawsuitMapperRepository.selectBasicLawInfo(
             lawsuitId);
@@ -285,13 +289,31 @@ public class LawsuitService {
             employeeMap.put(employeeId, employee);
         }
 
-        LawsuitBasicDto result = LawsuitBasicDto.builder()
+        return LawsuitBasicDto.builder()
             .lawsuit(lawsuit)
             .employees(employeeMap.values().stream().toList())
             .clients(clientMap.values().stream().toList())
             .build();
+    }
 
-        return result;
+    public void saveAndSendLawsuitBook(SendLawsuitBookForm form, long lawsuitId) {
+
+        //사건 조회
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+        //저장
+        String fullFilePath = fileService.save(FileSaveDto.builder()
+            .data(form.getPdfData())
+            .extension("pdf")
+            .fileName(lawsuitDto.getLawsuitNum() + "사건집")
+            .detailPath("lawsuit-book/")
+            .build()
+        );
+
+        //메일
+        lawsuitMailService.sendLawsuitBook(LawsuitBookMailDto.of(lawsuitDto, fullFilePath, form));
     }
 
     public void updateStatus(Long id, LawsuitStatus status) {
