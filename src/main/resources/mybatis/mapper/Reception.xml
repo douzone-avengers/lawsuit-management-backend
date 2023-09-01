@@ -104,7 +104,7 @@
         UPDATE reception
         SET updated_at = now()
         , received_at = #{receivedAt}
-          
+
         <if test="status != null">
             , status = #{status}
         </if>

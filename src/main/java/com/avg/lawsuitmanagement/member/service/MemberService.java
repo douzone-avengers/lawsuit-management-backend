@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.member.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_REGISTERED;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_EMAIL_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
@@ -10,6 +11,8 @@ import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdPar
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicUserDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
@@ -46,6 +49,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final LoginUserInfoService loginUserInfoService;
     private final LawsuitService lawsuitService;
+    private final LawsuitMapperRepository lawsuitMapperRepository;
 
     public void updatePrivateInfo(PrivateUpdateForm form) {
         MemberDto me = loginUserInfoService.getLoginMemberInfo();
@@ -141,6 +145,16 @@ public class MemberService {
 
     private boolean isEmployeeInLawsuit(long employeeId, List<BasicUserDto> employees) {
         return employees.stream().anyMatch(employee -> employee.getId() == employeeId);
+    }
+
+    public List<Long> selectMemberIdListByLawsuitId(long lawsuitId) {
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+
+        return memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
     }
 
     private long insertMember(InsertMemberParam param) {
