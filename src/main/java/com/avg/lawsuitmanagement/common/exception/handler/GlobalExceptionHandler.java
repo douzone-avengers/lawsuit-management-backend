@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     /**
      * RequestBody 등에서 유효하지 않은 파라미터일 경우 예외처리
      */
-    @ExceptionHandler(BindException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionDto> methodArgumentNotValidException(
         MethodArgumentNotValidException ex) {
         ErrorCode errorCode = ErrorCode.VALID_EXCEPTION;
