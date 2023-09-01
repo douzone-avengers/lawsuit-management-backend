@@ -15,6 +15,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class ExpenseUpdateForm {
+    private Long lawsuitId;
     private LocalDate speningAt;
     private String contents;
     private Long amount;
