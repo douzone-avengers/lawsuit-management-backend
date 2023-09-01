@@ -14,8 +14,8 @@ public class LawsuitDto {
     private String lawsuitType;
     private String name;
     private int courtId;
-    private int commissionFee;
-    private int contingentFee;
+    private Long commissionFee;
+    private Long contingentFee;
     private String lawsuitStatus;
     private String lawsuitNum;
     private String result;

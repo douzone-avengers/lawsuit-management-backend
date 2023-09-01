@@ -13,8 +13,8 @@ public class InsertLawsuitParam {
     private String lawsuitType;
     private String name;
     private int courtId;   // 담당법원 -> int로 받을지 string으로 받을지?
-    private int commissionFee; // 의뢰비
-    private int contingentFee; // 성공보수비용
+    private Long commissionFee; // 의뢰비
+    private Long contingentFee; // 성공보수비용
     private String lawsuitNum;
     private String lawsuitStatus;
 
