@@ -31,9 +31,10 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintExpenseDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintLawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.MemberInfoDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
-import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectEmployeeLawsuitListParam;
@@ -155,11 +156,14 @@ public class LawsuitService {
     @Transactional
     public void updateLawsuitInfo(long lawsuitId, UpdateLawsuitInfoForm form) {
         // 기존에 등록된 멤버 id 리스트
-        List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
-        List<Long> originClientIdList = clientMapperRepository.selectClientIdListByLawsuitId(lawsuitId);
+        List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(
+            lawsuitId);
+        List<Long> originClientIdList = clientMapperRepository.selectClientIdListByLawsuitId(
+            lawsuitId);
 
         // 로그인한 사용자가 해당 사건의 담당자 또는 관리자일 때
-        if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
+        if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(),
+            originMemberIdList)) {
             LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
 
             // lawsuitId에 해당하는 사건이 없다면
@@ -201,11 +205,13 @@ public class LawsuitService {
                 }
             }
 
-            LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId, deleteClientIdList, deleteMemberIdList);
+            LawsuitClientMemberIdParam deleteParam = LawsuitClientMemberIdParam.of(lawsuitId,
+                deleteClientIdList, deleteMemberIdList);
             lawsuitMapperRepository.deleteMemberLawsuitMemberMap(deleteParam);
             lawsuitMapperRepository.deleteClientLawsuitClientMap(deleteParam);
 
-            LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId, insertClientIdList, insertMemberIdList);
+            LawsuitClientMemberIdParam insertParam = LawsuitClientMemberIdParam.of(lawsuitId,
+                insertClientIdList, insertMemberIdList);
             lawsuitMapperRepository.insertLawsuitMemberMap(insertParam);
             lawsuitMapperRepository.updateLawsuitMemberMap(insertParam);
             lawsuitMapperRepository.insertLawsuitClientMap(insertParam);
@@ -304,22 +310,34 @@ public class LawsuitService {
         }
         LawsuitPrintRawDto lawsuit = raws.get(0);
 
-        Map<Long, String> clientNameMap = new HashMap<>();
-        Map<Long, String> memberNameMap = new HashMap<>();
+        Map<Long, MemberInfoDto> clientMap = new HashMap<>();
+        Map<Long, MemberInfoDto> memberMap = new HashMap<>();
         Map<Long, LawsuitPrintAdvicePreDto> adviceMap = new HashMap<>();
         Map<Long, LawsuitPrintExpenseDto> expenseMap = new HashMap<>();
         for (LawsuitPrintRawDto raw : raws) {
             Long clientId = raw.getClientId();
             if (clientId != null) {
-                if (!clientNameMap.containsKey(clientId)) {
-                    clientNameMap.put(clientId, raw.getClientName());
+                if (!clientMap.containsKey(clientId)) {
+                    clientMap.put(clientId, MemberInfoDto.builder()
+                        .id(raw.getClientId())
+                        .email(raw.getClientEmail())
+                        .name(raw.getClientName())
+                        .phone(raw.getClientPhone())
+                        .address(raw.getClientAddress())
+                        .build());
                 }
             }
 
             Long memberId = raw.getMemberId();
             if (memberId != null) {
-                if (!memberNameMap.containsKey(memberId)) {
-                    memberNameMap.put(memberId, raw.getMemberName());
+                if (!memberMap.containsKey(memberId)) {
+                    memberMap.put(memberId, MemberInfoDto.builder()
+                        .id(raw.getMemberId())
+                        .email(raw.getMemberEmail())
+                        .name(raw.getMemberName())
+                        .phone(raw.getMemberPhone())
+                        .address(raw.getMemberAddress())
+                        .build());
                 }
             }
 
@@ -399,8 +417,8 @@ public class LawsuitService {
                 .contingentFee(lawsuit.getLawsuitContingentFee())
                 .judgementResult(lawsuit.getLawsuitJudgementResult())
                 .judgementDate(lawsuit.getLawsuitJudgementDate())
-                .clients(clientNameMap.values().stream().toList())
-                .members(memberNameMap.values().stream().toList())
+                .clients(clientMap.values().stream().toList())
+                .members(memberMap.values().stream().toList())
                 .build())
             .advices(adviceMap.values().stream().map(it -> LawsuitPrintAdviceDto.builder()
                     .id(it.getId())
