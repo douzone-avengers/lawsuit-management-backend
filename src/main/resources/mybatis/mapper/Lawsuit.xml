@@ -11,7 +11,7 @@
         from lawsuit l
         join lawsuit_client_map map on l.id = map.lawsuit_id
         where map.client_id = #{clientId}
-          and map.is_deleted = false
+        and map.is_deleted = false
         and l.is_deleted = false
         <if test="searchWord != ''">
             and (
@@ -136,7 +136,8 @@
     </select>
 
     <!-- lawsuit_client_map 테이블에 데이터 추가-->
-    <insert id="insertLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+    <insert id="insertLawsuitClientMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         insert ignore into lawsuit_client_map (lawsuit_id, client_id, is_deleted)
         values
         <foreach item="clientId" collection="clientIdList" separator=",">
@@ -145,7 +146,8 @@
     </insert>
 
     <!-- 기존에 이미 있던 데이터는 is_deleted 값만 0으로 설정 -->
-    <update id="updateLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+    <update id="updateLawsuitClientMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         update lawsuit_client_map
         set is_deleted = 0
         where lawsuit_id = #{lawsuitId} and
@@ -155,7 +157,8 @@
     </update>
 
     <!-- lawsuit_member_map 테이블에 데이터 추가 -->
-    <insert id="insertLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+    <insert id="insertLawsuitMemberMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         insert ignore into lawsuit_member_map (lawsuit_id, member_id, is_deleted)
         values
         <foreach item="memberId" collection="memberIdList" separator=",">
@@ -164,7 +167,8 @@
     </insert>
 
     <!-- 기존에 이미 있던 데이터는 is_deleted 값만 0으로 설정 -->
-    <update id="updateLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+    <update id="updateLawsuitMemberMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         update lawsuit_member_map
         set is_deleted = 0
         where lawsuit_id = #{lawsuitId} and
@@ -174,7 +178,8 @@
     </update>
 
     <!-- 기존에 있던 담당자 id 삭제 -->
-    <update id="deleteMemberLawsuitMemberMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+    <update id="deleteMemberLawsuitMemberMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         update lawsuit_member_map
         set is_deleted = 1
         where lawsuit_id = #{lawsuitId}
@@ -184,7 +189,8 @@
     </update>
 
     <!-- 기존에 있던 의뢰인 id 삭제 -->
-    <update id="deleteClientLawsuitClientMap" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+    <update id="deleteClientLawsuitClientMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         update lawsuit_client_map
         set is_deleted = 1
         where lawsuit_id = #{lawsuitId}
@@ -199,7 +205,8 @@
         where is_deleted = false;
     </select>
 
-    <update id="updateLawsuitInfo" parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam">
+    <update id="updateLawsuitInfo"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam">
         update lawsuit
         set lawsuit_type = #{lawsuitType},
         name = #{name},
@@ -314,9 +321,15 @@
                         l.result         `lawsuit_judgement_result`,
                         l.judgement_date `lawsuit_judgement_date`,
                         c1.id            `client_id`,
+                        c1.email         `client_email`,
                         c1.name          `client_name`,
+                        c1.phone         `client_phone`,
+                        c1.address       `client_address`,
                         m1.id            `member_id`,
+                        m1.email         `member_email`,
                         m1.name          `member_name`,
+                        m1.phone         `member_phone`,
+                        m1.address       `member_address`,
                         co.name_kr       `court_name`,
                         a.id             `advice_id`,
                         a.title          `advice_title`,

@@ -316,6 +316,7 @@ public class LawsuitService {
             .build());
     }
 
+
     private SelectClientLawsuitListParam getParam(GetClientLawsuitForm form, long clientId) {
 
         if (form.getCurPage() == null || form.getRowsPerPage() == null) {

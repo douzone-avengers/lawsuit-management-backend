@@ -34,9 +34,15 @@ public class LawsuitPrintRawDto {
     private Long adviceClientId;
     private String adviceClientName;
     private Long memberId;
+    private String memberEmail;
     private String memberName;
+    private String memberPhone;
+    private String memberAddress;
     private Long clientId;
+    private String clientEmail;
     private String clientName;
+    private String clientPhone;
+    private String clientAddress;
     private Long expenseId;
     private String expenseContents;
     private Long expenseAmount;
