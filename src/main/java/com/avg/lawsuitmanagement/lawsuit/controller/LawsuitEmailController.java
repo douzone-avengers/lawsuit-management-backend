@@ -18,7 +18,7 @@ public class LawsuitEmailController {
 
     private final LawsuitService lawsuitService;
 
-    @PostMapping("/{lawsuitId}/send-book")
+    @PostMapping("/{lawsuitId}/book")
     public ResponseEntity<Void> sendLawsuitBook(@PathVariable Long lawsuitId,
         @RequestBody @Valid
         SendLawsuitBookForm form) {
