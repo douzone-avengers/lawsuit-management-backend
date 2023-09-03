@@ -17,6 +17,7 @@ import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.SendBillForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.SendLawsuitBookForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.BasicLawsuitDto;
@@ -27,6 +28,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.mail.BillMailDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.mail.LawsuitBookMailDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
@@ -307,6 +309,26 @@ public class LawsuitService {
 
         //메일
         lawsuitMailService.sendLawsuitBook(LawsuitBookMailDto.of(lawsuitDto, fullFilePath, form));
+    }
+
+    public void saveAndSendBill(SendBillForm form, long lawsuitId) {
+
+        //사건 조회
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+        //저장
+        String fullFilePath = fileService.save(FileSaveDto.builder()
+            .data(form.getPdfData())
+            .extension("pdf")
+            .fileName(lawsuitDto.getLawsuitNum() + "청구서")
+            .detailPath("bill/")
+            .build()
+        );
+
+        //메일
+        lawsuitMailService.sendBill(BillMailDto.of(lawsuitDto, fullFilePath, form));
     }
 
     public void updateStatus(Long id, LawsuitStatus status) {

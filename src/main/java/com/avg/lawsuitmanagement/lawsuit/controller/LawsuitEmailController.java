@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.lawsuit.controller;
 
+import com.avg.lawsuitmanagement.lawsuit.controller.form.SendBillForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.SendLawsuitBookForm;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import javax.validation.Valid;
@@ -24,6 +25,14 @@ public class LawsuitEmailController {
         SendLawsuitBookForm form) {
 
         lawsuitService.saveAndSendLawsuitBook(form, lawsuitId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{lawsuitId}/bill")
+    public ResponseEntity<Void> sendBill(@PathVariable Long lawsuitId, @RequestBody @Valid
+        SendBillForm form) {
+
+        lawsuitService.saveAndSendBill(form, lawsuitId);
         return ResponseEntity.ok().build();
     }
 }
