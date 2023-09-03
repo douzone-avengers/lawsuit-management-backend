@@ -17,6 +17,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +61,7 @@ public class ClientService {
         clientMapperRepository.updateClientInfo(UpdateClientInfoParam.of(clientId, form));
     }
 
+    @Transactional
     public void deleteClientInfo(long clientId) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
 

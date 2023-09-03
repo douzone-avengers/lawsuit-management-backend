@@ -5,7 +5,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto;
-import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitClientMemberIdParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectClientLawsuitListParam;
@@ -33,17 +33,21 @@ public interface LawsuitMapperRepository {
 
     Long getLastInsertedLawsuitId();
 
-    void insertLawsuitClientMap(InsertLawsuitClientMemberIdParam param);
+    void insertLawsuitClientMap(LawsuitClientMemberIdParam param);
 
-    List<Long> selectClientByLawsuitId(long lawsuitId);
+    void updateLawsuitClientMap(LawsuitClientMemberIdParam param);
 
-    void insertLawsuitMemberMap(InsertLawsuitClientMemberIdParam param);
+    void insertLawsuitMemberMap(LawsuitClientMemberIdParam param);
+
+    void updateLawsuitMemberMap(LawsuitClientMemberIdParam param);
+
+    void deleteMemberLawsuitMemberMap(LawsuitClientMemberIdParam param);
+
+    void deleteClientLawsuitClientMap(LawsuitClientMemberIdParam param);
 
     List<LawsuitDto> selectLawsuitList();
 
     void updateLawsuitInfo(UpdateLawsuitInfoParam param);
-
-    List<Long> selectMemberByLawsuitId(long lawsuitId);
 
     void deleteLawsuitInfo(long lawsuitId);
 

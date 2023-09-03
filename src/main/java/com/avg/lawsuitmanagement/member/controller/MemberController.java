@@ -8,12 +8,14 @@ import com.avg.lawsuitmanagement.member.controller.form.SearchEmployeeListForm;
 import com.avg.lawsuitmanagement.member.dto.GetMemberListDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
+import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,10 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final LoginUserInfoService loginUserInfoService;
 
     @GetMapping("/me")
     public ResponseEntity<MemberDto> getLoginUserInfo() {
-        return ResponseEntity.ok(memberService.getLoginMemberInfo());
+        return ResponseEntity.ok(loginUserInfoService.getLoginMemberInfo());
     }
 
     @PutMapping("/me")
@@ -70,8 +73,15 @@ public class MemberController {
 
     @PutMapping("/employees/{employeeId}")
     public ResponseEntity<Void> updateEmployee(@PathVariable long employeeId, @RequestBody @Valid
-        MemberUpdateForm form) {
+    MemberUpdateForm form) {
         memberService.updateMemberInfo(employeeId, form);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/employees/{employeeId}/lawsuits/{lawsuitId}")
+    public ResponseEntity<Void> deleteEmployeeFromLawsuit(@PathVariable long employeeId,
+        @PathVariable long lawsuitId) {
+        memberService.deleteEmployeeFromLawsuit(employeeId, lawsuitId);
         return ResponseEntity.ok().build();
     }
 }

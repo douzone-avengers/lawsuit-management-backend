@@ -46,6 +46,8 @@ public class SecurityConfig {
             .antMatchers(HttpMethod.GET, "/members/employees").hasRole("EMPLOYEE")
             .antMatchers(HttpMethod.POST, "/promotions/employees").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/members/employees/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.PATCH, "/members/employees/**").hasRole("ADMIN")
+            .antMatchers("/emails/**").hasRole("EMPLOYEE")
 
             .antMatchers("/tokens/**", "/test/**", "/hierarchy/**", "/role/**", "/court/**" ).permitAll()
             .antMatchers(HttpMethod.GET, "/promotions/clients", "/promotions/employees").permitAll()

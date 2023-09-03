@@ -8,9 +8,11 @@ import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintResponseDto;
+import com.avg.lawsuitmanagement.lawsuit.service.LawsuitPdfService;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,16 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/lawsuits")
+@Slf4j
 public class LawsuitController {
 
     private final LawsuitService lawsuitService;
+    private final LawsuitPdfService lawsuitPdfService;
 
     // 의뢰인 사건 리스트, 페이징 정보
     @GetMapping("/clients/{clientId}")
     public ResponseEntity<GetClientLawsuitListDto> selectClientLawsuitList(
         @PathVariable("clientId") Long clientId, @ModelAttribute GetClientLawsuitForm form) {
+        GetClientLawsuitListDto getClientLawsuitListDto = lawsuitService.selectClientLawsuitList(
+            clientId, form);
 
-        return ResponseEntity.ok(lawsuitService.selectClientLawsuitList(clientId, form));
+        return ResponseEntity.ok(getClientLawsuitListDto);
     }
 
     // 사원 별 사건 목록 조회
@@ -73,8 +79,9 @@ public class LawsuitController {
     }
 
     @GetMapping("/{lawsuitId}/print")
-    public ResponseEntity<?> getPrintLawsuitInfo(@PathVariable Long lawsuitId) {
-        LawsuitPrintResponseDto result = lawsuitService.getPrintInfo(lawsuitId);
+    public ResponseEntity<LawsuitPrintResponseDto> getPrintLawsuitInfo(
+        @PathVariable Long lawsuitId) {
+        LawsuitPrintResponseDto result = lawsuitPdfService.getPrintInfo(lawsuitId);
         return ResponseEntity.ok(result);
     }
 

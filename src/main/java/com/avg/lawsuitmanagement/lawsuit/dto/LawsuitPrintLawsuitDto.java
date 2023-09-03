@@ -26,7 +26,7 @@ public class LawsuitPrintLawsuitDto {
     private Long contingentFee;
     private String judgementResult;
     private LocalDate judgementDate;
-    private List<String> clients;
-    private List<String> members;
+    private List<MemberInfoDto> clients;
+    private List<MemberInfoDto> members;
 
 }

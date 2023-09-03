@@ -45,7 +45,7 @@
                 order by ${sortKey} desc
             </when>
             <otherwise>
-                order by l.created_at desc
+                order by spening_at desc
             </otherwise>
         </choose>
         <choose>

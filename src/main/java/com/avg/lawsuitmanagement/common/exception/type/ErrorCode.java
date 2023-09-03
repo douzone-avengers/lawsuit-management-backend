@@ -30,8 +30,14 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     TOKEN_WRONG(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다"),
 
+    //파일 관련 예외
+    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일 저장에 실패하였습니다."),
+    FILE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제에 실패하였습니다."),
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
+
     //메일 관련 예외
     CANNOT_SEND_MAIL(HttpStatus.BAD_REQUEST, "메일을 전송할 수 없습니다."),
+    TO_LIST_EMPTY(HttpStatus.BAD_REQUEST, "수신자 리스트가 비었습니다."),
 
     //의뢰인 관련 예외
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 의뢰인입니다."),
@@ -52,6 +58,8 @@ public enum ErrorCode {
     MEMBER_NOT_ASSIGNED_TO_ADVICE(HttpStatus.NOT_FOUND, "해당 상담을 담당하는 사원이 아닙니다."),
     ADVICE_MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 상담관입니다."),
     ADVICE_CLIENT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 상담자입니다."),
+
+
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 역할입니다."),

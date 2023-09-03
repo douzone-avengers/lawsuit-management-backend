@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.member.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_REGISTERED;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_EMAIL_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
@@ -8,8 +9,13 @@ import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientMemberIdParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
-import com.avg.lawsuitmanagement.common.util.SecurityUtil;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
+import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
+import com.avg.lawsuitmanagement.lawsuit.dto.BasicUserDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicDto;
+import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import com.avg.lawsuitmanagement.member.controller.form.ClientSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.EmployeeSignUpForm;
 import com.avg.lawsuitmanagement.member.controller.form.MemberUpdateForm;
@@ -19,6 +25,7 @@ import com.avg.lawsuitmanagement.member.dto.GetMemberListDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.dto.MemberDtoNonPass;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import com.avg.lawsuitmanagement.member.repository.param.DeleteEmployeeFromLawsuitParam;
 import com.avg.lawsuitmanagement.member.repository.param.InsertMemberParam;
 import com.avg.lawsuitmanagement.member.repository.param.SearchEmployeeListParam;
 import com.avg.lawsuitmanagement.member.repository.param.UpdateMemberParam;
@@ -31,7 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -41,14 +47,12 @@ public class MemberService {
     private final PromotionService promotionService;
     private final ClientMapperRepository clientMapperRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public MemberDto getLoginMemberInfo() {
-        String email = SecurityUtil.getCurrentLoginEmail();
-        return memberMapperRepository.selectMemberByEmail(email);
-    }
+    private final LoginUserInfoService loginUserInfoService;
+    private final LawsuitService lawsuitService;
+    private final LawsuitMapperRepository lawsuitMapperRepository;
 
     public void updatePrivateInfo(PrivateUpdateForm form) {
-        MemberDto me = getLoginMemberInfo();
+        MemberDto me = loginUserInfoService.getLoginMemberInfo();
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, me.getId()));
     }
 
@@ -106,7 +110,7 @@ public class MemberService {
 
     public MemberDtoNonPass getMemberInfoById(long id) {
         MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
-        if(dto == null) {
+        if (dto == null) {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);
         }
         return dto;
@@ -114,10 +118,43 @@ public class MemberService {
 
     public void updateMemberInfo(long id, MemberUpdateForm form) {
         MemberDtoNonPass dto = memberMapperRepository.selectMemberById(id);
-        if(dto == null) {
+        if (dto == null) {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);
         }
         memberMapperRepository.updateMember(UpdateMemberParam.of(form, id));
+    }
+
+    @Transactional
+    public void deleteEmployeeFromLawsuit(long employeeId, long lawsuitId) {
+        LawsuitBasicDto basicLawsuitInfo = lawsuitService.getBasicLawsuitInfo(lawsuitId);
+
+        List<BasicUserDto> employees = basicLawsuitInfo.getEmployees();
+        if (!isEmployeeInLawsuit(employeeId, employees)) {
+            throw new CustomRuntimeException(ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+        }
+
+        if (employees.size() == 1) {
+            throw new CustomRuntimeException(ErrorCode.CANNOT_DELETE_SINGLE_EMPLOYEE_LAWSUIT);
+        }
+
+        memberMapperRepository.deleteEmployeeFromLawsuit(DeleteEmployeeFromLawsuitParam.builder()
+            .employeeId(employeeId)
+            .lawsuitId(lawsuitId)
+            .build());
+    }
+
+    private boolean isEmployeeInLawsuit(long employeeId, List<BasicUserDto> employees) {
+        return employees.stream().anyMatch(employee -> employee.getId() == employeeId);
+    }
+
+    public List<Long> selectMemberIdListByLawsuitId(long lawsuitId) {
+        LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(lawsuitId);
+
+        if (lawsuitDto == null) {
+            throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+
+        return memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
     }
 
     private long insertMember(InsertMemberParam param) {

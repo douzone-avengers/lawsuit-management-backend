@@ -1,6 +1,5 @@
-package com.avg.lawsuitmanagement.expense.controller.form;
+package com.avg.lawsuitmanagement.lawsuit.dto;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,9 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ExpenseUpdateForm {
-    private Long lawsuitId;
-    private LocalDate speningAt;
-    private String contents;
-    private Long amount;
+public class MemberInfoDto {
+
+    private Long id;
+    private String email;
+    private String name;
+    private String phone;
+    private String address;
+
 }
