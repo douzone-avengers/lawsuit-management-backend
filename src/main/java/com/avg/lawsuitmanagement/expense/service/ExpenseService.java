@@ -1,5 +1,8 @@
 package com.avg.lawsuitmanagement.expense.service;
 
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT;
+
+import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseInsertForm;
 import com.avg.lawsuitmanagement.expense.controller.form.ExpenseSearchForm;
@@ -47,6 +50,8 @@ public class ExpenseService {
 
             expenseRepository.insertExpense(param);
             lawsuitService.updateStatus(form.getLawsuitId(), LawsuitStatus.PROCEEDING);
+        } else {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
     }
 
@@ -56,6 +61,8 @@ public class ExpenseService {
 
         if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
             expenseRepository.updateExpense(ExpenseUpdateParam.of(expenseId, form));
+        } else {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
 
         return expenseRepository.selectExpenseById(expenseId);
@@ -67,6 +74,8 @@ public class ExpenseService {
 
         if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
             expenseRepository.deleteExpense(expenseId);
+        } else {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
     }
 
