@@ -63,6 +63,11 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 역할입니다."),
     COURT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 법원입니다."),
 
+    // 채팅 관련 예외
+    CHAT_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청값입니다."),
+    CHAT_ADD_FRIEND_MY_SELF(HttpStatus.BAD_REQUEST, "자신은 친구로 등록할 수 없습니다."),
+    CHAT_ALREADY_FRIEND(HttpStatus.BAD_REQUEST, "이미 친구로 등록되어 있습니다."),
+
     //TEST
     EXCEPTION_AOP_TEST(HttpStatus.BAD_REQUEST, "TEST : 테스트용 예외가 발생했습니다.");
 
