@@ -4,16 +4,18 @@ import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
-import com.avg.lawsuitmanagement.advice.repository.param.*;
+import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceClientIdParam;
+import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceMemberIdParam;
+import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceParam;
+import com.avg.lawsuitmanagement.advice.repository.param.UpdateAdviceInfoParam;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
-import com.avg.lawsuitmanagement.client.service.ClientService;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
-import com.avg.lawsuitmanagement.member.service.MemberService;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import com.avg.lawsuitmanagement.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -101,8 +103,8 @@ public class AdviceService {
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
         }
 
-        List<Long> clientIdList = lawsuitMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
-        List<Long> memberIdList = lawsuitMapperRepository.selectMemberByLawsuitId(form.getLawsuitId());
+        List<Long> clientIdList = clientMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
+        List<Long> memberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(form.getLawsuitId());
 
         List<Long> formClientIdList = form.getClientIdList();
         List<Long> insertClientIdList = new ArrayList<>();
