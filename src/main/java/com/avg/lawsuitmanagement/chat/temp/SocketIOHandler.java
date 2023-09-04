@@ -1,6 +1,6 @@
-package com.avg.lawsuitmanagement.chat;
+package com.avg.lawsuitmanagement.chat.temp;
 
-import com.avg.lawsuitmanagement.chat.data.MessageRequest;
+import com.avg.lawsuitmanagement.chat.temp.data.MessageRequest;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class SocketIOController {
+public class SocketIOHandler {
 
-    public SocketIOController(SocketIOServer socketIOServer) {
+    public SocketIOHandler(SocketIOServer socketIOServer) {
         socketIOServer.addEventListener("message", MessageRequest.class, handleMessage());
     }
 

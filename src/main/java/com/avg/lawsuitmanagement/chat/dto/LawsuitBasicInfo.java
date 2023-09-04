@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.chat.data;
+package com.avg.lawsuitmanagement.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +13,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class MessageResponse {
+public class LawsuitBasicInfo {
 
     private Long id;
-    private String senderName;
-    private String message;
+    private String type;
+    private String num;
+    private String name;
     
 }
