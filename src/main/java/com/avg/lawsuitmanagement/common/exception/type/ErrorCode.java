@@ -51,6 +51,8 @@ public enum ErrorCode {
     //사건 관련 예외
     LAWSUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사건입니다."),
     LAWSUIT_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상태입니다."),
+    CANNOT_DELETE_SINGLE_EMPLOYEE_LAWSUIT(HttpStatus.BAD_REQUEST, "단일 담당자 사건은 삭제할 수 없습니다."),
+
 
 
     //상담 관련 예외
