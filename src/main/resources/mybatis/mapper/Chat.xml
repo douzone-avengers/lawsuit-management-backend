@@ -14,31 +14,29 @@
         FROM member m
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
         WHERE m.is_deleted = false
-          AND m.role_id != 1
           AND m.email = #{email}
+          AND m.role_id != 1
         ORDER BY m.name
     </select>
     <select id="searchUserDetailByEmail"
       parameterType="java.lang.String"
       resultType="com.avg.lawsuitmanagement.chat.dto.UserSearchDetailRaw">
-        SELECT DISTINCT m.id           `id`,
-                        m.email        `email`,
-                        m.name         `name`,
-                        h.name_kr      `hierarchy`,
-                        l.id           `lawsuit_id`,
-                        l.lawsuit_type `lawsuit_type`,
-                        l.lawsuit_num  `lawsuit_num`,
-                        l.name         `lawsuit_name`
+        SELECT DISTINCT m.id             `id`,
+                        m.email          `email`,
+                        m.name           `name`,
+                        h.name_kr        `hierarchy`,
+                        l.id             `lawsuit_id`,
+                        l.lawsuit_type   `lawsuit_type`,
+                        l.lawsuit_num    `lawsuit_num`,
+                        l.name           `lawsuit_name`,
+                        l.lawsuit_status `lawsuit_status`
         FROM member m
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
-                 LEFT JOIN lawsuit_member_map lm ON m.id = lm.member_id
-                 LEFT JOIN lawsuit l ON lm.lawsuit_id = l.id
+                 LEFT JOIN lawsuit_member_map lm ON (m.id = lm.member_id AND lm.is_deleted = false)
+                 LEFT JOIN lawsuit l ON (lm.lawsuit_id = l.id AND l.is_deleted = false)
         WHERE m.is_deleted = false
-          AND (lm.is_deleted = false OR lm.is_deleted IS NULL)
-          AND (l.is_deleted = false OR l.is_deleted IS NULL)
-# TODO: 종결된 사건은 제외하는 조건 추가
-          AND m.role_id != 1
           AND m.email = #{email}
+          AND m.role_id != 1
         ORDER BY l.id DESC
     </select>
     <select id="searchFriendsById"
@@ -49,17 +47,15 @@
                m.name    `name`,
                h.name_kr `hierarchy`
         FROM chat_friend f
-                 LEFT JOIN member m ON f.friend_id = m.id
+                 LEFT JOIN member m ON (f.friend_id = m.id AND m.is_deleted = false)
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
         WHERE f.is_deleted = false
-          AND (m.is_deleted = false OR m.is_deleted IS NULL)
           AND m.role_id != 1
           AND f.user_id = #{id}
         ORDER BY m.name
-
     </select>
-    <select id="checkIsFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendParam"
+    <select id="checkFriend"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam"
       resultType="java.lang.Boolean">
         SELECT IF(COUNT(*) >= 1, TRUE, FALSE)
         FROM chat_friend
@@ -67,9 +63,36 @@
           AND user_id = #{userId}
           AND friend_id = #{friendId}
     </select>
+    <select id="checkPreviousFriend"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam"
+      resultType="java.lang.Boolean">
+        SELECT IF(COUNT(*) >= 1, TRUE, FALSE)
+        FROM chat_friend
+        WHERE is_deleted = true
+          AND user_id = #{userId}
+          AND friend_id = #{friendId}
+    </select>
     <insert id="addFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendParam">
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
         INSERT INTO chat_friend (user_id, friend_id)
         VALUES (#{userId}, #{friendId})
     </insert>
+    <update id="restoreFriend"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+        UPDATE chat_friend
+        SET is_deleted = false
+        WHERE user_id = #{userId}
+          AND friend_id = #{friendId};
+    </update>
+    <update id="removeFriend"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+        UPDATE chat_friend
+        SET is_deleted = true
+        WHERE user_id = #{userId}
+          AND friend_id = #{friendId};
+    </update>
+    <select id="searchOneToOneRoomId"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+        SELECT id,
+    </select>
 </mapper>

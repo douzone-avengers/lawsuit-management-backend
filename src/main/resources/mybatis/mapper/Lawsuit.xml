@@ -289,15 +289,11 @@
                         c.email          `client_email`
         FROM lawsuit l
                  LEFT JOIN court co ON l.court_id = co.id
-                 LEFT JOIN lawsuit_member_map lm ON lm.lawsuit_id = l.id
-                 LEFT JOIN member m ON lm.member_id = m.id
-                 LEFT JOIN lawsuit_client_map lc ON lc.lawsuit_id = l.id
-                 LEFT JOIN client c ON lc.client_id = c.id
+                 LEFT JOIN lawsuit_member_map lm ON (lm.lawsuit_id = l.id AND lm.is_deleted = false)
+                 LEFT JOIN member m ON (lm.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN lawsuit_client_map lc ON (lc.lawsuit_id = l.id AND lc.is_deleted = false)
+                 LEFT JOIN client c ON (lc.client_id = c.id AND c.is_deleted = false)
         WHERE l.is_deleted = false
-          AND (lm.is_deleted = false OR lm.is_deleted IS NULL)
-          AND (m.is_deleted = false OR m.is_deleted IS NULL)
-          AND (lc.is_deleted = false OR lc.is_deleted IS NULL)
-          AND (c.is_deleted = false OR c.is_deleted IS NULL)
           AND l.id = #{lawsuitId};
     </select>
 
@@ -344,28 +340,18 @@
                         e.amount         `expense_amount`,
                         e.spening_at     `expense_date`
         FROM lawsuit l
-                 LEFT JOIN lawsuit_client_map lc ON l.id = lc.lawsuit_id
-                 LEFT JOIN client c1 ON c1.id = lc.client_id
-                 LEFT JOIN lawsuit_member_map lm ON l.id = lm.lawsuit_id
-                 LEFT JOIN member m1 ON m1.id = lm.member_id
+                 LEFT JOIN lawsuit_client_map lc ON (l.id = lc.lawsuit_id AND lc.is_deleted = false)
+                 LEFT JOIN client c1 ON (c1.id = lc.client_id AND c1.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map lm ON (l.id = lm.lawsuit_id AND lm.is_deleted = false)
+                 LEFT JOIN member m1 ON (m1.id = lm.member_id AND m1.is_deleted = false)
                  LEFT JOIN court co ON co.id = l.court_id
-                 LEFT JOIN expense e ON l.id = e.lawsuit_id
-                 LEFT JOIN advice a ON l.id = a.lawsuit_id
-                 LEFT JOIN advice_client_map ac ON a.id = ac.advice_id
-                 LEFT JOIN client c2 ON c2.id = ac.client_id
-                 LEFT JOIN advice_member_map am ON a.id = am.advice_id
-                 LEFT JOIN member m2 ON m2.id = am.member_id
+                 LEFT JOIN expense e ON (l.id = e.lawsuit_id AND e.is_deleted = false)
+                 LEFT JOIN advice a ON (l.id = a.lawsuit_id AND a.is_deleted = false)
+                 LEFT JOIN advice_client_map ac ON (a.id = ac.advice_id AND ac.is_deleted = false)
+                 LEFT JOIN client c2 ON (c2.id = ac.client_id AND c2.is_deleted = false)
+                 LEFT JOIN advice_member_map am ON (a.id = am.advice_id AND am.is_deleted = false)
+                 LEFT JOIN member m2 ON (m2.id = am.member_id AND m2.is_deleted = false)
         WHERE l.is_deleted = false
-          AND (lc.is_deleted = false OR lc.is_deleted IS NULL)
-          AND (c1.is_deleted = false OR c1.is_deleted IS NULL)
-          AND (lm.is_deleted = false OR lm.is_deleted IS NULL)
-          AND (m1.is_deleted = false OR m1.is_deleted IS NULL)
-          AND (e.is_deleted = false OR e.is_deleted IS NULL)
-          AND (a.is_deleted = false OR a.is_deleted IS NULL)
-          AND (ac.is_deleted = false OR ac.is_deleted IS NULL)
-          AND (c2.is_deleted = false OR c2.is_deleted IS NULL)
-          AND (am.is_deleted = false OR am.is_deleted IS NULL)
-          AND (m2.is_deleted = false OR m2.is_deleted IS NULL)
           AND l.id = #{id}
     </select>
 </mapper>

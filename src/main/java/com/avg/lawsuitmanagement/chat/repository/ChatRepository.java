@@ -1,6 +1,6 @@
 package com.avg.lawsuitmanagement.chat.repository;
 
-import com.avg.lawsuitmanagement.chat.dto.UserFriendParam;
+import com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam;
 import com.avg.lawsuitmanagement.chat.dto.UserSearchDetailRaw;
 import com.avg.lawsuitmanagement.chat.dto.UserSearchRaw;
 import java.util.List;
@@ -15,7 +15,15 @@ public interface ChatRepository {
 
     List<UserSearchRaw> searchFriendsById(Long id);
 
-    boolean checkIsFriend(UserFriendParam param);
+    boolean checkFriend(UserIdFriendIdParam param);
 
-    void addFriend(UserFriendParam param);
+    boolean checkPreviousFriend(UserIdFriendIdParam param);
+
+    void addFriend(UserIdFriendIdParam param);
+
+    void restoreFriend(UserIdFriendIdParam param);
+
+    void removeFriend(UserIdFriendIdParam param);
+
+    Long searchOneToOneRoomId(UserIdFriendIdParam param);
 }

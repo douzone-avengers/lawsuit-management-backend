@@ -23,5 +23,6 @@ public class UserSearchDetailRaw {
     private String lawsuitType;
     private String lawsuitNum;
     private String lawsuitName;
+    private String lawsuitStatus;
 
 }

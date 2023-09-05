@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.chat.service;
 
 import com.avg.lawsuitmanagement.chat.dto.LawsuitBasicInfo;
-import com.avg.lawsuitmanagement.chat.dto.UserFriendParam;
+import com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam;
 import com.avg.lawsuitmanagement.chat.dto.UserSearchDetailRaw;
 import com.avg.lawsuitmanagement.chat.dto.UserSearchDetailResult;
 import com.avg.lawsuitmanagement.chat.dto.UserSearchRaw;
@@ -36,9 +36,21 @@ public class ChatService {
         }
 
         List<UserSearchDetailRaw> raws = chatRepository.searchUserDetailByEmail(email);
+        List<UserSearchDetailRaw> filteredRaws = raws.stream()
+            .peek(item -> {
+                if ("CLOSING".equals(item.getLawsuitStatus())) {
+                    item.setLawsuitId(null);
+                    item.setLawsuitType(null);
+                    item.setLawsuitNum(null);
+                    item.setLawsuitName(null);
+                    item.setLawsuitStatus(null);
+                }
+            })
+            .toList();
+
         Map<Long, LawsuitBasicInfo> lawsuitMap = new HashMap<>();
 
-        for (UserSearchDetailRaw raw : raws) {
+        for (UserSearchDetailRaw raw : filteredRaws) {
             Long lawsuitId = raw.getLawsuitId();
             if (lawsuitId == null) {
                 continue;
@@ -51,11 +63,7 @@ public class ChatService {
                 .build());
         }
 
-        if (raws.isEmpty()) {
-            throw new CustomRuntimeException(ErrorCode.CHAT_INVALID_REQUEST);
-
-        }
-        UserSearchDetailRaw user = raws.get(0);
+        UserSearchDetailRaw user = filteredRaws.get(0);
 
         UserSearchDetailResult result = UserSearchDetailResult.builder()
             .id(user.getId())
@@ -68,8 +76,20 @@ public class ChatService {
         return result;
     }
 
+    public Boolean checkFriend(String userEmail, String friendEmail) {
+        UserSearchRaw user = searchUserByEmail(userEmail);
+        UserSearchRaw friend = searchUserByEmail(friendEmail);
+
+        boolean result = chatRepository.checkFriend(UserIdFriendIdParam.builder()
+            .userId(user.getId())
+            .friendId(friend.getId())
+            .build());
+
+        return result;
+    }
+
     public List<UserSearchRaw> searchFriendByEmail(String email) {
-        UserSearchRaw user = chatRepository.searchUserByEmail(email);
+        UserSearchRaw user = searchUserByEmail(email);
         List<UserSearchRaw> result = chatRepository.searchFriendsById(user.getId());
         return result;
     }
@@ -79,19 +99,53 @@ public class ChatService {
             throw new CustomRuntimeException(ErrorCode.CHAT_ADD_FRIEND_MY_SELF);
         }
 
-        UserSearchRaw user = chatRepository.searchUserByEmail(userEmail);
-        UserSearchRaw friend = chatRepository.searchUserByEmail(friendEmail);
-        if (chatRepository.checkIsFriend(UserFriendParam.builder()
-            .userId(user.getId())
-            .friendId(friend.getId())
-            .build())) {
+        if (checkFriend(userEmail, friendEmail)) {
             throw new CustomRuntimeException(ErrorCode.CHAT_ALREADY_FRIEND);
         }
 
-        chatRepository.addFriend(UserFriendParam.builder()
+        UserSearchRaw user = searchUserByEmail(userEmail);
+        UserSearchRaw friend = searchUserByEmail(friendEmail);
+
+        UserIdFriendIdParam param = UserIdFriendIdParam.builder()
+            .userId(user.getId())
+            .friendId(friend.getId())
+            .build();
+
+        if (chatRepository.checkPreviousFriend(param)) {
+            chatRepository.restoreFriend(param);
+            return;
+        }
+
+        chatRepository.addFriend(param);
+    }
+
+    public void removeFriend(String userEmail, String friendEmail) {
+        UserSearchRaw user = searchUserByEmail(userEmail);
+        UserSearchRaw friend = searchUserByEmail(friendEmail);
+
+        chatRepository.removeFriend(UserIdFriendIdParam.builder()
             .userId(user.getId())
             .friendId(friend.getId())
             .build());
+    }
+
+    public Long searchOneToOneRoomId(String userEmail, String friendEmail) {
+        UserSearchRaw user = searchUserByEmail(userEmail);
+        UserSearchRaw friend = searchUserByEmail(friendEmail);
+
+        UserIdFriendIdParam param = UserIdFriendIdParam.builder()
+            .userId(user.getId())
+            .friendId(friend.getId())
+            .build();
+
+        Long id = chatRepository.searchOneToOneRoomId(param);
+        if (id == null) {
+            param.setUserId(friend.getId());
+            param.setFriendId(user.getId());
+            id = chatRepository.searchOneToOneRoomId(param);
+        }
+
+        return id;
     }
 
 }

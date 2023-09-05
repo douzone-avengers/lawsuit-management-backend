@@ -13,8 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class FriendAddForm {
+public class UserIdFriendIdParam {
 
-    private String email;
-    
+    private Long userId;
+    private Long friendId;
+
 }
