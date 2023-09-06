@@ -5,8 +5,8 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.member.repository.MemberMapperRepository">
 
-    <select id="selectMemberByEmail" parameterType="java.lang.String">
-        select *
+    <select id="selectMemberByEmail" parameterType="java.lang.String" resultType="MemberDto">
+        select id, email, password, name, hierarchy_id, phone, address, address_detail, role_id, created_at, updated_at, is_deleted
         from member m
         where m.email = #{email}
           and m.is_deleted = false
