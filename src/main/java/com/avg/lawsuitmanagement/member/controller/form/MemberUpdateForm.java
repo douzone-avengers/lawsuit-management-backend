@@ -20,6 +20,8 @@ public class MemberUpdateForm {
     private String phone;
     @NotBlank
     private String address;
+    @NotBlank
+    private String addressDetail;
     @NotNull
     private long hierarchyId;
     @NotNull
