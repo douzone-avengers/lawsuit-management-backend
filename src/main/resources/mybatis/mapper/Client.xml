@@ -6,20 +6,20 @@
 <mapper namespace="com.avg.lawsuitmanagement.client.repository.ClientMapperRepository">
 
     <select id="selectClientById" parameterType="java.lang.Long">
-        select *
+        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where id = #{clientId} and is_deleted = false;
     </select>
 
     <select id="selectClientByEmail" parameterType="java.lang.String">
-        select *
+        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where email = #{email} and is_deleted = false;
     </select>
 
     <insert id="insertClient" parameterType="InsertClientParam">
-        insert into client (email, name, phone, address)
-        values (#{email}, #{name}, #{phone}, #{address});
+        insert into client (email, name, phone, address, address_detail)
+        values (#{email}, #{name}, #{phone}, #{address}, #{addressDetail});
     </insert>
 
     <update id="updateClientMemberId" parameterType="UpdateClientMemberIdParam">
@@ -30,7 +30,7 @@
 
     <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
         update client
-        set email = #{email}, name = #{name}, phone = #{phone}, address = #{address}
+        set email = #{email}, name = #{name}, phone = #{phone}, address = #{address} , address_detail = #{addressDetail}
         where id = #{clientId};
     </update>
 
@@ -41,13 +41,13 @@
     </update>
 
     <select id="selectClientList">
-        select *
+        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where is_deleted = false;
     </select>
 
     <select id="selectClientListById" parameterType="java.util.List">
-        select *
+        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where id in
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">

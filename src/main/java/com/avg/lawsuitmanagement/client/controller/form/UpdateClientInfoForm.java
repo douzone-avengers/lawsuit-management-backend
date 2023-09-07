@@ -17,4 +17,6 @@ public class UpdateClientInfoForm {
     private String phone;
     @NotBlank
     private String address;
+    @NotBlank
+    private String addressDetail;
 }
