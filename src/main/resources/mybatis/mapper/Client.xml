@@ -6,13 +6,13 @@
 <mapper namespace="com.avg.lawsuitmanagement.client.repository.ClientMapperRepository">
 
     <select id="selectClientById" parameterType="java.lang.Long">
-        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
+        select id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where id = #{clientId} and is_deleted = false;
     </select>
 
     <select id="selectClientByEmail" parameterType="java.lang.String">
-        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
+        select id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where email = #{email} and is_deleted = false;
     </select>
@@ -41,13 +41,13 @@
     </update>
 
     <select id="selectClientList">
-        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
+        select id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where is_deleted = false;
     </select>
 
     <select id="selectClientListById" parameterType="java.util.List">
-        select id, id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
+        select id, email, name, phone, address, created_at, updated_at, is_deleted, member_id, address_detail
         from client
         where id in
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
