@@ -57,6 +57,8 @@ public enum ErrorCode {
     //상담 관련 예외
     ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상담입니다."),
 
+    // 지출 관련 예외
+    EXPENSE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 지출내역입니다."),
 
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),

@@ -111,4 +111,9 @@
         where id = #{expenseId}
         and is_deleted = false
     </update>
+
+    <insert id="insertExpenseFileMap" parameterType="com.avg.lawsuitmanagement.expense.repository.param.InsertExpenseFileIdParam">
+        insert into expense_file_map (expense_id, file_id)
+        values (#{expenseId}, #{fileId})
+    </insert>
 </mapper>
