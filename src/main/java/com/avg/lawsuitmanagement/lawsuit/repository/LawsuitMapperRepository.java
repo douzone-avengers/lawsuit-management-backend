@@ -22,6 +22,7 @@ public interface LawsuitMapperRepository {
     LawsuitCountDto countLawsuitsStatusByClientId(SelectClientLawsuitListParam param);
 
     List<LawsuitDto> selectEmployeeLawsuitList(SelectEmployeeLawsuitListParam param);
+    LawsuitCountDto countLawsuitsStatusByMemberId(SelectEmployeeLawsuitListParam param);
 
     int selectClientLawsuitCountBySearchWordAndLawsuitStatus(SelectClientLawsuitListParam param);
 
