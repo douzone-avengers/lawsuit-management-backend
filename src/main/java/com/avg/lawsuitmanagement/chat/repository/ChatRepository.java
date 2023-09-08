@@ -1,29 +1,65 @@
 package com.avg.lawsuitmanagement.chat.repository;
 
-import com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam;
-import com.avg.lawsuitmanagement.chat.dto.UserSearchDetailRaw;
-import com.avg.lawsuitmanagement.chat.dto.UserSearchRaw;
+import com.avg.lawsuitmanagement.chat.dto.MessageCreateParam;
+import com.avg.lawsuitmanagement.chat.dto.MessageRaw;
+import com.avg.lawsuitmanagement.chat.dto.MessageRawWithRead;
+import com.avg.lawsuitmanagement.chat.dto.MessageUserId;
+import com.avg.lawsuitmanagement.chat.dto.RoomBasicRaw;
+import com.avg.lawsuitmanagement.chat.dto.RoomCreateParam;
+import com.avg.lawsuitmanagement.chat.dto.RoomMemberMapParam;
+import com.avg.lawsuitmanagement.chat.dto.RoomUserId;
+import com.avg.lawsuitmanagement.chat.dto.UserBasicInfo;
+import com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam;
+import com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitInfo;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ChatRepository {
 
-    UserSearchRaw searchUserByEmail(String email);
+    UserBasicInfo searchUserByEmail(String email);
 
-    List<UserSearchDetailRaw> searchUserDetailByEmail(String email);
+    List<UserWithLawsuitInfo> searchUserDetailByEmail(String email);
 
-    List<UserSearchRaw> searchFriendsById(Long id);
+    List<UserBasicInfo> searchFriendsById(Long id);
 
-    boolean checkFriend(UserIdFriendIdParam param);
+    boolean checkFriendById(UserFriendIdParam param);
 
-    boolean checkPreviousFriend(UserIdFriendIdParam param);
+    boolean checkPreviousFriendById(UserFriendIdParam param);
 
-    void addFriend(UserIdFriendIdParam param);
+    void addFriend(UserFriendIdParam param);
 
-    void restoreFriend(UserIdFriendIdParam param);
+    void restoreFriendById(UserFriendIdParam param);
 
-    void removeFriend(UserIdFriendIdParam param);
+    void removeFriendById(UserFriendIdParam param);
 
-    Long searchOneToOneRoomId(UserIdFriendIdParam param);
+    List<RoomBasicRaw> selectRoomsByUserId(Long id);
+
+    List<RoomBasicRaw> selectRoomById(Long id);
+
+    void createRoom(RoomCreateParam param);
+
+    void createRoomMemberMap(RoomMemberMapParam param);
+
+    Boolean isShowRoomById(Long id);
+
+    void enableIsShowRoomById(Long id);
+
+    List<Long> searchRoomUserIdsById(Long id);
+
+    void saveMessage(MessageCreateParam param);
+
+    void saveMessageIsRead(MessageUserId param);
+
+    List<MessageRawWithRead> searchMessageById(Long id);
+
+    Long countUnreadMessageByRoomIdAndUserId(RoomUserId param);
+
+    MessageRaw searchLatestMessageByRoomId(Long roomId);
+
+    List<MessageRaw> getAllMessagesByRoomId(Long roomId);
+
+    void readAllMessageByRoomIdAndUserId(RoomUserId param);
+
+    Long countUnreadTotalCount(Long userId);
 }

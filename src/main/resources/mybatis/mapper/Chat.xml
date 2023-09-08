@@ -6,7 +6,7 @@
 <mapper namespace="com.avg.lawsuitmanagement.chat.repository.ChatRepository">
     <select id="searchUserByEmail"
       parameterType="java.lang.String"
-      resultType="com.avg.lawsuitmanagement.chat.dto.UserSearchRaw">
+      resultType="com.avg.lawsuitmanagement.chat.dto.UserBasicInfo">
         SELECT m.id      `id`,
                m.email   `email`,
                m.name    `name`,
@@ -20,7 +20,7 @@
     </select>
     <select id="searchUserDetailByEmail"
       parameterType="java.lang.String"
-      resultType="com.avg.lawsuitmanagement.chat.dto.UserSearchDetailRaw">
+      resultType="com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitInfo">
         SELECT DISTINCT m.id             `id`,
                         m.email          `email`,
                         m.name           `name`,
@@ -41,7 +41,7 @@
     </select>
     <select id="searchFriendsById"
       parameterType="java.lang.Long"
-      resultType="com.avg.lawsuitmanagement.chat.dto.UserSearchRaw">
+      resultType="com.avg.lawsuitmanagement.chat.dto.UserBasicInfo">
         SELECT m.id      `id`,
                m.email   `email`,
                m.name    `name`,
@@ -54,8 +54,8 @@
           AND f.user_id = #{id}
         ORDER BY m.name
     </select>
-    <select id="checkFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam"
+    <select id="checkFriendById"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam"
       resultType="java.lang.Boolean">
         SELECT IF(COUNT(*) >= 1, TRUE, FALSE)
         FROM chat_friend
@@ -63,8 +63,8 @@
           AND user_id = #{userId}
           AND friend_id = #{friendId}
     </select>
-    <select id="checkPreviousFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam"
+    <select id="checkPreviousFriendById"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam"
       resultType="java.lang.Boolean">
         SELECT IF(COUNT(*) >= 1, TRUE, FALSE)
         FROM chat_friend
@@ -73,26 +73,190 @@
           AND friend_id = #{friendId}
     </select>
     <insert id="addFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam">
         INSERT INTO chat_friend (user_id, friend_id)
         VALUES (#{userId}, #{friendId})
     </insert>
-    <update id="restoreFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+    <update id="restoreFriendById"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam">
         UPDATE chat_friend
         SET is_deleted = false
         WHERE user_id = #{userId}
           AND friend_id = #{friendId};
     </update>
-    <update id="removeFriend"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+    <update id="removeFriendById"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam">
         UPDATE chat_friend
         SET is_deleted = true
         WHERE user_id = #{userId}
           AND friend_id = #{friendId};
     </update>
-    <select id="searchOneToOneRoomId"
-      parameterType="com.avg.lawsuitmanagement.chat.dto.UserIdFriendIdParam">
+    <select id="selectRoomById"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.chat.dto.RoomBasicRaw">
+        SELECT DISTINCT cr.id      `roomId`,
+                        cr.type    `roomType`,
+                        cr.name    `roomName`,
+                        cr.is_show `roomIsShow`,
+                        m.id       `userId`,
+                        m.email    `userEmail`,
+                        m.name     `userName`,
+                        h.name_kr  `userHierarchy`
+        FROM chat_room cr
+                 LEFT JOIN chat_room_member_map cm_map
+                           ON (cr.id = cm_map.room_id AND cm_map.is_deleted =
+                                                          false)
+                 LEFT JOIN member m ON (cm_map.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
+        WHERE cr.is_deleted = false
+          AND cr.id = #{id}
+    </select>
+    <select id="selectRoomsByUserId"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.chat.dto.RoomBasicRaw">
+        SELECT DISTINCT cr.id      `roomId`,
+                        cr.type    `roomType`,
+                        cr.name    `roomName`,
+                        cr.is_show `roomIsShow`,
+                        m.id       `userId`,
+                        m.email    `userEmail`,
+                        m.name     `userName`,
+                        h.name_kr  `userHierarchy`
+        FROM chat_room cr
+                 LEFT JOIN chat_room_member_map cm_map
+                           ON (cr.id = cm_map.room_id AND cm_map.is_deleted =
+                                                          false)
+                 LEFT JOIN member m ON (cm_map.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
+        WHERE cr.is_deleted = false
+          AND cr.id IN (SELECT room_id
+                        FROM chat_room_member_map cm_map2
+                        WHERE cm_map2.is_deleted = false
+                          AND cm_map2.member_id = #{memberId})
+        ORDER BY cr.created_at DESC
+    </select>
+    <insert id="createRoom"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.RoomCreateParam"
+      useGeneratedKeys="true"
+      keyProperty="id"
+    >
+        INSERT INTO chat_room (type, name)
+        VALUES (#{type}, #{name})
+    </insert>
+    <insert id="createRoomMemberMap"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.RoomMemberMapParam">
+        INSERT INTO chat_room_member_map (room_id, member_id)
+        VALUES (#{roomId}, #{userId})
+    </insert>
+    <select id="isShowRoomById"
+      parameterType="java.lang.Long"
+      resultType="java.lang.Boolean">
+        SELECT is_show
+        FROM chat_room
+        WHERE is_deleted = false
+          AND id = #{id}
+    </select>
+    <update id="enableIsShowRoomById"
+      parameterType="java.lang.Long">
+        UPDATE chat_room
+        SET is_show = true
+        WHERE is_deleted = false
+          AND id = #{id}
+    </update>
+    <select id="searchRoomUserIdsById"
+      parameterType="java.lang.Long"
+      resultType="java.lang.Long">
+        SELECT m.id
+        FROM chat_room cr
+                 LEFT JOIN chat_room_member_map cm_map
+                           ON (cr.id = cm_map.room_id AND cm_map.is_deleted = false)
+                 LEFT JOIN member m ON (cm_map.member_id = m.id AND m.is_deleted = false)
+        WHERE cr.is_deleted = false
+          AND cr.id = #{id}
+    </select>
+    <!--    -->
+
+    <insert id="saveMessage"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.MessageCreateParam"
+      useGeneratedKeys="true"
+      keyProperty="id">
+        INSERT INTO chat_message (room_id, sender_id, content)
+        VALUES (#{roomId}, #{senderId}, #{content})
+    </insert>
+    <insert id="saveMessageIsRead"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.MessageUserId">
+        INSERT INTO chat_message_is_read (message_id, user_id)
+        VALUES (#{messageId}, #{userId})
+    </insert>
+    <select id="searchMessageById"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.chat.dto.MessageRawWithRead">
+        SELECT cm.id         `id`,
+               cm.room_id    `room_id`,
+               cm.sender_id  `sender_id`,
+               cm.content    `content`,
+               cm.created_at `created_at`,
+               cr.user_id    `receiver_id`
+        FROM chat_message cm
+                 LEFT JOIN chat_message_is_read cr ON cm.id = cr.message_id
+        WHERE cm.is_deleted = false
+          AND cm.id = #{id}
+    </select>
+    <select id="searchLatestMessageByRoomId"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.chat.dto.MessageRaw">
         SELECT id,
+               room_id,
+               sender_id,
+               content,
+               created_at
+        FROM chat_message
+        WHERE is_deleted = false
+          AND room_id = #{roomId}
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
+    <select id="countUnreadMessageByRoomIdAndUserId"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.RoomUserId"
+      resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM chat_message cm
+                 JOIN chat_message_is_read cr
+                      ON (cm.id = cr.message_id
+                          AND cr.is_deleted = false
+                          AND cr.user_id = #{userId})
+        WHERE cm.is_deleted = false
+          AND cm.room_id = #{roomId}
+    </select>
+    <select id="getAllMessagesByRoomId"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.chat.dto.MessageRaw">
+        SELECT id,
+               room_id,
+               sender_id,
+               content,
+               created_at
+        FROM chat_message
+        WHERE is_deleted = false
+          AND room_id = #{roomId}
+        ORDER BY created_at
+    </select>
+    <update id="readAllMessageByRoomIdAndUserId"
+      parameterType="com.avg.lawsuitmanagement.chat.dto.RoomUserId">
+        UPDATE chat_message_is_read cr
+        SET cr.is_deleted = true
+        WHERE cr.user_id = #{userId}
+          AND cr.message_id IN (SELECT cm.id
+                                FROM chat_message cm
+                                WHERE cm.is_deleted = false
+                                  AND cm.room_id = #{roomId})
+    </update>
+    <select id="countUnreadTotalCount"
+      parameterType="java.lang.Long"
+      resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM chat_message_is_read
+        WHERE is_deleted = false
+          AND user_id = #{id}
     </select>
 </mapper>

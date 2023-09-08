@@ -13,9 +13,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserIdFriendIdParam {
+public class MessageRawWithRead {
 
-    private Long userId;
-    private Long friendId;
+    private Long id;
+    private Long roomId;
+    private Long senderId;
+    private String content;
+    private String createdAt;
+    private Long receiverId;
 
 }
