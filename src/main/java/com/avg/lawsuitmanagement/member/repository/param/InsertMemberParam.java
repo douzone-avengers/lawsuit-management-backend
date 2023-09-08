@@ -43,6 +43,7 @@ public class InsertMemberParam {
             .phone(form.getPhone())
             .hierarchyId(form.getHierarchyId())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .roleId(form.getRoleId())
             .build();
     }
