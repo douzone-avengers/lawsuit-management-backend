@@ -13,11 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserSearchRaw {
+public class MessageSendRequest {
 
-    private Long id;
-    private String email;
-    private String name;
-    private String hierarchy;
-
+    private Long roomId;
+    private Long senderId;
+    private String content;
 }

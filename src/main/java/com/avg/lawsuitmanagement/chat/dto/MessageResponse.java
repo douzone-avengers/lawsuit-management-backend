@@ -13,15 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserSearchDetailRaw {
+public class MessageResponse {
 
     private Long id;
-    private String email;
-    private String name;
-    private String hierarchy;
-    private Long lawsuitId;
-    private String lawsuitType;
-    private String lawsuitNum;
-    private String lawsuitName;
+    private Long roomId;
+    private Long senderId;
+    private String content;
+    private String createdAt;
 
 }

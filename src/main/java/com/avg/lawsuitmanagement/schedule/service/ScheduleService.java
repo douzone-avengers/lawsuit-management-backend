@@ -50,6 +50,7 @@ public class ScheduleService {
                 .employeeNames(
                     employeeNamesMap.getOrDefault(item.getReceptionId(), Collections.emptyList()))
                 .build())
+            .filter(item -> item.getLawsuitId() != null)
             .collect(Collectors.toSet())
             .stream()
             .toList();

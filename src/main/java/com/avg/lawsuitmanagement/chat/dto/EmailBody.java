@@ -13,8 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class FriendAddForm {
+public class EmailBody {
 
     private String email;
-    
+
 }

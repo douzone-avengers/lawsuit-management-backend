@@ -15,14 +15,11 @@
                         l.name         `lawsuit_name`,
                         m.name         `employee_name`
         FROM reception r
-                 LEFT JOIN lawsuit l ON r.lawsuit_id = l.id
-                 LEFT JOIN lawsuit_member_map map ON l.id = map.lawsuit_id
-                 LEFT JOIN member m ON m.id = map.member_id
+                 LEFT JOIN lawsuit l ON (r.lawsuit_id = l.id AND l.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map map
+                           ON (l.id = map.lawsuit_id AND map.is_deleted = false)
+                 LEFT JOIN member m ON (m.id = map.member_id AND m.is_deleted = false)
         WHERE r.is_deleted = false
-          AND (l.is_deleted = false OR l.is_deleted IS NULL)
-          AND (map.is_deleted = false OR map.is_deleted IS NULL)
-          AND (m.is_deleted = false OR m.is_deleted IS NULL)
-          AND r.member_id = #{memberId}
           AND deadline >= #{startDeadline}
           AND #{endDeadline} >= deadline
     </select>
@@ -49,18 +46,13 @@
                         r.received_at    `reception_received_at`,
                         r.deadline       `reception_deadline`
         FROM lawsuit l
-                 LEFT JOIN reception r ON l.id = r.lawsuit_id
-                 LEFT JOIN lawsuit_member_map lm ON l.id = lm.lawsuit_id
-                 LEFT JOIN member m ON lm.member_id = m.id
-                 LEFT JOIN lawsuit_client_map lc ON l.id = lc.lawsuit_id
-                 LEFT JOIN client c ON lc.client_id = c.id
+                 LEFT JOIN reception r ON (l.id = r.lawsuit_id AND r.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map lm ON (l.id = lm.lawsuit_id AND lm.is_deleted = false)
+                 LEFT JOIN member m ON (lm.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN lawsuit_client_map lc ON (l.id = lc.lawsuit_id AND lc.is_deleted = false)
+                 LEFT JOIN client c ON (lc.client_id = c.id AND c.is_deleted = false)
                  LEFT JOIN court co ON co.id = l.court_id
         WHERE l.is_deleted = false
-          AND (r.is_deleted = false OR r.is_deleted IS NULL)
-          AND (lm.is_deleted = false OR lm.is_deleted IS NULL)
-          AND (m.is_deleted = false OR m.is_deleted IS NULL)
-          AND (lc.is_deleted = false OR lc.is_deleted IS NULL)
-          AND (c.is_deleted = false OR c.is_deleted IS NULL)
           AND r.id = #{receptionId}
     </select>
 </mapper>

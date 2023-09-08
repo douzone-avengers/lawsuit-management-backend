@@ -1,6 +1,5 @@
 package com.avg.lawsuitmanagement.chat.dto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,12 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserSearchDetailResult {
+public class MessageRaw {
 
     private Long id;
-    private String email;
-    private String name;
-    private String hierarchy;
-    private List<LawsuitBasicInfo> lawsuits;
+    private Long roomId;
+    private Long senderId;
+    private String content;
+    private String createdAt;
 
 }
