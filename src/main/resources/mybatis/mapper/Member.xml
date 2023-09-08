@@ -5,16 +5,18 @@
 
 <mapper namespace="com.avg.lawsuitmanagement.member.repository.MemberMapperRepository">
 
-    <select id="selectMemberByEmail" parameterType="java.lang.String">
-        select *
+    <select id="selectMemberByEmail" parameterType="java.lang.String" resultType="MemberDto">
+        select id, email, password, name, hierarchy_id, phone, address, address_detail, role_id, created_at, updated_at, is_deleted
         from member m
         where m.email = #{email}
           and m.is_deleted = false
     </select>
 
     <insert id="insertMember" parameterType="InsertMemberParam">
-        insert into member (email, password, name, phone, hierarchy_id, address, role_id)
-        values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address}, #{roleId})
+        insert into member (email, password, name, phone, hierarchy_id, address, address_detail,
+        role_id)
+        values (#{email}, #{password}, #{name}, #{phone}, #{hierarchyId}, #{address},
+        #{addressDetail}, #{roleId})
         <selectKey keyProperty="id" resultType="java.lang.Long">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -35,6 +37,7 @@
             name         = #{name},
             phone        = #{phone},
             address      = #{address},
+            address_detail= #{addressDetail},
             hierarchy_id = #{hierarchyId},
             role_id      = #{roleId}
         where id = #{id};
@@ -44,7 +47,7 @@
       parameterType="searchEmployeeListParam"
       resultType="MemberDtoNonPass">
         select
-        id, email, name, hierarchy_id, phone, address, role_id, created_at, updated_at
+        id, email, name, hierarchy_id, phone, address, address_detail, role_id, created_at, updated_at
         from
         member
         <where>
@@ -91,6 +94,7 @@
                hierarchy_id,
                phone,
                address,
+               address_detail,
                role_id,
                created_at,
                updated_at
@@ -129,7 +133,8 @@
     <select id="selectMemberIdListByLawsuitId" parameterType="java.lang.Long">
         select member_id
         from lawsuit_member_map
-        where lawsuit_id = #{lawsuitId} and is_deleted = false;
+        where lawsuit_id = #{lawsuitId}
+          and is_deleted = false;
     </select>
 
     <update id="deleteEmployeeFromLawsuit" parameterType="DeleteEmployeeFromLawsuitParam">

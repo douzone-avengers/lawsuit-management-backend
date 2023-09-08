@@ -25,6 +25,8 @@ public class EmployeeSignUpForm {
     private String phone;
     @NotBlank
     private String address;
+    @NotBlank
+    private String addressDetail;
     @NotNull
     @Min(1)
     private long hierarchyId;

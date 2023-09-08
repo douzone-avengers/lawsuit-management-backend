@@ -14,6 +14,7 @@ public class InsertClientParam {
     private String name;
     private String phone;
     private String address;
+    private String addressDetail;
 
     public static InsertClientParam of(InsertClientForm form) {
         return InsertClientParam.builder()
@@ -21,6 +22,7 @@ public class InsertClientParam {
             .name(form.getName())
             .phone(form.getPhone())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .build();
     }
 }

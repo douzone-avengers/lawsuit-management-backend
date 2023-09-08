@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +23,10 @@ public class AdviceController {
     public ResponseEntity<AdviceDto> selectAdviceDetailInfo(@PathVariable("adviceId") Long adviceId) {
         return ResponseEntity.ok(adviceService.getAdviceById(adviceId));
     }
-
+    @GetMapping()
+    public ResponseEntity<List<AdviceDto>> selectAdviceListInfo(@RequestParam(name="lawsuit") Long lawsuitId){
+        return ResponseEntity.ok(adviceService.getAdviceByLawsuitId(lawsuitId));
+    }
     // 상담 등록
     @PostMapping()
     public ResponseEntity<Void> insertAdvice(@RequestBody @Valid InsertAdviceForm form){

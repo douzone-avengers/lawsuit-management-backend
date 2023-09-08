@@ -360,3 +360,4 @@ public class LawsuitService {
         return memberIds.contains(userId);
     }
 }
+
