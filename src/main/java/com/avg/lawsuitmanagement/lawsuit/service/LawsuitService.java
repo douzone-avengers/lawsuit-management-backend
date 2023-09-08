@@ -11,7 +11,6 @@ import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
-import com.avg.lawsuitmanagement.common.util.dto.PagingDto;
 import com.avg.lawsuitmanagement.file.FileSaveDto;
 import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
@@ -93,22 +92,15 @@ public class LawsuitService {
             throw new CustomRuntimeException(MEMBER_NOT_FOUND);
         }
 
-        PagingDto pagingDto = PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage());
-        SelectEmployeeLawsuitListParam param = SelectEmployeeLawsuitListParam.of(employeeId,
-            pagingDto,
-            form.getSearchWord());
+        SelectEmployeeLawsuitListParam param = getParam(form, employeeId);
 
-        if (form.getCurPage() == null || form.getRowsPerPage() == null) {
-            param.setOffset(0);
-            param.setLimit(0);
-        }
         // 한 페이지에 나타나는 사건 리스트 목록
         List<LawsuitDto> lawsuitList = lawsuitMapperRepository.selectEmployeeLawsuitList(param);
-        int count = lawsuitMapperRepository.selectEmployeeLawsuitCountBySearchWord(param);
+        LawsuitCountDto countDto = lawsuitMapperRepository.countLawsuitsStatusByMemberId(param);
 
         return GetEmployeeLawsuitListDto.builder()
             .lawsuitList(lawsuitList)
-            .count(count)
+            .countDto(countDto)
             .build();
     }
 
@@ -349,6 +341,16 @@ public class LawsuitService {
         return SelectClientLawsuitListParam.of(clientId,
             PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage()),
             form.getSearchWord(), form.getLawsuitStatus(), form.getSortKey(), form.getSortOrder());
+    }
+
+    private SelectEmployeeLawsuitListParam getParam(GetEmployeeLawsuitForm form, long employeeId) {
+        if (form.getCurPage() == null || form.getRowsPerPage() == null) {
+            return SelectEmployeeLawsuitListParam.of(employeeId, form.getSearchWord(),
+                form.getLawsuitStatus());
+        }
+
+        return SelectEmployeeLawsuitListParam.of(employeeId, PagingUtil.calculatePaging(
+                form.getCurPage(), form.getRowsPerPage()), form);
     }
 
     private boolean isUserAuthorizedForLawsuit(long userId, List<Long> memberIds) {

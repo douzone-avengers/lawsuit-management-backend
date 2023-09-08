@@ -62,6 +62,26 @@
         </if>
     </select>
 
+    <select id="countLawsuitsStatusByMemberId" parameterType="SelectEmployeeLawsuitListParam"
+      resultType="LawsuitCountDto">
+        select count(*) as total,
+        sum(case when `lawsuit_status` = 'REGISTRATION' then 1 else 0 end) as
+        registration,
+        sum(case when `lawsuit_status` = 'PROCEEDING' then 1 else 0 end) as proceeding,
+        sum(case when `lawsuit_status` = 'CLOSING' then 1 else 0 end) as closing
+        from `lawsuit`
+        where `id` in (select `lawsuit_id`
+        from `lawsuit_member_map`
+        where `member_id` = #{memberId})
+        and `is_deleted` = 0
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+    </select>
+
     <select id="selectEmployeeLawsuitList" parameterType="SelectEmployeeLawsuitListParam"
       resultType="LawsuitDto">
         select l.*
@@ -76,7 +96,24 @@
             lawsuit_num like concat('%', #{searchWord}, '%')
             )
         </if>
-        order by l.created_at desc
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'"
+            >
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'"
+            >
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by l.created_at desc
+            </otherwise>
+        </choose>
         <if test="limit != 0 or offset != 0">
             limit #{limit} offset #{offset}
         </if>
