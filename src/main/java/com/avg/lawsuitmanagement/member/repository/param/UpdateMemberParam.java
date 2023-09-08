@@ -40,6 +40,7 @@ public class UpdateMemberParam {
             .name(form.getName())
             .phone(form.getPhone())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .hierarchyId(form.getHierarchyId())
             .roleId(form.getRoleId())
             .build();
