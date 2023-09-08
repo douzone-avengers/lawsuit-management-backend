@@ -19,6 +19,7 @@ public class InsertMemberParam {
     private String phone;
     private long hierarchyId;
     private String address;
+    private String addressDetail;
     private long roleId;
 
     public static InsertMemberParam of(ClientSignUpForm form, PasswordEncoder passwordEncoder) {
@@ -29,6 +30,7 @@ public class InsertMemberParam {
             .phone(form.getPhone())
             .hierarchyId(1) //고민 필요
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .roleId(1) //고민필요
             .build();
     }
@@ -41,6 +43,7 @@ public class InsertMemberParam {
             .phone(form.getPhone())
             .hierarchyId(form.getHierarchyId())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .roleId(form.getRoleId())
             .build();
     }

@@ -16,6 +16,7 @@ public class UpdateMemberParam {
     private String name;
     private String phone;
     private String address;
+    private String addressDetail;
     private long hierarchyId;
     private long roleId;
 
@@ -26,6 +27,7 @@ public class UpdateMemberParam {
             .name(form.getName())
             .phone(form.getPhone())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .hierarchyId(form.getHierarchyId())
             .roleId(form.getRoleId())
             .build();
@@ -38,6 +40,7 @@ public class UpdateMemberParam {
             .name(form.getName())
             .phone(form.getPhone())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .hierarchyId(form.getHierarchyId())
             .roleId(form.getRoleId())
             .build();

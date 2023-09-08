@@ -16,6 +16,7 @@ public class MemberDtoNonPass {
     private long hierarchyId; //직급 아이디
     private String phone; //전화번호
     private String address; //주소
+    private String addressDetail; // 상세주소
     private long roleId; //역할 아이디
     private String createdAt; //생성일
     private String updatedAt; //수정일

@@ -14,6 +14,7 @@ public class UpdateClientInfoParam {
     private String name;
     private String phone;
     private String address;
+    private String addressDetail;
 
     public static UpdateClientInfoParam of(Long clientId, UpdateClientInfoForm form) {
         return UpdateClientInfoParam.builder()
@@ -22,6 +23,7 @@ public class UpdateClientInfoParam {
             .name(form.getName())
             .phone(form.getPhone())
             .address(form.getAddress())
+            .addressDetail(form.getAddressDetail())
             .build();
     }
 }

@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InsertClientForm {
-
     @Email
     private String email;
     @Size(min=2, max=10)
@@ -18,4 +17,6 @@ public class InsertClientForm {
     private String phone;
     @NotBlank
     private String address;
+    @NotBlank
+    private String addressDetail;
 }
