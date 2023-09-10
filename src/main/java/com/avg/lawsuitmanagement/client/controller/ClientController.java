@@ -26,7 +26,8 @@ public class ClientController {
 
     // 의뢰인 상세정보
     @GetMapping("/{clientId}")
-    public ResponseEntity<ClientDto> selectClientDetailInfo(@PathVariable("clientId") Long clientId) {
+    public ResponseEntity<ClientDto> selectClientDetailInfo(
+        @PathVariable("clientId") Long clientId) {
         return ResponseEntity.ok(clientService.getClientById(clientId));
     }
 
@@ -39,7 +40,8 @@ public class ClientController {
 
     // 의뢰인 수정
     @PutMapping("/{clientId}")
-    public ResponseEntity<Void> updateClientInfo(@PathVariable("clientId") Long clientId, @RequestBody @Valid UpdateClientInfoForm form) {
+    public ResponseEntity<Void> updateClientInfo(@PathVariable("clientId") Long clientId,
+        @RequestBody @Valid UpdateClientInfoForm form) {
         clientService.updateClientInfo(clientId, form);
         return ResponseEntity.ok().build();
     }
@@ -55,6 +57,12 @@ public class ClientController {
     @GetMapping()
     public ResponseEntity<List<ClientDto>> selectClientList() {
         return ResponseEntity.ok(clientService.selectClientList());
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> selectClientIdByEmail(@PathVariable String email) {
+        ClientDto result = clientService.selectClientIdByEmail(email);
+        return ResponseEntity.ok().body(result);
     }
 }
 

@@ -35,11 +35,31 @@ public class ChatController {
         return ResponseEntity.ok().body(body);
     }
 
+    @GetMapping("/users/employees")
+    public ResponseEntity<?> searchEmployees() {
+        List<UserBasicInfo> result = chatService.searchEmployees();
+        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/users/clients")
+    public ResponseEntity<?> searchClients() {
+        List<UserBasicInfo> result = chatService.searchClients();
+        return ResponseEntity.ok().body(result);
+    }
+
     @GetMapping("/users/detail")
     public ResponseEntity<?> searchUserDetailByEmail(
         @RequestParam String email
     ) {
         UserWithLawsuitResult body = chatService.searchUserDetailByEmail(email);
+        return ResponseEntity.ok().body(body);
+    }
+
+    @GetMapping("/friends")
+    public ResponseEntity<?> searchFriendsByEmail(
+        @RequestParam String email
+    ) {
+        List<UserBasicInfo> body = chatService.searchFriendByEmail(email);
         return ResponseEntity.ok().body(body);
     }
 
@@ -49,14 +69,6 @@ public class ChatController {
     ) {
         String userEmail = SecurityUtil.getCurrentLoginEmail();
         Boolean body = chatService.checkFriendByEmail(userEmail, friendEmail);
-        return ResponseEntity.ok().body(body);
-    }
-
-    @GetMapping("/friends")
-    public ResponseEntity<?> searchFriendsByEmail(
-        @RequestParam String email
-    ) {
-        List<UserBasicInfo> body = chatService.searchFriendByEmail(email);
         return ResponseEntity.ok().body(body);
     }
 
@@ -104,6 +116,13 @@ public class ChatController {
     ) {
         RoomBasicResult result = chatService.createRoom(form);
         return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/rooms/lawsuit")
+    public ResponseEntity<?> createLawsuitGroupRooms() {
+        String email = SecurityUtil.getCurrentLoginEmail();
+        chatService.createLawsuitGroupRooms(email);
+        return ResponseEntity.ok().body(null);
     }
 
     @GetMapping("/messages")

@@ -19,6 +19,7 @@ public class UserWithLawsuitResult {
     private Long id;
     private String email;
     private String name;
+    private String role;
     private String hierarchy;
     private List<LawsuitBasicInfo> lawsuits;
 

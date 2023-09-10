@@ -10,12 +10,41 @@
         SELECT m.id      `id`,
                m.email   `email`,
                m.name    `name`,
+               r.name_kr `role`,
                h.name_kr `hierarchy`
         FROM member m
+                 LEFT JOIN role r ON m.role_id = r.id
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
         WHERE m.is_deleted = false
           AND m.email = #{email}
+        ORDER BY m.name, m.hierarchy_id DESC
+    </select>
+    <select id="searchEmployees"
+      resultType="com.avg.lawsuitmanagement.chat.dto.UserBasicInfo">
+        SELECT m.id      `id`,
+               m.email   `email`,
+               m.name    `name`,
+               r.name_kr `role`,
+               h.name_kr `hierarchy`
+        FROM member m
+                 LEFT JOIN role r ON m.role_id = r.id
+                 LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
+        WHERE m.is_deleted = false
           AND m.role_id != 1
+        ORDER BY m.name
+    </select>
+    <select id="searchClients"
+      resultType="com.avg.lawsuitmanagement.chat.dto.UserBasicInfo">
+        SELECT m.id      `id`,
+               m.email   `email`,
+               m.name    `name`,
+               r.name_kr `role`,
+               h.name_kr `hierarchy`
+        FROM member m
+                 LEFT JOIN role r ON m.role_id = r.id
+                 LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
+        WHERE m.is_deleted = false
+          AND m.role_id = 1
         ORDER BY m.name
     </select>
     <select id="searchUserDetailByEmail"
@@ -24,6 +53,7 @@
         SELECT DISTINCT m.id             `id`,
                         m.email          `email`,
                         m.name           `name`,
+                        r.name_kr        `role`,
                         h.name_kr        `hierarchy`,
                         l.id             `lawsuit_id`,
                         l.lawsuit_type   `lawsuit_type`,
@@ -31,12 +61,35 @@
                         l.name           `lawsuit_name`,
                         l.lawsuit_status `lawsuit_status`
         FROM member m
+                 LEFT JOIN role r ON m.role_id = r.id
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
                  LEFT JOIN lawsuit_member_map lm ON (m.id = lm.member_id AND lm.is_deleted = false)
                  LEFT JOIN lawsuit l ON (lm.lawsuit_id = l.id AND l.is_deleted = false)
         WHERE m.is_deleted = false
           AND m.email = #{email}
-          AND m.role_id != 1
+        ORDER BY l.id DESC
+    </select>
+    <select id="searchClientUserDetailByEmail"
+      parameterType="java.lang.String"
+      resultType="com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitInfo">
+        SELECT DISTINCT m.id             `id`,
+                        m.email          `email`,
+                        m.name           `name`,
+                        r.name_kr        `role`,
+                        h.name_kr        `hierarchy`,
+                        l.id             `lawsuit_id`,
+                        l.lawsuit_type   `lawsuit_type`,
+                        l.lawsuit_num    `lawsuit_num`,
+                        l.name           `lawsuit_name`,
+                        l.lawsuit_status `lawsuit_status`
+        FROM client c
+                 LEFT JOIN member m ON (c.email = m.email AND m.is_deleted = false)
+                 LEFT JOIN role r ON m.role_id = r.id
+                 LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
+                 LEFT JOIN lawsuit_client_map lc ON (c.id = lc.client_id AND lc.is_deleted = false)
+                 LEFT JOIN lawsuit l ON (lc.lawsuit_id = l.id AND l.is_deleted = false)
+        WHERE c.is_deleted = false
+          AND c.email = #{email}
         ORDER BY l.id DESC
     </select>
     <select id="searchFriendsById"
@@ -45,12 +98,13 @@
         SELECT m.id      `id`,
                m.email   `email`,
                m.name    `name`,
+               r.name_kr `role`,
                h.name_kr `hierarchy`
         FROM chat_friend f
                  LEFT JOIN member m ON (f.friend_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN role r ON m.role_id = r.id
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
         WHERE f.is_deleted = false
-          AND m.role_id != 1
           AND f.user_id = #{id}
         ORDER BY m.name
     </select>
@@ -101,12 +155,14 @@
                         m.id       `userId`,
                         m.email    `userEmail`,
                         m.name     `userName`,
+                        r.name_kr  `userRole`,
                         h.name_kr  `userHierarchy`
         FROM chat_room cr
                  LEFT JOIN chat_room_member_map cm_map
                            ON (cr.id = cm_map.room_id AND cm_map.is_deleted =
                                                           false)
                  LEFT JOIN member m ON (cm_map.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN role r ON m.role_id = r.id
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
         WHERE cr.is_deleted = false
           AND cr.id = #{id}
@@ -121,12 +177,14 @@
                         m.id       `userId`,
                         m.email    `userEmail`,
                         m.name     `userName`,
+                        r.name_kr  `userRole`,
                         h.name_kr  `userHierarchy`
         FROM chat_room cr
                  LEFT JOIN chat_room_member_map cm_map
                            ON (cr.id = cm_map.room_id AND cm_map.is_deleted =
                                                           false)
                  LEFT JOIN member m ON (cm_map.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN role r ON m.role_id = r.id
                  LEFT JOIN hierarchy h ON m.hierarchy_id = h.id
         WHERE cr.is_deleted = false
           AND cr.id IN (SELECT room_id
@@ -140,8 +198,8 @@
       useGeneratedKeys="true"
       keyProperty="id"
     >
-        INSERT INTO chat_room (type, name)
-        VALUES (#{type}, #{name})
+        INSERT INTO chat_room (type, name, is_show)
+        VALUES (#{type}, #{name}, #{isShow})
     </insert>
     <insert id="createRoomMemberMap"
       parameterType="com.avg.lawsuitmanagement.chat.dto.RoomMemberMapParam">
@@ -198,7 +256,8 @@
                cm.created_at `created_at`,
                cr.user_id    `receiver_id`
         FROM chat_message cm
-                 LEFT JOIN chat_message_is_read cr ON cm.id = cr.message_id
+                 LEFT JOIN chat_message_is_read cr
+                           ON (cm.id = cr.message_id AND cr.is_deleted = false)
         WHERE cm.is_deleted = false
           AND cm.id = #{id}
     </select>
@@ -224,6 +283,7 @@
                  JOIN chat_message_is_read cr
                       ON (cm.id = cr.message_id
                           AND cr.is_deleted = false
+                          AND cr.is_read = false
                           AND cr.user_id = #{userId})
         WHERE cm.is_deleted = false
           AND cm.room_id = #{roomId}
@@ -244,7 +304,7 @@
     <update id="readAllMessageByRoomIdAndUserId"
       parameterType="com.avg.lawsuitmanagement.chat.dto.RoomUserId">
         UPDATE chat_message_is_read cr
-        SET cr.is_deleted = true
+        SET cr.is_read = true
         WHERE cr.user_id = #{userId}
           AND cr.message_id IN (SELECT cm.id
                                 FROM chat_message cm
@@ -257,6 +317,7 @@
         SELECT COUNT(*)
         FROM chat_message_is_read
         WHERE is_deleted = false
+          AND is_read = false
           AND user_id = #{id}
     </select>
 </mapper>
