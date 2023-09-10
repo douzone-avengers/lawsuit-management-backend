@@ -69,6 +69,26 @@
           AND m.email = #{email}
         ORDER BY l.id DESC
     </select>
+    <select id="isEmployeeByEmail"
+      parameterType="java.lang.String"
+      resultType="java.lang.Boolean">
+        SELECT IF(role_id != 1, true, false)
+        FROM member
+        WHERE is_deleted = false
+          AND email = #{email}
+    </select>
+    <select id="searchMemberEmailsByClientEmail"
+      parameterType="java.lang.String"
+      resultType="java.lang.String">
+        SELECT m.email
+        FROM client c
+                 LEFT JOIN lawsuit_client_map lc ON (c.id = lc.client_id AND lc.is_deleted = false)
+                 LEFT JOIN lawsuit l ON (lc.lawsuit_id = l.id AND l.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map lm ON (l.id = lm.lawsuit_id AND lm.is_deleted = false)
+                 LEFT JOIN member m ON (lm.member_id = m.id AND m.is_deleted = false)
+        WHERE c.is_deleted = false
+          AND c.email = #{email}
+    </select>
     <select id="searchClientUserDetailByEmail"
       parameterType="java.lang.String"
       resultType="com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitInfo">

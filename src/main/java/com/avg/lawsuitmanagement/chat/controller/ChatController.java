@@ -117,14 +117,7 @@ public class ChatController {
         RoomBasicResult result = chatService.createRoom(form);
         return ResponseEntity.ok().body(result);
     }
-
-    @PostMapping("/rooms/lawsuit")
-    public ResponseEntity<?> createLawsuitGroupRooms() {
-        String email = SecurityUtil.getCurrentLoginEmail();
-        chatService.createLawsuitGroupRooms(email);
-        return ResponseEntity.ok().body(null);
-    }
-
+    
     @GetMapping("/messages")
     public ResponseEntity<?> getAllMessages(
         @RequestParam(value = "room") Long roomId

@@ -69,4 +69,8 @@ public interface ChatRepository {
 
     Long countUnreadTotalCount(Long userId);
 
+    List<String> searchMemberEmailsByClientEmail(String email);
+
+    Boolean isEmployeeByEmail(String email);
+
 }

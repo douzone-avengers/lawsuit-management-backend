@@ -115,6 +115,20 @@ public class ChatService {
     }
 
     public List<UserBasicInfo> searchFriendByEmail(String email) {
+
+        if (!chatRepository.isEmployeeByEmail(email)) {
+            List<String> employeeEmails = chatRepository.searchMemberEmailsByClientEmail(email);
+            for (String employeeEmail : employeeEmails) {
+                try {
+                    addFriendByEmail(email, employeeEmail);
+                } catch (CustomRuntimeException e) {
+                    if (!e.getErrorCode().equals(ErrorCode.CHAT_ALREADY_FRIEND)) {
+                        throw e;
+                    }
+                }
+            }
+        }
+
         UserBasicInfo user = searchUserByEmail(email);
         List<UserBasicInfo> result = chatRepository.searchFriendsById(user.getId());
         return result;
@@ -143,6 +157,10 @@ public class ChatService {
         }
 
         chatRepository.addFriend(param);
+    }
+
+    public void updateClientFriends(String email) {
+
     }
 
     public void removeFriendByEmail(String userEmail, String friendEmail) {
@@ -296,11 +314,6 @@ public class ChatService {
         RoomBasicResult result = getRoomById(roomId);
 
         return result;
-    }
-
-    @Transactional
-    public void createLawsuitGroupRooms(String email) {
-        UserBasicInfo user = chatRepository.searchUserByEmail(email);
     }
 
 
