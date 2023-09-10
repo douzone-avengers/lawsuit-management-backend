@@ -58,11 +58,6 @@ public class ClientController {
     public ResponseEntity<List<ClientDto>> selectClientList() {
         return ResponseEntity.ok(clientService.selectClientList());
     }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<?> selectClientIdByEmail(@PathVariable String email) {
-        ClientDto result = clientService.selectClientIdByEmail(email);
-        return ResponseEntity.ok().body(result);
-    }
+    
 }
 
