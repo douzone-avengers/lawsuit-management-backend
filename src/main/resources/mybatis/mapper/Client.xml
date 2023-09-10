@@ -66,4 +66,10 @@
         from lawsuit_client_map
         where lawsuit_id = #{lawsuitId};
     </select>
+
+    <select id="selectClientByMemberId" parameterType="java.lang.Long">
+        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted, member_id
+        from client
+        where member_id = #{memberId};
+    </select>
 </mapper>

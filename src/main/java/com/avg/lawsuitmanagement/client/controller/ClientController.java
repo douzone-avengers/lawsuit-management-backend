@@ -24,6 +24,12 @@ public class ClientController {
 
     private final ClientService clientService;
 
+
+    @GetMapping("/me")
+    public ResponseEntity<ClientDto> getLoginClientInfo() {
+        return ResponseEntity.ok(clientService.getLoginClientInfo());
+    }
+
     // 의뢰인 상세정보
     @GetMapping("/{clientId}")
     public ResponseEntity<ClientDto> selectClientDetailInfo(@PathVariable("clientId") Long clientId) {

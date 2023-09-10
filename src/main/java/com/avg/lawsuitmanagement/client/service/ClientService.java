@@ -13,6 +13,8 @@ import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
+import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,22 @@ public class ClientService {
     private final ClientMapperRepository clientMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
     private final LawsuitService lawsuitService;
+    private final LoginUserInfoService loginUserInfoService;
+
+    public ClientDto getLoginClientInfo() {
+
+        MemberDto loginMemberInfo = loginUserInfoService.getLoginMemberInfo();
+        return getClientByMemberId(loginMemberInfo.getId());
+    }
+
+    public ClientDto getClientByMemberId(long memberId) {
+        ClientDto clientDto = clientMapperRepository.selectClientByMemberId(memberId);
+        if(clientDto == null) {
+            throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        return clientDto;
+    }
 
     public ClientDto getClientById(long clientId) {
         ClientDto clientDto = clientMapperRepository.selectClientById(clientId);
