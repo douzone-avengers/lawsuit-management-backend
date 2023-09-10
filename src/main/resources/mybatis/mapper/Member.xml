@@ -23,7 +23,7 @@
     </insert>
 
     <select id="selectMemberListById" parameterType="java.util.List">
-        select *
+        select id, email, password, name, hierarchy_id, phone, address, address_detail, role_id, created_at, updated_at, is_deleted
         from member
         where id in
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
