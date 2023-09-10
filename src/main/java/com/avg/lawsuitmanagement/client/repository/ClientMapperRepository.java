@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ClientMapperRepository {
 
     ClientDto selectClientById(long clientId);
+    ClientDto selectClientByMemberId(long memberId);
     ClientDto selectClientByEmail(String email);
     void insertClient(InsertClientParam param);
     void updateClientMemberId(UpdateClientMemberIdParam param);

@@ -21,14 +21,7 @@ public class TokenService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenMapperRepository tokenMapperRepository;
 
-
     public JwtTokenDto login(LoginForm form) {
-//
-//        UsernamePasswordAuthenticationToken authenticationToken
-//            = new UsernamePasswordAuthenticationToken(userName, repository.getPassword());
-//
-//        Authentication authentication = authenticate(authenticationToken);
-
         //실질적인 검증
         Authentication authentication = authenticate(
             new UsernamePasswordAuthenticationToken(form.getEmail(), form.getPassword()));
