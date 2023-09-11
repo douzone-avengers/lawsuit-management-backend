@@ -17,4 +17,15 @@
           AND l.is_deleted = 0;
     </select>
 
+    <select id="selectRevenueByMemberId" resultType="RevenueDto" parameterType="java.lang.Long">
+        SELECT (SUM(l.commission_fee) + SUM(l.contingent_fee)) AS total,
+               SUM(l.commission_fee)                           AS commissionFee,
+               SUM(l.contingent_fee)                           AS contingentFee
+        FROM lawsuit l
+                 JOIN lawsuit_member_map lmm ON l.id = lmm.lawsuit_id and lmm.is_deleted = 0
+        WHERE lmm.member_id = #{memberId}
+          AND l.is_deleted = 0;
+    </select>
+
+
 </mapper>
