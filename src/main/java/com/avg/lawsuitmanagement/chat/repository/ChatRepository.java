@@ -19,7 +19,13 @@ public interface ChatRepository {
 
     UserBasicInfo searchUserByEmail(String email);
 
+    List<UserBasicInfo> searchEmployees();
+
+    List<UserBasicInfo> searchClients();
+
     List<UserWithLawsuitInfo> searchUserDetailByEmail(String email);
+
+    List<UserWithLawsuitInfo> searchClientUserDetailByEmail(String email);
 
     List<UserBasicInfo> searchFriendsById(Long id);
 
@@ -62,4 +68,9 @@ public interface ChatRepository {
     void readAllMessageByRoomIdAndUserId(RoomUserId param);
 
     Long countUnreadTotalCount(Long userId);
+
+    List<String> searchMemberEmailsByClientEmail(String email);
+
+    Boolean isEmployeeByEmail(String email);
+
 }

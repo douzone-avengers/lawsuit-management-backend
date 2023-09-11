@@ -18,6 +18,7 @@ public class RoomCreateForm {
 
     private String name;
     private String type;
+    private Boolean isShow;
     private List<String> emails;
 
 }

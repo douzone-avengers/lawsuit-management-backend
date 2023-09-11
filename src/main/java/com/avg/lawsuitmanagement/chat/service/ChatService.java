@@ -39,9 +39,17 @@ public class ChatService {
         if (email == null) {
             throw new CustomRuntimeException(ErrorCode.CHAT_INVALID_REQUEST);
         }
-
         UserBasicInfo result = chatRepository.searchUserByEmail(email);
+        return result;
+    }
 
+    public List<UserBasicInfo> searchEmployees() {
+        List<UserBasicInfo> result = chatRepository.searchEmployees();
+        return result;
+    }
+
+    public List<UserBasicInfo> searchClients() {
+        List<UserBasicInfo> result = chatRepository.searchClients();
         return result;
     }
 
@@ -49,8 +57,10 @@ public class ChatService {
         if (email == null) {
             throw new CustomRuntimeException(ErrorCode.CHAT_INVALID_REQUEST);
         }
-
-        List<UserWithLawsuitInfo> raws = chatRepository.searchUserDetailByEmail(email);
+        UserBasicInfo user = searchUserByEmail(email);
+        List<UserWithLawsuitInfo> raws =
+            "의뢰인".equals(user.getRole()) ? chatRepository.searchClientUserDetailByEmail(email)
+                : chatRepository.searchUserDetailByEmail(email);
         List<UserWithLawsuitInfo> filteredRaws = raws.stream()
             .peek(item -> {
                 if ("CLOSING".equals(item.getLawsuitStatus())) {
@@ -78,13 +88,14 @@ public class ChatService {
                 .build());
         }
 
-        UserWithLawsuitInfo user = filteredRaws.get(0);
+        UserWithLawsuitInfo userData = filteredRaws.get(0);
 
         UserWithLawsuitResult result = UserWithLawsuitResult.builder()
-            .id(user.getId())
-            .name(user.getName())
-            .hierarchy(user.getHierarchy())
-            .email(user.getEmail())
+            .id(userData.getId())
+            .name(userData.getName())
+            .role(userData.getRole())
+            .hierarchy(userData.getHierarchy())
+            .email(userData.getEmail())
             .lawsuits(lawsuitMap.values().stream().toList())
             .build();
 
@@ -104,6 +115,20 @@ public class ChatService {
     }
 
     public List<UserBasicInfo> searchFriendByEmail(String email) {
+
+        if (!chatRepository.isEmployeeByEmail(email)) {
+            List<String> employeeEmails = chatRepository.searchMemberEmailsByClientEmail(email);
+            for (String employeeEmail : employeeEmails) {
+                try {
+                    addFriendByEmail(email, employeeEmail);
+                } catch (CustomRuntimeException e) {
+                    if (!e.getErrorCode().equals(ErrorCode.CHAT_ALREADY_FRIEND)) {
+                        throw e;
+                    }
+                }
+            }
+        }
+
         UserBasicInfo user = searchUserByEmail(email);
         List<UserBasicInfo> result = chatRepository.searchFriendsById(user.getId());
         return result;
@@ -134,6 +159,10 @@ public class ChatService {
         chatRepository.addFriend(param);
     }
 
+    public void updateClientFriends(String email) {
+
+    }
+
     public void removeFriendByEmail(String userEmail, String friendEmail) {
         UserBasicInfo user = searchUserByEmail(userEmail);
         UserBasicInfo friend = searchUserByEmail(friendEmail);
@@ -158,6 +187,7 @@ public class ChatService {
                     .id(raw.getUserId())
                     .name(raw.getUserName())
                     .email(raw.getUserEmail())
+                    .role(raw.getUserRole())
                     .hierarchy(raw.getUserHierarchy())
                     .build());
             } else {
@@ -166,6 +196,7 @@ public class ChatService {
                     .id(raw.getUserId())
                     .name(raw.getUserName())
                     .email(raw.getUserEmail())
+                    .role(raw.getUserRole())
                     .hierarchy(raw.getUserHierarchy())
                     .build());
                 RoomBasicTemp value = RoomBasicTemp.builder()
@@ -227,7 +258,6 @@ public class ChatService {
         return result;
     }
 
-    @Transactional
     public RoomBasicResult getRoomById(Long id) {
         List<RoomBasicRaw> raws = chatRepository.selectRoomById(id);
         if (raws == null) {
@@ -238,6 +268,7 @@ public class ChatService {
                 .id(item.getUserId())
                 .name(item.getUserName())
                 .email(item.getUserEmail())
+                .role(item.getUserRole())
                 .hierarchy(item.getUserHierarchy())
                 .build())
             .toList();
@@ -260,6 +291,7 @@ public class ChatService {
         RoomCreateParam param1 = RoomCreateParam.builder()
             .type(form.getType())
             .name(form.getName())
+            .isShow(form.getIsShow())
             .build();
         chatRepository.createRoom(param1);
 
@@ -284,12 +316,14 @@ public class ChatService {
         return result;
     }
 
+
     public void showRoomById(Long roomId) {
         if (!chatRepository.isShowRoomById(roomId)) {
             chatRepository.enableIsShowRoomById(roomId);
         }
     }
 
+    @Transactional
     public List<MessageRawWithRead> saveMessage(MessageCreateParam param) {
         List<Long> roomUserIds = chatRepository.searchRoomUserIdsById(param.getRoomId());
         chatRepository.saveMessage(param);
@@ -332,4 +366,6 @@ public class ChatService {
         Long result = chatRepository.countUnreadTotalCount(user.getId());
         return result;
     }
+
+
 }
