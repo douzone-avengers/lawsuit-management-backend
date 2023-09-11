@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.statistics.repository.StatisticsMapperRepository">
+
+    <select id="countLawsuitsStatusByMemberId" resultType="LawsuitStatusDto"
+      parameterType="java.lang.Long">
+        SELECT COUNT(l.id)                                                        AS total,
+               SUM(CASE WHEN l.lawsuit_status = 'REGISTRATION' THEN 1 ELSE 0 END) AS registration,
+               SUM(CASE WHEN l.lawsuit_status = 'PROCEEDING' THEN 1 ELSE 0 END)   AS proceeding,
+               SUM(CASE WHEN l.lawsuit_status = 'CLOSING' THEN 1 ELSE 0 END)      AS closing
+        FROM lawsuit l
+                 JOIN lawsuit_member_map lmm ON l.id = lmm.lawsuit_id and lmm.is_deleted = 0
+        WHERE lmm.member_id = #{memberId}
+          AND l.is_deleted = 0;
+    </select>
+
+    <select id="selectRevenueByMemberId" resultType="RevenueDto" parameterType="java.lang.Long">
+        SELECT (SUM(l.commission_fee) + SUM(l.contingent_fee)) AS total,
+               SUM(l.commission_fee)                           AS commissionFee,
+               SUM(l.contingent_fee)                           AS contingentFee
+        FROM lawsuit l
+                 JOIN lawsuit_member_map lmm ON l.id = lmm.lawsuit_id and lmm.is_deleted = 0
+        WHERE lmm.member_id = #{memberId}
+          AND l.is_deleted = 0;
+    </select>
+
+
+</mapper>

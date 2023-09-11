@@ -44,6 +44,7 @@ public class SecurityConfig {
             .authorizeRequests()
             .antMatchers(HttpMethod.POST, "/promotions/clients").hasRole("EMPLOYEE")
             .antMatchers(HttpMethod.GET, "/members/employees").hasRole("EMPLOYEE")
+            .antMatchers("/statistics/**").hasRole("EMPLOYEE")
             .antMatchers(HttpMethod.POST, "/promotions/employees").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/members/employees/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.PATCH, "/members/employees/**").hasRole("ADMIN")
