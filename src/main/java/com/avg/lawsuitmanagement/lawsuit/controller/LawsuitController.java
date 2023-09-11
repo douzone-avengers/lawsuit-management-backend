@@ -3,6 +3,7 @@ package com.avg.lawsuitmanagement.lawsuit.controller;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.LawsuitCloseForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetClientLawsuitListDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.GetEmployeeLawsuitListDto;
@@ -83,6 +84,14 @@ public class LawsuitController {
         @PathVariable Long lawsuitId) {
         LawsuitPrintResponseDto result = lawsuitPdfService.getPrintInfo(lawsuitId);
         return ResponseEntity.ok(result);
+    }
+
+    @PatchMapping("/closing")
+    public ResponseEntity<?> closeLawsuit(
+        @RequestBody LawsuitCloseForm form
+    ) {
+        LawsuitBasicDto result = lawsuitService.closeLawsuit(form);
+        return ResponseEntity.ok().body(result);
     }
 
 }
