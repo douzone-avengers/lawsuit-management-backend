@@ -16,6 +16,7 @@ import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.InsertLawsuitForm;
+import com.avg.lawsuitmanagement.lawsuit.controller.form.LawsuitCloseForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.SendBillForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.SendLawsuitBookForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.UpdateLawsuitInfoForm;
@@ -33,6 +34,7 @@ import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.InsertLawsuitParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam;
+import com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitUpdateResultParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectClientLawsuitListParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.SelectEmployeeLawsuitListParam;
 import com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam;
@@ -361,6 +363,20 @@ public class LawsuitService {
 
         // 로그인한 사용자가 해당 사건의 담당자가 아니라면
         return memberIds.contains(userId);
+    }
+
+    @Transactional
+    public LawsuitBasicDto closeLawsuit(LawsuitCloseForm form) {
+        lawsuitMapperRepository.updateLawsuitStatus(LawsuitStatusUpdateParam.builder()
+            .id(form.getLawsuitId())
+            .status("CLOSING")
+            .build());
+        lawsuitMapperRepository.updateResult(LawsuitUpdateResultParam.builder()
+            .lawsuitId(form.getLawsuitId())
+            .result(form.getResult())
+            .build());
+        LawsuitBasicDto result = getBasicLawsuitInfo(form.getLawsuitId());
+        return result;
     }
 }
 
