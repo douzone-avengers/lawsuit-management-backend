@@ -1,4 +1,4 @@
-package com.avg.lawsuitmanagement.chat.temp;
+package com.avg.lawsuitmanagement.chat.config;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -35,7 +35,7 @@ public class SocketIOConfiguration {
 
     private ConnectListener handleConnect() {
         return client -> {
-            log.info("new user connected with socket: {}", client.getSessionId());
+            log.info("Connect: {}", client.getSessionId());
         };
     }
 
@@ -43,7 +43,7 @@ public class SocketIOConfiguration {
         return client -> {
             client.getNamespace().getAllClients()
                 .forEach(socketIOClient -> {
-                    log.info("user disconnected: {}", socketIOClient.getSessionId().toString());
+                    log.info("Disconnect: {}", socketIOClient.getSessionId().toString());
                 });
         };
     }

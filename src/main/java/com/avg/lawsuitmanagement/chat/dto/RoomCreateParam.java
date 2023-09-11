@@ -13,11 +13,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserSearchRaw {
+public class RoomCreateParam {
 
     private Long id;
-    private String email;
+    private String type;
     private String name;
-    private String hierarchy;
+    private Boolean isShow;
 
 }

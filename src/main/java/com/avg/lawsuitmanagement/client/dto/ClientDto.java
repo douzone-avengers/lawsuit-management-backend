@@ -15,6 +15,7 @@ public class ClientDto {
     private String name;
     private String phone;
     private String address;
+    private String addressDetail;
     private String createdAt;
     private String updatedAt;
     private long memberId; // fk

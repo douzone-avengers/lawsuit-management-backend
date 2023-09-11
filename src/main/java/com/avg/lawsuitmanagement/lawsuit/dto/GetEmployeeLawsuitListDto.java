@@ -10,5 +10,5 @@ import lombok.Setter;
 @Builder
 public class GetEmployeeLawsuitListDto {
     private List<LawsuitDto> lawsuitList;
-    private int count;
+    private LawsuitCountDto countDto;
 }
