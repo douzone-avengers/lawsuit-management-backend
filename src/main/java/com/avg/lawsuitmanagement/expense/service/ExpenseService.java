@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.*;
 
@@ -97,7 +98,7 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void insertExpenseBill(long expenseId, ExpenseFileDataForm form) {
+    public void insertExpenseBill(long expenseId, MultipartFile file) {
         ExpenseDto expenseDto = expenseRepository.selectExpenseById(expenseId);
         if (expenseDto == null) {
             throw new CustomRuntimeException(EXPENSE_NOT_FOUND);
@@ -107,7 +108,7 @@ public class ExpenseService {
         String uuid = UUID.randomUUID().toString();
 
         // 파일 생성 및 DB에 meta 데이터 저장
-        FileDto fileDto = FileDto.of(form, path, uuid);
+        FileDto fileDto = FileDto.of(file, path, uuid);
         fileService.createFileAndInsertDataBase(fileDto);
 
         FileMetaDto fileMetaDto = fileService.selectFileByOriginFileName(fileDto.getOriginFileName());

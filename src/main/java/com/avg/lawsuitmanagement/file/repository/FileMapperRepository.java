@@ -11,7 +11,7 @@ public interface FileMapperRepository {
     FileMetaDto selectFileByOriginFileName(String originFileName);
     FileMetaDto selectFileById(long fileId);
     List<Long> selectFileIdListByExpenseId(long expenseId);
-    List<FileMetaDto> selectFileInfoListById(List<Long> fileIdList);
+    List<FileMetaDto> selectFileInfoListById(long expenseId);
     void insertFile(FileInsertParam param);
     void deleteFile(Long fileId);
 }

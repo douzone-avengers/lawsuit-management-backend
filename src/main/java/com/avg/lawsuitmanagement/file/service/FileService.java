@@ -95,14 +95,7 @@ public class FileService {
     }
 
     public List<FileMetaDto> selectFileInfoListByExpenseId(long expenseId) {
-        // 해당 지출id에 대한 파일id가 있는지 검사
-        List<Long> fileIdList = fileMapperRepository.selectFileIdListByExpenseId(expenseId);
-
-        if (fileIdList.size() < 1) {
-            throw new CustomRuntimeException(FILE_NOT_FOUND);
-        }
-
-        return fileMapperRepository.selectFileInfoListById(fileIdList);
+        return fileMapperRepository.selectFileInfoListById(expenseId);
     }
 
     public FileMetaDto selectFileByOriginFileName(String originFileName) {

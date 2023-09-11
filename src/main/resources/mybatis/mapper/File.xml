@@ -27,14 +27,11 @@
     </select>
 
     <!-- 파일id 리스트에 해당하는 파일 리스트 가져오는 쿼리 -->
-    <select id="selectFileInfoListById" parameterType="java.util.List">
+    <select id="selectFileInfoListById" parameterType="java.lang.Long">
         select *
         from file
         where is_deleted = false
-        and id in
-        <foreach item="item" index="index" collection="fileIdList" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        and id in (select file_id from expense_file_map where expense_id = #{expenseId})
     </select>
 
     <!-- 파일 등록 -->

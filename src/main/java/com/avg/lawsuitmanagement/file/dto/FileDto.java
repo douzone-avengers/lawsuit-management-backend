@@ -24,15 +24,15 @@ public class FileDto {
     @NotNull
     private String extension;
 
-    public static FileDto of(ExpenseFileDataForm form, String path, String uuid) {
-        String showFileName = FilenameUtils.getBaseName(form.getFileData().getOriginalFilename());
+    public static FileDto of(MultipartFile file, String path, String uuid) {
+        String showFileName = FilenameUtils.getBaseName(file.getOriginalFilename());
 
         return FileDto.builder()
-                .fileData(form.getFileData())
+                .fileData(file)
                 .showFileName(showFileName)
                 .originFileName(showFileName + uuid)
                 .path(path)
-                .extension(FilenameUtils.getExtension(form.getFileData().getOriginalFilename()))
+                .extension(FilenameUtils.getExtension(file.getOriginalFilename()))
                 .build();
     }
 

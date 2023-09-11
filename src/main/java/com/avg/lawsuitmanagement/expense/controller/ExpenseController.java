@@ -105,14 +105,12 @@ public class ExpenseController {
 
     // 지출 증빙자료(File 데이터, Meta 데이터) 등록
     @PostMapping("/{expenseId}/bill")
-    public ResponseEntity<?> insertExpenseBill(@PathVariable Long expenseId, @Validated ExpenseFileDataForm form) {
-        MultipartFile file = form.getFileData();
-
+    public ResponseEntity<?> insertExpenseBill(@PathVariable Long expenseId, @RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new CustomRuntimeException(FILE_NOT_FOUND);
         }
 
-        expenseService.insertExpenseBill(expenseId, form);
+        expenseService.insertExpenseBill(expenseId, file);
 
         return ResponseEntity.ok().build();
     }
@@ -120,6 +118,8 @@ public class ExpenseController {
     // 지출 증빙자료(Meta 데이터) 조회
     @GetMapping("/{expenseId}/bill")
     public ResponseEntity<List<FileMetaDto>> selectExpenseBillData(@PathVariable Long expenseId) {
+        List<FileMetaDto> fileMetaDtoList = expenseService.selectExpenseBillInfo(expenseId);
+
         return ResponseEntity.ok(expenseService.selectExpenseBillInfo(expenseId));
     }
 
