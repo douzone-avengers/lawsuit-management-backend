@@ -211,6 +211,7 @@ public class LawsuitService {
         } else {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
+
     }
 
     @Transactional
@@ -350,7 +351,7 @@ public class LawsuitService {
         }
 
         return SelectEmployeeLawsuitListParam.of(employeeId, PagingUtil.calculatePaging(
-                form.getCurPage(), form.getRowsPerPage()), form);
+            form.getCurPage(), form.getRowsPerPage()), form);
     }
 
     private boolean isUserAuthorizedForLawsuit(long userId, List<Long> memberIds) {

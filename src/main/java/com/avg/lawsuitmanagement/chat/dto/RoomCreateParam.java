@@ -18,5 +18,6 @@ public class RoomCreateParam {
     private Long id;
     private String type;
     private String name;
+    private Boolean isShow;
 
 }

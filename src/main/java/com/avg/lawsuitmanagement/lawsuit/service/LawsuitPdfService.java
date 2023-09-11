@@ -65,7 +65,8 @@ public class LawsuitPdfService {
             }
 
             Long adviceId = raw.getAdviceId();
-            if (adviceId != null) {
+            if (adviceId != null && raw.getAdviceMemberId() != null
+                && raw.getAdviceClientId() != null) {
                 if (!adviceMap.containsKey(adviceId)) {
                     List<IdNameDto> memberIdNames = new ArrayList<>();
                     if (raw.getMemberName() != null) {
@@ -91,7 +92,6 @@ public class LawsuitPdfService {
                         .build());
                 } else {
                     LawsuitPrintAdvicePreDto lawsuitPrintAdvicePreDto = adviceMap.get(adviceId);
-
                     List<IdNameDto> memberIdNames = lawsuitPrintAdvicePreDto.getMemberIdNames();
                     IdNameDto memberIdName = IdNameDto.builder()
                         .id(raw.getAdviceMemberId())
