@@ -1,16 +1,17 @@
 package com.avg.lawsuitmanagement.expense.controller;
 
+import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.type.SortOrder;
-import com.avg.lawsuitmanagement.expense.controller.form.ExpenseInsertForm;
-import com.avg.lawsuitmanagement.expense.controller.form.ExpenseSearchForm;
-import com.avg.lawsuitmanagement.expense.controller.form.ExpenseUpdateForm;
+import com.avg.lawsuitmanagement.expense.controller.form.*;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseDto;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseSearchDto;
 import com.avg.lawsuitmanagement.expense.service.ExpenseService;
 import com.avg.lawsuitmanagement.expense.type.ExpenseSortKey;
 import java.time.LocalDate;
 import java.util.List;
+import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,10 +24,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_NOT_FOUND;
 
 @RestController
 @RequestMapping("/expenses")
 @RequiredArgsConstructor
+@Slf4j
 public class ExpenseController {
     private final ExpenseService expenseService;
 
@@ -95,7 +100,33 @@ public class ExpenseController {
     @PatchMapping("/delete/{expenseId}")
     public ResponseEntity<Void> deleteExpense(@PathVariable Long expenseId, @Validated @RequestParam long lawsuitId) {
         expenseService.deleteExpense(expenseId, lawsuitId);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
     }
 
+    // 지출 증빙자료(File 데이터, Meta 데이터) 등록
+    @PostMapping("/{expenseId}/bill")
+    public ResponseEntity<?> insertExpenseBill(@PathVariable Long expenseId, @RequestParam("file") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new CustomRuntimeException(FILE_NOT_FOUND);
+        }
+
+        expenseService.insertExpenseBill(expenseId, file);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 지출 증빙자료(Meta 데이터) 조회
+    @GetMapping("/{expenseId}/bill")
+    public ResponseEntity<List<FileMetaDto>> selectExpenseBillData(@PathVariable Long expenseId) {
+        List<FileMetaDto> fileMetaDtoList = expenseService.selectExpenseBillInfo(expenseId);
+
+        return ResponseEntity.ok(expenseService.selectExpenseBillInfo(expenseId));
+    }
+
+    // 지출 증빙자료(Meta 데이터) 삭제
+    @PatchMapping("/delete/{fileId}/bill")
+    public ResponseEntity<Void> deleteExpenseBill(@PathVariable Long fileId) {
+        expenseService.deleteExpenseBill(fileId);
+        return ResponseEntity.ok().build();
+    }
 }

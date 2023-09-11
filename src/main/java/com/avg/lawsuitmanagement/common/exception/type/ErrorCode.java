@@ -61,6 +61,8 @@ public enum ErrorCode {
     ADVICE_MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 상담관입니다."),
     ADVICE_CLIENT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 상담자입니다."),
 
+    // 지출 관련 예외
+    EXPENSE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 지출내역입니다."),
 
     //직책, 역할, 법원
     HIERARCHY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 직책입니다."),

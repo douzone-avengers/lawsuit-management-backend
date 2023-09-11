@@ -5,6 +5,8 @@ import com.avg.lawsuitmanagement.expense.repository.param.ExpenseInsertParam;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseUpdateParam;
 import java.util.List;
+
+import com.avg.lawsuitmanagement.expense.repository.param.InsertExpenseFileIdParam;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -15,4 +17,5 @@ public interface ExpenseMapperRepository {
     void updateExpense(ExpenseUpdateParam param);
     ExpenseDto selectExpenseById(Long expenseId);
     void deleteExpense(Long expenseId);
+    void insertExpenseFileMap(InsertExpenseFileIdParam param);
 }

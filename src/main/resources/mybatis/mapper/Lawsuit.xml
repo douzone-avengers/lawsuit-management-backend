@@ -391,4 +391,12 @@
         WHERE l.is_deleted = false
           AND l.id = #{id}
     </select>
+    <update id="updateResult"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitUpdateResultParam"
+    >
+        UPDATE lawsuit
+        SET result = #{result}
+        WHERE is_deleted = false
+          AND id = #{lawsuitId}
+    </update>
 </mapper>
