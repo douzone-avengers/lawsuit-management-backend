@@ -47,4 +47,11 @@
         where id = #{fileId}
         and is_deleted = false
     </update>
+
+    <!--지출-파일 매핑 테이블 데이터 삭제-->
+    <update id="deleteExpenseFileMap" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam">
+        update expense_file_map
+        set is_deleted = true
+        where expense_id = #{expenseId} and file_id = #{fileId} and is_deleted = false;
+    </update>
 </mapper>

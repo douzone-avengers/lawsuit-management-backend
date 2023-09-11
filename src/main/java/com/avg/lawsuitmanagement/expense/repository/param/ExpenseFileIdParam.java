@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class InsertExpenseFileIdParam {
+public class ExpenseFileIdParam {
     private Long expenseId;
     private Long fileId;
 
-    public static InsertExpenseFileIdParam of(long expenseId, long fileId) {
-        return InsertExpenseFileIdParam.builder()
+    public static ExpenseFileIdParam of(long expenseId, long fileId) {
+        return ExpenseFileIdParam.builder()
                 .expenseId(expenseId)
                 .fileId(fileId)
                 .build();

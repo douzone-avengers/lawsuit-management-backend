@@ -8,15 +8,17 @@ import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseInsertParam;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseUpdateParam;
-import com.avg.lawsuitmanagement.expense.repository.param.InsertExpenseFileIdParam;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
 import com.avg.lawsuitmanagement.file.dto.FileDto;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
+import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
 import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +40,7 @@ public class ExpenseService {
     private final MemberMapperRepository memberMapperRepository;
     private final LoginUserInfoService loginUserInfoService;
     private final FileService fileService;
+    private final FileMapperRepository fileMapperRepository;
 
     public List<ExpenseDto> searchExpense(ExpenseSearchForm form) {
         return expenseRepository.selectSearchExpense(form.toParam());
@@ -112,19 +115,19 @@ public class ExpenseService {
         fileService.createFileAndInsertDataBase(fileDto);
 
         FileMetaDto fileMetaDto = fileService.selectFileByOriginFileName(fileDto.getOriginFileName());
-        InsertExpenseFileIdParam param = InsertExpenseFileIdParam.of(expenseId, fileMetaDto.getId());
+        ExpenseFileIdParam param = ExpenseFileIdParam.of(expenseId, fileMetaDto.getId());
         // 지출-파일 테이블에 해당 지출id, 파일id 삽입
         expenseRepository.insertExpenseFileMap(param);
     }
 
-    public void deleteExpenseBill(long fileId) {
+    public void deleteExpenseBill(long fileId, long expenseId) {
         FileMetaDto fileMetaDto = fileService.selectFileById(fileId);
 
         if (fileMetaDto == null) {
             throw new CustomRuntimeException(FILE_NOT_FOUND);
         }
 
-        fileService.deleteFile(fileId);
+        fileService.deleteFile(fileId, expenseId);
     }
 
     private boolean isUserAuthorizedForLawsuit(long userId, List<Long> memberIds) {

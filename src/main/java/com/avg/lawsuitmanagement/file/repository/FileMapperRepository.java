@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.file.repository;
 
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
 import com.avg.lawsuitmanagement.file.repository.param.FileInsertParam;
 import org.apache.ibatis.annotations.Mapper;
@@ -14,4 +15,5 @@ public interface FileMapperRepository {
     List<FileMetaDto> selectFileInfoListById(long expenseId);
     void insertFile(FileInsertParam param);
     void deleteFile(Long fileId);
+    void deleteExpenseFileMap(ExpenseFileIdParam param);
 }

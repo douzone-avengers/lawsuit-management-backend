@@ -125,8 +125,8 @@ public class ExpenseController {
 
     // 지출 증빙자료(Meta 데이터) 삭제
     @PatchMapping("/delete/{fileId}/bill")
-    public ResponseEntity<Void> deleteExpenseBill(@PathVariable Long fileId) {
-        expenseService.deleteExpenseBill(fileId);
+    public ResponseEntity<Void> deleteExpenseBill(@PathVariable Long fileId, @Validated @RequestParam long expenseId) {
+        expenseService.deleteExpenseBill(fileId, expenseId);
         return ResponseEntity.ok().build();
     }
 }

@@ -2,6 +2,8 @@ package com.avg.lawsuitmanagement.file.service;
 
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdListParam;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
 import com.avg.lawsuitmanagement.file.dto.FileDto;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
 import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
@@ -10,12 +12,14 @@ import com.avg.lawsuitmanagement.file.FileSaveDto;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_NOT_FOUND;
@@ -110,8 +114,12 @@ public class FileService {
         return fileMapperRepository.selectFileById(fileId);
     }
 
-    public void deleteFile(long fileId) {
+    @Transactional
+    public void deleteFile(long fileId, long expenseId) {
+        ExpenseFileIdParam param = ExpenseFileIdParam.of(expenseId, fileId);
+
         fileMapperRepository.deleteFile(fileId);
+        fileMapperRepository.deleteExpenseFileMap(param);
     }
 
     private String getFullFilePath (FileMetaDto dto) {
