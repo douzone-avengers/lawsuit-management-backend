@@ -74,10 +74,10 @@ public class ClientService {
     }
 
     private void checkEmailDuplicate(String email) {
-        if (clientMapperRepository.selectClientByEmail(email) != null) {
+        if (clientMapperRepository.selectClientByEmailContainDeleted(email) != null) {
             throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
-        if (memberMapperRepository.selectMemberByEmail(email) != null) {
+        if (memberMapperRepository.selectMemberByEmailContainDeleted(email) != null) {
             throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
     }

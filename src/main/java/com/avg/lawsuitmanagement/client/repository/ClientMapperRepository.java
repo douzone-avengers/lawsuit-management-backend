@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ClientMapperRepository {
 
     ClientDto selectClientById(long clientId);
+    ClientDto selectClientByEmailContainDeleted(String email);
     ClientDto selectClientByMemberId(long memberId);
     ClientDto selectClientByEmail(String email);
     ClientDto selectDeletedClientByEmail(String email);
