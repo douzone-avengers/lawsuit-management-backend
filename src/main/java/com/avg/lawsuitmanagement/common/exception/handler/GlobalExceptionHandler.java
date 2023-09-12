@@ -6,7 +6,10 @@ import com.avg.lawsuitmanagement.common.exception.dto.ValidException;
 import com.avg.lawsuitmanagement.common.exception.dto.ValidExceptionDto;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -69,6 +72,35 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<ExceptionDto> duplicateKeyException(
+        DuplicateKeyException ex) {
+        ErrorCode errorCode = ErrorCode.DUPLICATE_KEY;
+        log.error(
+            "duplicateKeyException 발생 : {} \n HttpStatus : {} \n Message : {} \n ExceptionDetail : {}",
+            errorCode.name(), errorCode.getHttpStatus().toString(),
+            errorCode.getMessage(), ex.toString());
+
+        // 정규 표현식을 사용하여 중복된 항목 추출
+        Pattern pattern = Pattern.compile("Duplicate entry '(.*?)' for key");
+        Matcher matcher = pattern.matcher(ex.getMessage());
+        String duplicateValue = "";
+
+        if (matcher.find()) {
+            duplicateValue = matcher.group(1);  // '형-001'와 같은 값을 가져옵니다.
+        }
+        String message = duplicateValue.equals("") ? errorCode.getMessage()
+            : errorCode.getMessage() + "\n중복된 데이터 : " + duplicateValue;
+
+        return new ResponseEntity<>(
+            ExceptionDto.builder()
+                .code(errorCode.name())
+                .message(message)
+                .build()
+            , errorCode.getHttpStatus()
+        );
+    }
+
     /**
      * RequestBody 등에서 유효하지 않은 파라미터일 경우 예외처리
      */
@@ -94,7 +126,8 @@ public class GlobalExceptionHandler {
      * 필수값 누락에 대한 예외처리
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ExceptionDto> handleMissingParams(MissingServletRequestParameterException ex) {
+    public ResponseEntity<ExceptionDto> handleMissingParams(
+        MissingServletRequestParameterException ex) {
         ErrorCode errorCode = ErrorCode.PARAMETER_MISSING;
 
         String missingParamName = ex.getParameterName();
