@@ -18,7 +18,7 @@ public enum ErrorCode {
     //계정관련
     BAD_CREDENTIAL(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정이거나 비밀번호가 틀렸습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
-    MEMBER_EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
+    EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 
     //PROMOTION
     CLIENT_ALREADY_REGISTERED(HttpStatus.CONFLICT, "이미 가입된 의뢰인입니다."),

@@ -1,7 +1,7 @@
 package com.avg.lawsuitmanagement.client.service;
 
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.EMAIL_ALREADY_EXIST;
 
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
@@ -61,7 +61,7 @@ public class ClientService {
 
         // 이미 등록된 고객이면
         if (clientDto != null) {
-            throw new CustomRuntimeException(CLIENT_ALREADY_EXIST);
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
 
         // 등록된 고객이 아니면 db 입력

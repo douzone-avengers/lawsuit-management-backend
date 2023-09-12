@@ -2,7 +2,7 @@ package com.avg.lawsuitmanagement.member.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_REGISTERED;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_EMAIL_ALREADY_EXIST;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.EMAIL_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
@@ -161,7 +161,7 @@ public class MemberService {
         //이메일 중복체크
         MemberDto member = memberMapperRepository.selectMemberByEmail(param.getEmail());
         if (member != null) {
-            throw new CustomRuntimeException(MEMBER_EMAIL_ALREADY_EXIST);
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
         memberMapperRepository.insertMember(param);
         return param.getId();
