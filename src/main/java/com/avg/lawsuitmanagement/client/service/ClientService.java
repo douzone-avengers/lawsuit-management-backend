@@ -2,6 +2,7 @@ package com.avg.lawsuitmanagement.client.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.EMAIL_ALREADY_EXIST;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.SIGNED_CLIENT_CANNOT_DELETE;
 
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
@@ -101,6 +102,11 @@ public class ClientService {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
         }
 
+        //회원가입 된 의뢰인일 경우
+        if(clientDto.getMemberId() == 0) {
+            throw new CustomRuntimeException(SIGNED_CLIENT_CANNOT_DELETE);
+        }
+
         clientMapperRepository.deleteClientInfo(clientId);
 
         // cliendId가 속한 사건별 사건id와 의뢰인 수
@@ -122,7 +128,6 @@ public class ClientService {
     }
 
     public ClientDto selectClientIdByEmail(String email) {
-        ClientDto clientDto = clientMapperRepository.selectClientByEmail(email);
-        return clientDto;
+        return clientMapperRepository.selectClientByEmail(email);
     }
 }
