@@ -6,6 +6,7 @@ import com.avg.lawsuitmanagement.chat.dto.RoomBasicResult;
 import com.avg.lawsuitmanagement.chat.dto.RoomCreateForm;
 import com.avg.lawsuitmanagement.chat.dto.RoomDetailResult;
 import com.avg.lawsuitmanagement.chat.dto.UserBasicInfo;
+import com.avg.lawsuitmanagement.chat.dto.UserBasicInfoWithFriend;
 import com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitResult;
 import com.avg.lawsuitmanagement.chat.service.ChatService;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
@@ -33,6 +34,14 @@ public class ChatController {
     ) {
         UserBasicInfo body = chatService.searchUserByEmail(email);
         return ResponseEntity.ok().body(body);
+    }
+
+    @GetMapping("/users/all")
+    public ResponseEntity<?> searchAllUser(
+        @RequestParam String email
+    ) {
+        List<UserBasicInfoWithFriend> result = chatService.searchAllUser(email);
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/users/employees")
@@ -83,6 +92,16 @@ public class ChatController {
         return ResponseEntity.ok().body(null);
     }
 
+    @PatchMapping("/friends/toggle")
+    public ResponseEntity<?> toggleFriend(
+        @RequestBody EmailBody body
+    ) {
+        String userEmail = SecurityUtil.getCurrentLoginEmail();
+        String friendEmail = body.getEmail();
+        List<UserBasicInfoWithFriend> result = chatService.toggleFriend(userEmail, friendEmail);
+        return ResponseEntity.ok().body(result);
+    }
+
     @PatchMapping("/friends/delete")
     public ResponseEntity<?> removeFriendByEmail(
         @RequestBody EmailBody body
@@ -117,7 +136,7 @@ public class ChatController {
         RoomBasicResult result = chatService.createRoom(form);
         return ResponseEntity.ok().body(result);
     }
-    
+
     @GetMapping("/messages")
     public ResponseEntity<?> getAllMessages(
         @RequestParam(value = "room") Long roomId

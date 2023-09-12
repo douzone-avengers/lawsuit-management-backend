@@ -15,6 +15,7 @@ import com.avg.lawsuitmanagement.chat.dto.RoomDetailResult;
 import com.avg.lawsuitmanagement.chat.dto.RoomMemberMapParam;
 import com.avg.lawsuitmanagement.chat.dto.RoomUserId;
 import com.avg.lawsuitmanagement.chat.dto.UserBasicInfo;
+import com.avg.lawsuitmanagement.chat.dto.UserBasicInfoWithFriend;
 import com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam;
 import com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitInfo;
 import com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitResult;
@@ -159,9 +160,6 @@ public class ChatService {
         chatRepository.addFriend(param);
     }
 
-    public void updateClientFriends(String email) {
-
-    }
 
     public void removeFriendByEmail(String userEmail, String friendEmail) {
         UserBasicInfo user = searchUserByEmail(userEmail);
@@ -368,4 +366,38 @@ public class ChatService {
     }
 
 
+    public List<UserBasicInfoWithFriend> searchAllUser(String email) {
+        if (!chatRepository.isEmployeeByEmail(email)) {
+            List<String> employeeEmails = chatRepository.searchMemberEmailsByClientEmail(email);
+            for (String employeeEmail : employeeEmails) {
+                try {
+                    addFriendByEmail(email, employeeEmail);
+                } catch (CustomRuntimeException e) {
+                    if (!e.getErrorCode().equals(ErrorCode.CHAT_ALREADY_FRIEND)) {
+                        throw e;
+                    }
+                }
+            }
+        }
+        UserBasicInfo user = searchUserByEmail(email);
+        List<UserBasicInfoWithFriend> result = chatRepository.searchAllUser(
+            user.getId());
+        return result;
+    }
+
+    public List<UserBasicInfoWithFriend> toggleFriend(String userEmail, String friendEmail) {
+        UserBasicInfo user = searchUserByEmail(userEmail);
+        UserBasicInfo friend = searchUserByEmail(friendEmail);
+        UserFriendIdParam param = UserFriendIdParam.builder()
+            .userId(user.getId())
+            .friendId(friend.getId())
+            .build();
+        if (chatRepository.checkPreviousFriendById(param)) {
+            chatRepository.toggleFriend(param);
+        } else {
+            chatRepository.addFriend(param);
+        }
+        List<UserBasicInfoWithFriend> result = searchAllUser(userEmail);
+        return result;
+    }
 }
