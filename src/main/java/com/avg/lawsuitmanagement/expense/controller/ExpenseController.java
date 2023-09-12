@@ -3,6 +3,7 @@ package com.avg.lawsuitmanagement.expense.controller;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.type.SortOrder;
 import com.avg.lawsuitmanagement.expense.controller.form.*;
+import com.avg.lawsuitmanagement.expense.dto.ExpenseBillDto;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseDto;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseSearchDto;
 import com.avg.lawsuitmanagement.expense.service.ExpenseService;
@@ -10,6 +11,7 @@ import com.avg.lawsuitmanagement.expense.type.ExpenseSortKey;
 import java.time.LocalDate;
 import java.util.List;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
+import com.avg.lawsuitmanagement.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,6 +36,7 @@ import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_NOT
 @Slf4j
 public class ExpenseController {
     private final ExpenseService expenseService;
+    private final FileService fileService;
 
     // 지출 조회 및 검색
     @GetMapping()
@@ -105,28 +108,51 @@ public class ExpenseController {
 
     // 지출 증빙자료(File 데이터, Meta 데이터) 등록
     @PostMapping("/{expenseId}/bill")
-    public ResponseEntity<?> insertExpenseBill(@PathVariable Long expenseId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> insertExpenseBill(
+            @PathVariable Long expenseId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("page") Long page
+    ) {
         if (file == null || file.isEmpty()) {
             throw new CustomRuntimeException(FILE_NOT_FOUND);
         }
 
         expenseService.insertExpenseBill(expenseId, file);
 
-        return ResponseEntity.ok().build();
+        List<FileMetaDto> expenseBill = expenseService.selectExpenseBillInfo(expenseId, page);
+        Long size = fileService.searchFileSize(expenseId);
+
+        return ResponseEntity.ok(ExpenseBillDto.of(expenseBill, size));
     }
 
     // 지출 증빙자료(Meta 데이터) 조회
     @GetMapping("/{expenseId}/bill")
-    public ResponseEntity<List<FileMetaDto>> selectExpenseBillData(@PathVariable Long expenseId) {
-        List<FileMetaDto> fileMetaDtoList = expenseService.selectExpenseBillInfo(expenseId);
+    public ResponseEntity<ExpenseBillDto> selectExpenseBillData(
+            @PathVariable Long expenseId,
+            @RequestParam(required = false) Long page
+    ) {
+        List<FileMetaDto> expenseBill = expenseService.selectExpenseBillInfo(expenseId, page);
+        Long size = fileService.searchFileSize(expenseId);
 
-        return ResponseEntity.ok(expenseService.selectExpenseBillInfo(expenseId));
+        log.info(size.toString());
+
+        return ResponseEntity.ok(ExpenseBillDto.of(expenseBill, size));
     }
 
     // 지출 증빙자료(Meta 데이터) 삭제
     @PatchMapping("/delete/{fileId}/bill")
-    public ResponseEntity<Void> deleteExpenseBill(@PathVariable Long fileId) {
-        expenseService.deleteExpenseBill(fileId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteExpenseBill(
+            @PathVariable Long fileId,
+            @Validated @RequestParam("expenseId") long expenseId,
+            @RequestParam("page") Long page) {
+
+        log.info(page.toString());
+
+        expenseService.deleteExpenseBill(fileId, expenseId);
+
+        List<FileMetaDto> expenseBill = expenseService.selectExpenseBillInfo(expenseId, page);
+        Long size = fileService.searchFileSize(expenseId);
+
+        return ResponseEntity.ok(ExpenseBillDto.of(expenseBill, size));
     }
 }

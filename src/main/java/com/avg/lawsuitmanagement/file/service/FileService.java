@@ -2,6 +2,9 @@ package com.avg.lawsuitmanagement.file.service;
 
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
+import com.avg.lawsuitmanagement.expense.dto.ExpenseBillSelectDto;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseBillSelectParam;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
 import com.avg.lawsuitmanagement.file.dto.FileDto;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
 import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
@@ -16,6 +19,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_NOT_FOUND;
@@ -94,8 +98,10 @@ public class FileService {
         fileMapperRepository.insertFile(param);
     }
 
-    public List<FileMetaDto> selectFileInfoListByExpenseId(long expenseId) {
-        return fileMapperRepository.selectFileInfoListById(expenseId);
+    public List<FileMetaDto> selectFileInfoListByExpenseId(ExpenseBillSelectDto dto) {
+        ExpenseBillSelectParam param = ExpenseBillSelectParam.of(dto.getExpenseId(), dto.getPage(), dto.getCount());
+
+        return fileMapperRepository.selectFileInfoListById(param);
     }
 
     public FileMetaDto selectFileByOriginFileName(String originFileName) {
@@ -110,8 +116,16 @@ public class FileService {
         return fileMapperRepository.selectFileById(fileId);
     }
 
-    public void deleteFile(long fileId) {
+    @Transactional
+    public void deleteFile(long fileId, long expenseId) {
+        ExpenseFileIdParam param = ExpenseFileIdParam.of(expenseId, fileId);
+
         fileMapperRepository.deleteFile(fileId);
+        fileMapperRepository.deleteExpenseFileMap(param);
+    }
+
+    public Long searchFileSize(Long expenseId) {
+        return fileMapperRepository.searchCount(expenseId);
     }
 
     private String getFullFilePath (FileMetaDto dto) {
