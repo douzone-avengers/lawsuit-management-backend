@@ -8,6 +8,7 @@ import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
+import com.avg.lawsuitmanagement.client.repository.param.ReRegisterClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
@@ -59,6 +60,14 @@ public class ClientService {
     }
 
     public void insertClient(InsertClientForm form) {
+        //예전에 삭제된 메일이었을 경우
+        ClientDto deletedClientInfo = clientMapperRepository.selectDeletedClientByEmail(form.getEmail());
+        if(deletedClientInfo != null) {
+            clientMapperRepository.reRegisterClient(ReRegisterClientParam.of(
+                deletedClientInfo.getId(), form));
+            return;
+        }
+
         checkEmailDuplicate(form.getEmail());
         clientMapperRepository.insertClient(InsertClientParam.of(form));
     }

@@ -6,15 +6,51 @@
 <mapper namespace="com.avg.lawsuitmanagement.client.repository.ClientMapperRepository">
 
     <select id="selectClientById" parameterType="java.lang.Long">
-        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted, member_id
+        select id,
+               email,
+               name,
+               phone,
+               address,
+               address_detail,
+               created_at,
+               updated_at,
+               is_deleted,
+               member_id
         from client
-        where id = #{clientId} and is_deleted = false;
+        where id = #{clientId}
+          and is_deleted = false;
     </select>
 
     <select id="selectClientByEmail" parameterType="java.lang.String">
-        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted, member_id
+        select id,
+               email,
+               name,
+               phone,
+               address,
+               address_detail,
+               created_at,
+               updated_at,
+               is_deleted,
+               member_id
         from client
-        where email = #{email} and is_deleted = false;
+        where email = #{email}
+          and is_deleted = false;
+    </select>
+
+    <select id="selectDeletedClientByEmail" parameterType="java.lang.String">
+        select id,
+               email,
+               name,
+               phone,
+               address,
+               address_detail,
+               created_at,
+               updated_at,
+               is_deleted,
+               member_id
+        from client
+        where email = #{email}
+          and is_deleted = true;
     </select>
 
     <insert id="insertClient" parameterType="InsertClientParam">
@@ -30,7 +66,22 @@
 
     <update id="updateClientInfo" parameterType="UpdateClientInfoParam">
         update client
-        set email = #{email}, name = #{name}, phone = #{phone}, address = #{address} , address_detail = #{addressDetail}
+        set email          = #{email},
+            name           = #{name},
+            phone          = #{phone},
+            address        = #{address},
+            address_detail = #{addressDetail}
+        where id = #{clientId};
+    </update>
+
+    <update id="reRegisterClient" parameterType="ReRegisterClientParam">
+        update client
+        set email          = #{email},
+            name           = #{name},
+            phone          = #{phone},
+            address        = #{address},
+            address_detail = #{addressDetail},
+            is_deleted      = #{isDeleted}
         where id = #{clientId};
     </update>
 
@@ -41,13 +92,23 @@
     </update>
 
     <select id="selectClientList">
-        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted, member_id
+        select id,
+               email,
+               name,
+               phone,
+               address,
+               address_detail,
+               created_at,
+               updated_at,
+               is_deleted,
+               member_id
         from client
         where is_deleted = false;
     </select>
 
     <select id="selectClientListById" parameterType="java.util.List">
-        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted, member_id
+        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted,
+        member_id
         from client
         where id in
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
@@ -68,7 +129,16 @@
     </select>
 
     <select id="selectClientByMemberId" parameterType="java.lang.Long">
-        select id, email, name, phone, address, address_detail, created_at, updated_at, is_deleted, member_id
+        select id,
+               email,
+               name,
+               phone,
+               address,
+               address_detail,
+               created_at,
+               updated_at,
+               is_deleted,
+               member_id
         from client
         where member_id = #{memberId};
     </select>
