@@ -2,7 +2,8 @@ package com.avg.lawsuitmanagement.file.service;
 
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
-import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdListParam;
+import com.avg.lawsuitmanagement.expense.dto.ExpenseBillSelectDto;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseBillSelectParam;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
 import com.avg.lawsuitmanagement.file.dto.FileDto;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
@@ -12,7 +13,6 @@ import com.avg.lawsuitmanagement.file.FileSaveDto;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -98,8 +98,10 @@ public class FileService {
         fileMapperRepository.insertFile(param);
     }
 
-    public List<FileMetaDto> selectFileInfoListByExpenseId(long expenseId) {
-        return fileMapperRepository.selectFileInfoListById(expenseId);
+    public List<FileMetaDto> selectFileInfoListByExpenseId(ExpenseBillSelectDto dto) {
+        ExpenseBillSelectParam param = ExpenseBillSelectParam.of(dto.getExpenseId(), dto.getPage(), dto.getCount());
+
+        return fileMapperRepository.selectFileInfoListById(param);
     }
 
     public FileMetaDto selectFileByOriginFileName(String originFileName) {
@@ -120,6 +122,10 @@ public class FileService {
 
         fileMapperRepository.deleteFile(fileId);
         fileMapperRepository.deleteExpenseFileMap(param);
+    }
+
+    public Long searchFileSize(Long expenseId) {
+        return fileMapperRepository.searchCount(expenseId);
     }
 
     private String getFullFilePath (FileMetaDto dto) {

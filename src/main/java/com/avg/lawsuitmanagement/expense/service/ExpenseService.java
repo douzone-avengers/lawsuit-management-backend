@@ -3,12 +3,10 @@ package com.avg.lawsuitmanagement.expense.service;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.expense.controller.form.*;
+import com.avg.lawsuitmanagement.expense.dto.ExpenseBillSelectDto;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseDto;
 import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
-import com.avg.lawsuitmanagement.expense.repository.param.ExpenseInsertParam;
-import com.avg.lawsuitmanagement.expense.repository.param.ExpenseSelectParam;
-import com.avg.lawsuitmanagement.expense.repository.param.ExpenseUpdateParam;
-import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
+import com.avg.lawsuitmanagement.expense.repository.param.*;
 import com.avg.lawsuitmanagement.file.dto.FileDto;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
 import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
@@ -18,7 +16,6 @@ import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +37,6 @@ public class ExpenseService {
     private final MemberMapperRepository memberMapperRepository;
     private final LoginUserInfoService loginUserInfoService;
     private final FileService fileService;
-    private final FileMapperRepository fileMapperRepository;
 
     public List<ExpenseDto> searchExpense(ExpenseSearchForm form) {
         return expenseRepository.selectSearchExpense(form.toParam());
@@ -91,13 +87,14 @@ public class ExpenseService {
         }
     }
 
-    public List<FileMetaDto> selectExpenseBillInfo(long expenseId) {
+    public List<FileMetaDto> selectExpenseBillInfo(long expenseId, Long page) {
         ExpenseDto expenseDto = expenseRepository.selectExpenseById(expenseId);
+
         if (expenseDto == null) {
             throw new CustomRuntimeException(EXPENSE_NOT_FOUND);
         }
 
-        return fileService.selectFileInfoListByExpenseId(expenseId);
+        return fileService.selectFileInfoListByExpenseId(ExpenseBillSelectDto.of(expenseId, page, 5L));
     }
 
     @Transactional

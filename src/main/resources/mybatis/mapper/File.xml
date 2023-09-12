@@ -27,11 +27,19 @@
     </select>
 
     <!-- 파일id 리스트에 해당하는 파일 리스트 가져오는 쿼리 -->
-    <select id="selectFileInfoListById" parameterType="java.lang.Long">
+    <select id="selectFileInfoListById" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseBillSelectParam">
         select *
         from file
         where is_deleted = false
         and id in (select file_id from expense_file_map where expense_id = #{expenseId})
+        <choose>
+            <when test="page != null">
+                limit ${page * 5}, #{count}
+            </when>
+            <otherwise>
+                limit 0, #{count}
+            </otherwise>
+        </choose>
     </select>
 
     <!-- 파일 등록 -->
@@ -54,4 +62,13 @@
         set is_deleted = true
         where expense_id = #{expenseId} and file_id = #{fileId} and is_deleted = false;
     </update>
+
+    <select id="searchCount" parameterType="java.lang.Long">
+        select count(*)
+        from file
+        where id in (select file_id
+                     from expense_file_map
+                     where expense_id = #{expenseId})
+        and is_deleted = false
+    </select>
 </mapper>
