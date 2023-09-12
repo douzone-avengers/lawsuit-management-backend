@@ -159,10 +159,13 @@ public class MemberService {
 
     private long insertMember(InsertMemberParam param) {
         //이메일 중복체크
-        MemberDto member = memberMapperRepository.selectMemberByEmail(param.getEmail());
-        if (member != null) {
+        if(memberMapperRepository.selectMemberByEmailContainDeleted(param.getEmail()) != null) {
             throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
+        if(clientMapperRepository.selectClientByEmailContainDeleted(param.getEmail()) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
+        }
+
         memberMapperRepository.insertMember(param);
         return param.getId();
     }
