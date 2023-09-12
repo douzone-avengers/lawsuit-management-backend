@@ -208,10 +208,13 @@
       parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
         update lawsuit_member_map
         set is_deleted = 0
-        where lawsuit_id = #{lawsuitId} and
-        <foreach item="memberId" collection="memberIdList" separator="or">
-            member_id = #{memberId}
-        </foreach>
+        where lawsuit_id = #{lawsuitId}
+        <if test="memberIdList != null and memberIdList.size() > 0">
+            and
+            <foreach item="memberId" collection="memberIdList" separator="or">
+                member_id = #{memberId}
+            </foreach>
+        </if>
     </update>
 
     <!-- 기존에 있던 담당자 id 삭제 -->
@@ -220,9 +223,13 @@
         update lawsuit_member_map
         set is_deleted = 1
         where lawsuit_id = #{lawsuitId}
-        <foreach item="memberId" collection="memberIdList" separator="AND">
-            and member_id = #{memberId}
-        </foreach>
+        <if test="memberIdList != null and memberIdList.size() > 0">
+            and
+            <foreach item="memberId" collection="memberIdList" separator="OR">
+                member_id = #{memberId}
+            </foreach>
+        </if>
+
     </update>
 
     <!-- 기존에 있던 의뢰인 id 삭제 -->
@@ -231,9 +238,12 @@
         update lawsuit_client_map
         set is_deleted = 1
         where lawsuit_id = #{lawsuitId}
-        <foreach item="clientId" collection="clientIdList" separator="AND">
-            and client_id = #{clientId}
-        </foreach>
+        <if test="clientIdList != null and clientIdList.size() > 0">
+            and
+            <foreach item="clientId" collection="clientIdList" separator="OR">
+                client_id = #{clientId}
+            </foreach>
+        </if>
     </update>
 
     <select id="selectLawsuitList">
