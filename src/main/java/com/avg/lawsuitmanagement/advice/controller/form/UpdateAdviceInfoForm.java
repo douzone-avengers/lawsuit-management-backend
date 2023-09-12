@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.advice.controller.form;
 
+import com.avg.lawsuitmanagement.advice.dto.IdNameDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,10 +13,11 @@ import java.util.List;
 public class UpdateAdviceInfoForm {
 
 
+
     @NotNull
-    private List<Long> memberIdList;
+    private List<IdNameDto> memberIdList;
     @NotNull
-    private List<Long> clientIdList;
+    private List<IdNameDto> clientIdList;
     @NotNull
     private long lawsuitId;
     @NotBlank

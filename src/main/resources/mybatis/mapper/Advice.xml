@@ -30,14 +30,14 @@
     </select>
 
     <select id ="selectAdviceClientList" resultType = "java.lang.String">
-        select c.name
+        select c.name, c.id
             from advice_client_map as m
             join client c on m.client_id = c.id
         where m.advice_id = #{adviceId}
     </select>
 
     <select id ="selectAdviceMemberList" resultType = "java.lang.String">
-        select e.name
+        select e.name, e.id
         from advice_member_map as m
                  join member e on m.member_id = e.id
         where m.advice_id = #{adviceId}

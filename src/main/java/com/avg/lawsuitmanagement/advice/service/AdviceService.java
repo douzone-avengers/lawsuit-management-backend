@@ -3,6 +3,7 @@ package com.avg.lawsuitmanagement.advice.service;
 import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
+import com.avg.lawsuitmanagement.advice.dto.IdNameDto;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
 import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceClientIdParam;
 import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceMemberIdParam;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,25 +108,26 @@ public class AdviceService {
         List<Long> clientIdList = clientMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
         List<Long> memberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(form.getLawsuitId());
 
-        List<Long> formClientIdList = form.getClientIdList();
+        @NotNull
+        List<IdNameDto> formClientIdList = form.getClientIdList();
         List<Long> insertClientIdList = new ArrayList<>();
 
-        for(Long clientId : formClientIdList){
+        for(IdNameDto clientId : formClientIdList){
             if(!clientIdList.contains(clientId)){
                 throw new CustomRuntimeException(CLIENT_NOT_FOUND_IN_LAWSUIT);
             }
-            insertClientIdList.add(clientId);
+            insertClientIdList.add(clientId.getId());
         }
         InsertAdviceClientIdParam clientIdParam = InsertAdviceClientIdParam.of(adviceId, insertClientIdList);
         adviceMapperRepository.insertAdviceClientMap(clientIdParam);
-
-        List<Long> formMemberIdList = form.getMemberIdList();
+        @NotNull
+        List<IdNameDto> formMemberIdList = form.getMemberIdList();
         List<Long> insertMemberIdList = new ArrayList<>();
-        for(Long memberId : formMemberIdList){
+        for(IdNameDto memberId : formMemberIdList){
             if(!memberIdList.contains(memberId)){
                 throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
             }
-            insertMemberIdList.add(memberId);
+            insertMemberIdList.add(memberId.getId());
         }
         InsertAdviceMemberIdParam memberIdParam = InsertAdviceMemberIdParam.of(adviceId, insertMemberIdList);
         adviceMapperRepository.insertAdviceMemberMap(memberIdParam);
