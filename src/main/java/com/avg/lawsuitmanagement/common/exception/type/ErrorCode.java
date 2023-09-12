@@ -75,6 +75,8 @@ public enum ErrorCode {
     CHAT_ADD_FRIEND_MY_SELF(HttpStatus.BAD_REQUEST, "자신은 친구로 등록할 수 없습니다."),
     CHAT_ALREADY_FRIEND(HttpStatus.BAD_REQUEST, "이미 친구로 등록되어 있습니다."),
 
+    //DB
+    DUPLICATE_KEY(HttpStatus.CONFLICT, "중복된 데이터가 있습니다."),
     //TEST
     EXCEPTION_AOP_TEST(HttpStatus.BAD_REQUEST, "TEST : 테스트용 예외가 발생했습니다.");
 
