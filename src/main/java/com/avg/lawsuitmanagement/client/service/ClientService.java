@@ -14,6 +14,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientService {
 
     private final ClientMapperRepository clientMapperRepository;
+    private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
     private final LawsuitService lawsuitService;
     private final LoginUserInfoService loginUserInfoService;
@@ -57,15 +59,17 @@ public class ClientService {
     }
 
     public void insertClient(InsertClientForm form) {
-        ClientDto clientDto = clientMapperRepository.selectClientByEmail(form.getEmail());
+        checkEmailDuplicate(form.getEmail());
+        clientMapperRepository.insertClient(InsertClientParam.of(form));
+    }
 
-        // 이미 등록된 고객이면
-        if (clientDto != null) {
+    private void checkEmailDuplicate(String email) {
+        if (clientMapperRepository.selectClientByEmail(email) != null) {
             throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
-
-        // 등록된 고객이 아니면 db 입력
-        clientMapperRepository.insertClient(InsertClientParam.of(form));
+        if (memberMapperRepository.selectMemberByEmail(email) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
+        }
     }
 
     public void updateClientInfo(long clientId, UpdateClientInfoForm form) {
