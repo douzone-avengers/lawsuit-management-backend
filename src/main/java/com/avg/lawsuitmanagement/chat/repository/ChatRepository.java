@@ -9,6 +9,7 @@ import com.avg.lawsuitmanagement.chat.dto.RoomCreateParam;
 import com.avg.lawsuitmanagement.chat.dto.RoomMemberMapParam;
 import com.avg.lawsuitmanagement.chat.dto.RoomUserId;
 import com.avg.lawsuitmanagement.chat.dto.UserBasicInfo;
+import com.avg.lawsuitmanagement.chat.dto.UserBasicInfoWithFriend;
 import com.avg.lawsuitmanagement.chat.dto.UserFriendIdParam;
 import com.avg.lawsuitmanagement.chat.dto.UserWithLawsuitInfo;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ChatRepository {
+
+    List<UserBasicInfoWithFriend> searchAllUser(Long id);
 
     UserBasicInfo searchUserByEmail(String email);
 
@@ -73,4 +76,5 @@ public interface ChatRepository {
 
     Boolean isEmployeeByEmail(String email);
 
+    void toggleFriend(UserFriendIdParam param);
 }
