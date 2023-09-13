@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.reception.repository.ReceptionMapperRepository">
+    <select id="select"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionSelectParam"
+      resultType="com.avg.lawsuitmanagement.reception.dto.ReceptionDto">
+        SELECT id,
+        lawsuit_id,
+        member_id,
+        status,
+        category,
+        contents,
+        received_at,
+        deadline,
+        created_at,
+        updated_at,
+        is_deleted
+        FROM reception
+        WHERE lawsuit_id = #{lawsuitId}
+        AND is_deleted = false
+        <choose>
+            <when test='status != null and status.equals("all")'>
+
+            </when>
+            <when test='status != null and status.equals("complete")'>
+                AND status = true
+            </when>
+            <when test='status != null and status.equals("incomplete")'>
+                AND status = false
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <choose>
+            <when test='category != null and category.equals("all")'>
+
+            </when>
+            <when test='category != null'>
+                AND category = #{category}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="contents != null">
+            AND contents LIKE CONCAT('%', #{contents}, '%')
+        </if>
+        <if test="startReceivedAt != null">
+            AND received_at >= #{startReceivedAt}
+        </if>
+        <if test="endReceivedAt != null">
+            AND #{endReceivedAt} >= received_at
+        </if>
+        <if test="startDeadline != null">
+            AND deadline >= #{startDeadline}
+        </if>
+        <if test="endDeadline != null">
+            AND #{endDeadline} >= deadline
+        </if>
+        ORDER BY id DESC
+        <choose>
+            <when test="page != null">
+                LIMIT ${page * 5}, #{count}
+            </when>
+            <otherwise>
+                LIMIT 0, #{count}
+            </otherwise>
+        </choose>
+    </select>
+    <select id="selectById"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.reception.dto.ReceptionDto">
+        SELECT id,
+               lawsuit_id,
+               member_id,
+               status,
+               category,
+               contents,
+               received_at,
+               deadline,
+               created_at,
+               updated_at,
+               is_deleted
+        FROM reception
+        WHERE id = #{id}
+          AND is_deleted = false
+    </select>
+    <insert id="insert"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionInsertParam"
+      useGeneratedKeys="true"
+      keyProperty="id"
+    >
+        INSERT INTO reception (lawsuit_id, member_id, status, category, contents, received_at,
+                               deadline)
+        VALUES (#{lawsuitId}, #{memberId}, #{status}, #{category}, #{contents}, #{receivedAt},
+                #{deadline})
+    </insert>
+    <update id="update"
+      parameterType="com.avg.lawsuitmanagement.reception.repository.param.ReceptionUpdateParam">
+        UPDATE reception
+        SET updated_at = now()
+        , received_at = #{receivedAt}
+
+        <if test="status != null">
+            , status = #{status}
+        </if>
+        <if test="category != null">
+            , category = #{category}
+        </if>
+        <if test="contents != null">
+            , contents = #{contents}
+        </if>
+        <if test="deadline != null">
+            , deadline = #{deadline}
+        </if>
+        WHERE id = #{id}
+        AND is_deleted = false
+    </update>
+    <update id="delete"
+      parameterType="java.lang.Long"
+    >
+        UPDATE reception
+        SET is_deleted=1
+        WHERE id = #{id}
+          AND is_deleted = false
+    </update>
+    <delete id="truncate">
+        TRUNCATE TABLE reception
+    </delete>
+    <select id="count">
+        SELECT COUNT(*)
+        FROM reception
+        WHERE is_deleted = false
+    </select>
+    <select id="searchCount">
+        SELECT COUNT(*)
+        FROM reception
+        WHERE lawsuit_id = #{lawsuitId}
+        AND is_deleted = false
+        <choose>
+            <when test='status != null and status.equals("all")'>
+
+            </when>
+            <when test='status != null and status.equals("complete")'>
+                AND status = true
+            </when>
+            <when test='status != null and status.equals("incomplete")'>
+                AND status = false
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <choose>
+            <when test='category != null and category.equals("all")'>
+
+            </when>
+            <when test='category != null'>
+                AND category = #{category}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="contents != null">
+            AND contents LIKE CONCAT('%', #{contents}, '%')
+        </if>
+        <if test="startReceivedAt != null">
+            AND received_at >= #{startReceivedAt}
+        </if>
+        <if test="endReceivedAt != null">
+            AND #{endReceivedAt} >= received_at
+        </if>
+        <if test="startDeadline != null">
+            AND deadline >= #{startDeadline}
+        </if>
+        <if test="endDeadline != null">
+            AND #{endDeadline} >= deadline
+        </if>
+    </select>
+</mapper>

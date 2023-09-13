@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.promotion.repository.PromotionMapperRepository">
+
+    <insert id="insertClientPromotionKey" parameterType="InsertClientPromotionKeyParam">
+        replace into client_promotion (`value`, client_id)
+        values (#{value}, #{clientId})
+    </insert>
+
+    <select id="selectPromotionKeyByValue" resultType="ClientPromotionKeyDto"
+      parameterType="java.lang.String">
+        select *
+        from client_promotion
+        where value = #{value}
+          and is_deleted = false
+    </select>
+
+    <insert id="insertEmployeePromotionKey" parameterType="java.lang.String">
+        insert into employee_promotion (`value`)
+            value (#{value})
+    </insert>
+
+    <select id="selectEmployeePromotionKeyByValue" resultType="EmployeePromotionKeyDto"
+      parameterType="java.lang.String">
+        select *
+        from employee_promotion
+        where value = #{value}
+          and is_deleted = false
+    </select>
+
+    <update id="deactivateClientPromotionByValue" parameterType="java.lang.String">
+        update client_promotion
+        set is_active = false
+        where value = #{value};
+    </update>
+
+    <update id="deactivateEmployeePromotionByValue" parameterType="java.lang.String">
+        update employee_promotion
+        set is_active = false
+        where value = #{value};
+    </update>
+
+</mapper>

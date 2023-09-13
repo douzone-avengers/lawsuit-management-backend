@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository" >
+    <resultMap id="AdviceResultMap" type="AdviceDto">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="contents" column="contents"/>
+        <result property="advicedAt" column="adviced_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="lawsuitId" column="lawsuit_id"/>
+
+        <collection property="memberId" ofType="java.lang.String" javaType="java.util.ArrayList" column="{adviceId = id}" select="selectAdviceMemberList"/>
+        <collection property="clientId" ofType="java.lang.String" javaType="java.util.ArrayList" column="{adviceId=id}" select="selectAdviceClientList"/>
+    </resultMap>
+
+    <select id="selectAdviceById" resultMap="AdviceResultMap" parameterType="java.lang.Long">
+        select
+            a.id,
+            a.lawsuit_id,
+            a.title,
+            a.contents,
+            a.adviced_at
+        from advice as a
+        WHERE a.id = #{adviceId} AND a.is_deleted=false;
+    </select>
+
+    <select id ="selectAdviceClientList" resultType = "java.lang.String">
+        select c.name
+            from advice_client_map as m
+            join client c on m.client_id = c.id
+        where m.advice_id = #{adviceId}
+    </select>
+
+    <select id ="selectAdviceMemberList" resultType = "java.lang.String">
+        select e.name
+        from advice_member_map as m
+                 join member e on m.member_id = e.id
+        where m.advice_id = #{adviceId}
+    </select>
+    
+    <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long"
+    resultType="com.avg.lawsuitmanagement.advice.dto.AdviceDto">
+        select id, lawsuit_id, title, contents, adviced_at
+        from advice
+        where lawsuit_id = #{lawsuitId} and is_deleted=false;
+    </select>
+
+
+    <insert id="insertAdvice" parameterType="InsertAdviceParam">
+        insert into advice (title, contents, adviced_at, lawsuit_id)
+        values
+            (#{title}, #{contents}, #{advicedAt}, #{lawsuitId});
+    </insert>
+
+    <select id="getLastInsertedAdviceId" resultType="java.lang.Long">
+        SELECT LAST_INSERT_ID();
+    </select>
+
+    <insert id="insertAdviceClientMap" parameterType="InsertAdviceClientIdParam">
+    INSERT INTO advice_client_map (advice_id, client_id)
+    VALUES
+        <foreach item="clientId" collection="clientId" separator=",">
+            (#{adviceId}, #{clientId})
+        </foreach>
+    </insert>
+
+    <insert id="insertAdviceMemberMap" parameterType="InsertAdviceMemberIdParam">
+    INSERT INTO advice_member_map (advice_id, member_id)
+    VALUES
+        <foreach item="memberId" collection="memberId"  separator=",">
+            (#{adviceId}, #{memberId})
+        </foreach>
+    </insert>
+
+    <update id="updateAdviceInfo" parameterType="UpdateAdviceInfoParam">
+        update advice, advice_client_map, advice_member_map
+        set title = #{title},
+        contents = #{contents},
+        adviced_at = #{advicedAt},
+        member_id = (
+        <foreach collection="memberId" item="memberId" separator=",">
+            #{memberId}
+        </foreach>
+        ),
+        client_id = (
+        <foreach collection="clientId" item="clientId" separator=",">
+            #{clientId}
+        </foreach>
+        )
+        where id = #{adviceId};
+    </update>
+
+    <update id="deleteAdviceInfo" parameterType="java.lang.Long">
+        update advice
+        set is_deleted = true
+        where id = #{adviceId};
+    </update>
+    <update id="delectAdviceClientMap" parameterType="java.lang.Long">
+        update advice_client_map
+        set is_deleted = true
+        where advice_id = #{adviceId};
+    </update>
+    
+    <update id="delectAdviceMemberMap" parameterType="java.lang.Long">
+        update  advice_member_map
+        set is_deleted = true
+        where  advice_id = #{adviceId};
+    </update>
+</mapper>

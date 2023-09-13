@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.schedule.repository.ScheduleMapperRepository">
+    <select id="select"
+      parameterType="com.avg.lawsuitmanagement.schedule.repository.param.ScheduleSelectParam"
+      resultType="com.avg.lawsuitmanagement.schedule.dto.ScheduleRawDto">
+        SELECT DISTINCT r.id           `reception_id`,
+                        r.deadline     `deadline`,
+                        r.status       `reception_status`,
+                        l.id           `lawsuit_id`,
+                        l.lawsuit_type `lawsuit_type`,
+                        l.name         `lawsuit_name`,
+                        m.name         `employee_name`
+        FROM reception r
+                 LEFT JOIN lawsuit l ON (r.lawsuit_id = l.id AND l.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map map
+                           ON (l.id = map.lawsuit_id AND map.is_deleted = false)
+                 LEFT JOIN member m ON (m.id = map.member_id AND m.is_deleted = false)
+        WHERE r.is_deleted = false
+          AND deadline >= #{startDeadline}
+          AND #{endDeadline} >= deadline
+    </select>
+
+    <select id="selectInfo"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.schedule.dto.ScheduleInfoRawDto">
+        SELECT DISTINCT l.id             `lawsuit_id`,
+                        l.lawsuit_num    `lawsuit_num`,
+                        l.name           `lawsuit_name`,
+                        l.lawsuit_type   `lawsuit_type`,
+                        l.lawsuit_status `lawsuit_status`,
+                        co.name_kr       `court_name`,
+                        l.commission_fee `lawsuit_commission_fee`,
+                        l.contingent_fee `lawsuit_contingent_fee`,
+                        m.id             `member_id`,
+                        m.name           `member_name`,
+                        c.id             `client_id`,
+                        c.name           `client_name`,
+                        r.id             `reception_id`,
+                        r.status         `reception_status`,
+                        r.category       `reception_category`,
+                        r.contents       `reception_contents`,
+                        r.received_at    `reception_received_at`,
+                        r.deadline       `reception_deadline`
+        FROM lawsuit l
+                 LEFT JOIN reception r ON (l.id = r.lawsuit_id AND r.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map lm ON (l.id = lm.lawsuit_id AND lm.is_deleted = false)
+                 LEFT JOIN member m ON (lm.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN lawsuit_client_map lc ON (l.id = lc.lawsuit_id AND lc.is_deleted = false)
+                 LEFT JOIN client c ON (lc.client_id = c.id AND c.is_deleted = false)
+                 LEFT JOIN court co ON co.id = l.court_id
+        WHERE l.is_deleted = false
+          AND r.id = #{receptionId}
+    </select>
+</mapper>

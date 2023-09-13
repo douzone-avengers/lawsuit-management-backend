@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.file.repository.FileMapperRepository">
+    <!-- originFileName에 해당하는 파일 가져오는 쿼리 -->
+    <select id="selectFileByOriginFileName" resultType="com.avg.lawsuitmanagement.file.dto.FileMetaDto">
+        select *
+        from file
+        where origin_filename = #{originFileName} and is_deleted = false
+    </select>
+
+    <!-- 파일id에 해당하는 파일 가져오는 쿼리 -->
+    <select id="selectFileById" resultType="com.avg.lawsuitmanagement.file.dto.FileMetaDto">
+        select *
+        from file
+        where id = #{fileId} and is_deleted = false
+    </select>
+
+    <!-- 지출id에 해당하는 파일id 리스트 가져오는 쿼리 -->
+    <select id="selectFileIdListByExpenseId" parameterType="java.lang.Long">
+        select file_id
+        from expense_file_map
+        where expense_id = #{expenseId}
+        and is_deleted = false
+    </select>
+
+    <!-- 파일id 리스트에 해당하는 파일 리스트 가져오는 쿼리 -->
+    <select id="selectFileInfoListById" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseBillSelectParam">
+        select *
+        from file
+        where is_deleted = false
+        and id in (select file_id from expense_file_map where expense_id = #{expenseId})
+        <choose>
+            <when test="page != null">
+                limit ${page * 5}, #{count}
+            </when>
+            <otherwise>
+                limit 0, #{count}
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 파일 등록 -->
+    <insert id="insertFile" parameterType="com.avg.lawsuitmanagement.file.repository.param.FileInsertParam">
+        insert into file (show_filename, origin_filename, path, extension)
+        values (#{showFileName}, #{originFileName}, #{path}, #{extension})
+    </insert>
+
+    <!-- 파일 삭제 -->
+    <update id="deleteFile" parameterType="java.lang.Long">
+        update file
+        set is_deleted = true
+        where id = #{fileId}
+        and is_deleted = false
+    </update>
+
+    <!--지출-파일 매핑 테이블 데이터 삭제-->
+    <update id="deleteExpenseFileMap" parameterType="com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam">
+        update expense_file_map
+        set is_deleted = true
+        where expense_id = #{expenseId} and file_id = #{fileId} and is_deleted = false;
+    </update>
+
+    <select id="searchCount" parameterType="java.lang.Long">
+        select count(*)
+        from file
+        where id in (select file_id
+                     from expense_file_map
+                     where expense_id = #{expenseId})
+        and is_deleted = false
+    </select>
+</mapper>

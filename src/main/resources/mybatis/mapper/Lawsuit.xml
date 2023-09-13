@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository">
+
+    <select id="selectClientLawsuitList" parameterType="SelectClientLawsuitListParam"
+      resultType="LawsuitDto">
+        select l.*
+        from lawsuit l
+        join lawsuit_client_map map on l.id = map.lawsuit_id
+        where map.client_id = #{clientId}
+        and map.is_deleted = false
+        and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'"
+            >
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'"
+            >
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by l.created_at desc
+            </otherwise>
+        </choose>
+        <if test="limit != 0 or offset != 0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="countLawsuitsStatusByClientId" parameterType="SelectClientLawsuitListParam"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitCountDto">
+        select count(*) as total,
+        sum(case when `lawsuit_status` = 'REGISTRATION' then 1 else 0 end) as
+        registration,
+        sum(case when `lawsuit_status` = 'PROCEEDING' then 1 else 0 end) as proceeding,
+        sum(case when `lawsuit_status` = 'CLOSING' then 1 else 0 end) as closing
+        from `lawsuit`
+        where `id` in (select `lawsuit_id`
+        from `lawsuit_client_map`
+        where `client_id` = #{clientId})
+        and `is_deleted` = 0
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+    </select>
+
+    <select id="countLawsuitsStatusByMemberId" parameterType="SelectEmployeeLawsuitListParam"
+      resultType="LawsuitCountDto">
+        select count(*) as total,
+        sum(case when `lawsuit_status` = 'REGISTRATION' then 1 else 0 end) as
+        registration,
+        sum(case when `lawsuit_status` = 'PROCEEDING' then 1 else 0 end) as proceeding,
+        sum(case when `lawsuit_status` = 'CLOSING' then 1 else 0 end) as closing
+        from `lawsuit`
+        where `id` in (select `lawsuit_id`
+        from `lawsuit_member_map`
+        where `member_id` = #{memberId})
+        and `is_deleted` = 0
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+    </select>
+
+    <select id="selectEmployeeLawsuitList" parameterType="SelectEmployeeLawsuitListParam"
+      resultType="LawsuitDto">
+        select l.*
+        from lawsuit l
+        join lawsuit_member_map map on l.id = map.lawsuit_id
+        where map.member_id= #{memberId}
+        and l.is_deleted = false
+        and map.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
+        <choose>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'"
+            >
+                order by ${sortKey} asc
+            </when>
+            <when
+              test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'"
+            >
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by l.created_at desc
+            </otherwise>
+        </choose>
+        <if test="limit != 0 or offset != 0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="selectClientLawsuitCountBySearchWordAndLawsuitStatus"
+      parameterType="SelectClientLawsuitListParam">
+        select count(*)
+        from lawsuit l
+        join lawsuit_client_map map on l.id = map.lawsuit_id
+        where map.client_id = #{clientId}
+        and l.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+        <if test="lawsuitStatus != null">
+            and lawsuit_status = #{lawsuitStatus}
+        </if>
+    </select>
+
+    <select id="selectEmployeeLawsuitCountBySearchWord"
+      parameterType="SelectEmployeeLawsuitListParam">
+        select count(*)
+        from lawsuit l
+        join lawsuit_member_map map on l.id = map.lawsuit_id
+        where map.member_id = #{memberId}
+        and l.is_deleted = false
+        and map.is_deleted = false
+        <if test="searchWord != ''">
+            and (
+            name like concat('%', #{searchWord}, '%') or
+            lawsuit_num like concat('%', #{searchWord}, '%')
+            )
+        </if>
+    </select>
+
+    <select id="selectLawsuitById" parameterType="java.lang.Long">
+        select *
+        from lawsuit
+        where id = #{lawsuitId}
+          and is_deleted = false;
+    </select>
+
+    <insert id="insertLawsuit" parameterType="InsertLawsuitParam">
+        insert into lawsuit (lawsuit_type, name, court_id, commission_fee, contingent_fee,
+                             lawsuit_status, lawsuit_num, result)
+        values (#{lawsuitType}, #{name}, #{courtId}, #{commissionFee}, #{contingentFee},
+                #{lawsuitStatus}, #{lawsuitNum}, null);
+    </insert>
+
+    <!-- 추가한 데이터의 id 값을 가져옴 -->
+    <select id="getLastInsertedLawsuitId" resultType="java.lang.Long">
+        SELECT LAST_INSERT_ID();
+    </select>
+
+    <!-- lawsuit_client_map 테이블에 데이터 추가-->
+    <insert id="insertLawsuitClientMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        insert ignore into lawsuit_client_map (lawsuit_id, client_id, is_deleted)
+        values
+        <foreach item="clientId" collection="clientIdList" separator=",">
+            (#{lawsuitId}, #{clientId}, 0)
+        </foreach>
+    </insert>
+
+    <!-- 기존에 이미 있던 데이터는 is_deleted 값만 0으로 설정 -->
+    <update id="updateLawsuitClientMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        update lawsuit_client_map
+        set is_deleted = 0
+        where lawsuit_id = #{lawsuitId} and
+        <foreach item="clientId" collection="clientIdList" separator="or">
+            client_id = #{clientId}
+        </foreach>
+    </update>
+
+    <!-- lawsuit_member_map 테이블에 데이터 추가 -->
+    <insert id="insertLawsuitMemberMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        insert ignore into lawsuit_member_map (lawsuit_id, member_id, is_deleted)
+        values
+        <foreach item="memberId" collection="memberIdList" separator=",">
+            (#{lawsuitId}, #{memberId}, 0)
+        </foreach>
+    </insert>
+
+    <!-- 기존에 이미 있던 데이터는 is_deleted 값만 0으로 설정 -->
+    <update id="updateLawsuitMemberMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        update lawsuit_member_map
+        set is_deleted = 0
+        where lawsuit_id = #{lawsuitId}
+        <if test="memberIdList != null and memberIdList.size() > 0">
+            and
+            <foreach item="memberId" collection="memberIdList" separator="or">
+                member_id = #{memberId}
+            </foreach>
+        </if>
+    </update>
+
+    <!-- 기존에 있던 담당자 id 삭제 -->
+    <update id="deleteMemberLawsuitMemberMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        update lawsuit_member_map
+        set is_deleted = 1
+        where lawsuit_id = #{lawsuitId}
+        <if test="memberIdList != null and memberIdList.size() > 0">
+            and
+            <foreach item="memberId" collection="memberIdList" separator="OR">
+                member_id = #{memberId}
+            </foreach>
+        </if>
+
+    </update>
+
+    <!-- 기존에 있던 의뢰인 id 삭제 -->
+    <update id="deleteClientLawsuitClientMap"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitClientMemberIdParam">
+        update lawsuit_client_map
+        set is_deleted = 1
+        where lawsuit_id = #{lawsuitId}
+        <if test="clientIdList != null and clientIdList.size() > 0">
+            and
+            <foreach item="clientId" collection="clientIdList" separator="OR">
+                client_id = #{clientId}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="selectLawsuitList">
+        select *
+        from lawsuit
+        where is_deleted = false;
+    </select>
+
+    <update id="updateLawsuitInfo"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.UpdateLawsuitInfoParam">
+        update lawsuit
+        set lawsuit_type = #{lawsuitType},
+        name = #{name},
+        court_id = #{courtId},
+        commission_fee = #{commissionFee},
+        contingent_fee = #{contingentFee},
+        lawsuit_status = #{lawsuitStatus},
+        lawsuit_num = #{lawsuitNum},
+        updated_at = now()
+        <if test="result != null">
+            ,result = #{result}
+        </if>
+        <if test="judgementDate != null">
+            ,judgement_date = #{judgementDate}
+        </if>
+        where id = #{lawsuitId}
+    </update>
+
+    <update id="deleteLawsuitInfo" parameterType="java.lang.Long">
+        update lawsuit
+        set is_deleted = true
+        where id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitClientMap" parameterType="java.lang.Long">
+        update lawsuit_client_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
+    </update>
+
+    <update id="deleteLawsuitMemberMap" parameterType="java.lang.Long">
+        update lawsuit_member_map
+        set is_deleted = true
+        where lawsuit_id = #{lawsuitId};
+    </update>
+
+    <!-- cliendId가 속한 사건별 의뢰인 수 -->
+    <select id="selectLawsuitCountByClientId" parameterType="java.lang.Long">
+        select lcm1.lawsuit_id, count(*)
+        from lawsuit_client_map lcm1
+                 join lawsuit_client_map lcm2 on lcm1.lawsuit_id = lcm2.lawsuit_id
+        where lcm1.is_deleted = false
+          and lcm1.client_id = #{clientId}
+        group by lcm1.lawsuit_id;
+    </select>
+
+    <!-- '사건-의뢰인' 매핑 테이블에서 해당 의뢰인 정보 삭제 -->
+    <update id="deleteLawsuitClientMapByClientId" parameterType="java.lang.Long">
+        update lawsuit_client_map
+        set is_deleted = true
+        where client_id = #{clientId};
+    </update>
+
+    <!-- 의뢰인에 대한 사건 조회 -->
+    <select id="selectLawsuitByClientId" parameterType="java.lang.Long">
+        select *
+        from lawsuit
+        where id in (select lawsuit_id
+                     from lawsuit_client_map
+                     where lawsuit.is_deleted = false
+                       and client_id = #{clientId});
+    </select>
+
+    <select id="selectBasicLawInfo"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitBasicRawDto">
+        SELECT DISTINCT l.id             `lawsuit_id`,
+                        l.lawsuit_num    `lawsuit_num`,
+                        l.name           `lawsuit_name`,
+                        l.lawsuit_type   `lawsuit_type`,
+                        l.lawsuit_status `lawsuit_status`,
+                        l.commission_fee `lawsuit_commission_fee`,
+                        l.contingent_fee `lawsuit_contingent_fee`,
+                        co.name_kr       `court_name`,
+                        m.id             `employee_id`,
+                        m.name           `employee_name`,
+                        m.email          `employee_email`,
+                        c.id             `client_id`,
+                        c.name           `client_name`,
+                        c.email          `client_email`
+        FROM lawsuit l
+                 LEFT JOIN court co ON l.court_id = co.id
+                 LEFT JOIN lawsuit_member_map lm ON (lm.lawsuit_id = l.id AND lm.is_deleted = false)
+                 LEFT JOIN member m ON (lm.member_id = m.id AND m.is_deleted = false)
+                 LEFT JOIN lawsuit_client_map lc ON (lc.lawsuit_id = l.id AND lc.is_deleted = false)
+                 LEFT JOIN client c ON (lc.client_id = c.id AND c.is_deleted = false)
+        WHERE l.is_deleted = false
+          AND l.id = #{lawsuitId};
+    </select>
+
+    <update id="updateLawsuitStatus"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitStatusUpdateParam">
+        UPDATE lawsuit l
+        SET l.lawsuit_status = #{status}
+        WHERE l.is_deleted = false
+          AND l.id = #{id}
+    </update>
+
+    <select id="selectPrintInfo"
+      parameterType="java.lang.Long"
+      resultType="com.avg.lawsuitmanagement.lawsuit.dto.LawsuitPrintRawDto">
+        SELECT DISTINCT l.id             `lawsuit_id`,
+                        l.name           `lawsuit_name`,
+                        l.lawsuit_num    `lawsuit_num`,
+                        l.lawsuit_type   `lawsuit_type`,
+                        l.commission_fee `lawsuit_commission_fee`,
+                        l.contingent_fee `lawsuit_contingent_fee`,
+                        l.result         `lawsuit_judgement_result`,
+                        l.judgement_date `lawsuit_judgement_date`,
+                        c1.id            `client_id`,
+                        c1.email         `client_email`,
+                        c1.name          `client_name`,
+                        c1.phone         `client_phone`,
+                        c1.address       `client_address`,
+                        m1.id            `member_id`,
+                        m1.email         `member_email`,
+                        m1.name          `member_name`,
+                        m1.phone         `member_phone`,
+                        m1.address       `member_address`,
+                        co.name_kr       `court_name`,
+                        a.id             `advice_id`,
+                        a.title          `advice_title`,
+                        a.contents       `advice_contents`,
+                        a.adviced_at     `advice_date`,
+                        m2.id            `advice_member_id`,
+                        m2.name          `advice_member_name`,
+                        c2.id            `advice_client_id`,
+                        c2.name          `advice_client_name`,
+                        e.id             `expense_id`,
+                        e.contents       `expense_contents`,
+                        e.amount         `expense_amount`,
+                        e.spening_at     `expense_date`
+        FROM lawsuit l
+                 LEFT JOIN lawsuit_client_map lc ON (l.id = lc.lawsuit_id AND lc.is_deleted = false)
+                 LEFT JOIN client c1 ON (c1.id = lc.client_id AND c1.is_deleted = false)
+                 LEFT JOIN lawsuit_member_map lm ON (l.id = lm.lawsuit_id AND lm.is_deleted = false)
+                 LEFT JOIN member m1 ON (m1.id = lm.member_id AND m1.is_deleted = false)
+                 LEFT JOIN court co ON co.id = l.court_id
+                 LEFT JOIN expense e ON (l.id = e.lawsuit_id AND e.is_deleted = false)
+                 LEFT JOIN advice a ON (l.id = a.lawsuit_id AND a.is_deleted = false)
+                 LEFT JOIN advice_client_map ac ON (a.id = ac.advice_id AND ac.is_deleted = false)
+                 LEFT JOIN client c2 ON (c2.id = ac.client_id AND c2.is_deleted = false)
+                 LEFT JOIN advice_member_map am ON (a.id = am.advice_id AND am.is_deleted = false)
+                 LEFT JOIN member m2 ON (m2.id = am.member_id AND m2.is_deleted = false)
+        WHERE l.is_deleted = false
+          AND l.id = #{id}
+    </select>
+    <update id="updateResult"
+      parameterType="com.avg.lawsuitmanagement.lawsuit.repository.param.LawsuitUpdateResultParam"
+    >
+        UPDATE lawsuit
+        SET result = #{result}
+        WHERE is_deleted = false
+          AND id = #{lawsuitId}
+    </update>
+</mapper>
