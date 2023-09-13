@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository" >
-    <resultMap id="AdviceResultMap" type="AdviceDto">
+ <!--   <resultMap id="AdviceResultMap" type="AdviceDto">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="contents" column="contents"/>
@@ -32,16 +32,16 @@
     <select id ="selectAdviceClientList" resultType = "java.lang.String">
         select c.name, c.id
             from advice_client_map as m
-            join client c on m.client_id = c.id
+            join client c on m.client_id = c.id AND m.is_deleted=false
         where m.advice_id = #{adviceId}
     </select>
 
     <select id ="selectAdviceMemberList" resultType = "java.lang.String">
         select e.name, e.id
         from advice_member_map as m
-                 join member e on m.member_id = e.id
+                 join member e on m.member_id = e.id AND m.is_deleted=false
         where m.advice_id = #{adviceId}
-    </select>
+    </select>-->
     
     <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long"
     resultType="com.avg.lawsuitmanagement.advice.dto.AdviceDto">
@@ -50,7 +50,27 @@
         where lawsuit_id = #{lawsuitId} and is_deleted=false;
     </select>
 
+    <select id="detailAdviceById" parameterType="java.lang.Long"
+    resultType="com.avg.lawsuitmanagement.advice.dto.AdviceRawDto">
+        select a.id `id`,
+               a.lawsuit_id  `lawsuit_id` ,
+               a.title `title` ,
+               a.contents `contents` ,
+               a.adviced_at `adviced_at` ,
+               c.id `client_id` ,
+               c2.name `client_name` ,
+               m.id `member_id` ,
+               m2.name `member_name`
+        from advice a
+            left join advice_client_map c on a.id = c.advice_id and a.is_deleted=false
+            left join client c2 on c2.id = c.client_id and a.is_deleted=false
+            left join advice_member_map m on a.id = m.advice_id and a.is_deleted=false
+            left join member m2 on m2.id = m.member_id and a.is_deleted=false
+        where a.id = #{adviceId} and a.is_deleted=false
 
+
+    </select>
+    
     <insert id="insertAdvice" parameterType="InsertAdviceParam">
         insert into advice (title, contents, adviced_at, lawsuit_id)
         values

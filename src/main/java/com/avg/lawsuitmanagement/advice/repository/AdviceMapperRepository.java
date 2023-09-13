@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.advice.repository;
 
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
+import com.avg.lawsuitmanagement.advice.dto.AdviceRawDto;
 import com.avg.lawsuitmanagement.advice.repository.param.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,6 +11,9 @@ import java.util.List;
 public interface AdviceMapperRepository {
 
     AdviceDto selectAdviceById(long adviceId);
+
+    List<AdviceRawDto> detailAdviceById(long adviceId);
+
     List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
 
     void insertAdvice(InsertAdviceParam param);
@@ -22,4 +26,6 @@ public interface AdviceMapperRepository {
     void deleteAdviceInfo(long adviceId);
     void deleteAdviceClientMap(long adviceId);
     void deleteAdviceMemberMap(long adviceId);
+
+
 }

@@ -1,6 +1,6 @@
 package com.avg.lawsuitmanagement.advice.controller.form;
 
-import com.avg.lawsuitmanagement.advice.dto.IdNameDto;
+import com.avg.lawsuitmanagement.lawsuit.dto.IdNameDto;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,14 +1,14 @@
 package com.avg.lawsuitmanagement.advice.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ToString
-public class IdNameDto {
-
+public class MemberIdNameDto {
     private Long id;
     private String name;
 }

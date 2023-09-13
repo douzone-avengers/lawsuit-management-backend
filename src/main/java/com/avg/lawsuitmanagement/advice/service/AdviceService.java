@@ -2,8 +2,7 @@ package com.avg.lawsuitmanagement.advice.service;
 
 import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
-import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
-import com.avg.lawsuitmanagement.advice.dto.IdNameDto;
+import com.avg.lawsuitmanagement.advice.dto.*;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
 import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceClientIdParam;
 import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceMemberIdParam;
@@ -12,6 +11,7 @@ import com.avg.lawsuitmanagement.advice.repository.param.UpdateAdviceInfoParam;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
+import com.avg.lawsuitmanagement.lawsuit.dto.IdNameDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
@@ -24,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.*;
 
@@ -45,6 +47,61 @@ public class AdviceService {
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
         }
         return adviceDto;
+    }
+
+    public AdviceDetailResponseDto getAdviceInfo(Long adviceId) {
+        List<AdviceRawDto> raws = adviceMapperRepository.detailAdviceById(adviceId);
+
+        if(raws.isEmpty()){
+            throw new RuntimeException("");
+        }
+        AdviceRawDto advice = raws.get(0);
+
+        Map<Long, MemberIdNameDto> memberMap = new HashMap<>();
+        Map<Long, ClientIdNameDto> clientMap = new HashMap<>();
+        for(AdviceRawDto raw : raws) {
+            Long memberId = raw.getMemberId();
+            if(memberId != null) {
+                if(!memberMap.containsKey(memberId)) {
+                    memberMap.put(memberId, MemberIdNameDto.builder()
+                            .id(raw.getMemberId())
+                            .name(raw.getMemberName())
+                            .build());
+                }
+            }
+
+            Long clientId = raw.getClientId();
+            if(clientId != null) {
+                if(!clientMap.containsKey(clientId)){
+                    clientMap.put(clientId, ClientIdNameDto.builder()
+                            .id(raw.getClientId())
+                            .name(raw.getClientName())
+                            .build());
+                }
+            }
+
+        }
+        AdviceDetailResponseDto result = AdviceDetailResponseDto.builder()
+                .adviceId(advice.getId())
+                .title(advice.getTitle())
+                .contents(advice.getContents())
+                .advicedAt(advice.getAdvicedAt())
+                .clients(clientMap.values().stream().map(it -> ClientIdNameDto.builder()
+                        .id(it.getId())
+                        .name(it.getName())
+                        .build())
+                        .toList())
+                .members(memberMap.values().stream().map(it -> MemberIdNameDto.builder()
+                        .id(it.getId())
+                        .name(it.getName())
+                        .build())
+                        .toList())
+                .build();
+
+        return result;
+
+
+
     }
 
     public List<AdviceDto> getAdviceByLawsuitId(long lawsuitId) {
