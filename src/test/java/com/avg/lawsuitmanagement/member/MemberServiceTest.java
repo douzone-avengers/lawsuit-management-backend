@@ -184,7 +184,7 @@ public class MemberServiceTest {
                 .build()));
 
         //then
-        assertEquals(ErrorCode.MEMBER_EMAIL_ALREADY_EXIST, exception.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_ALREADY_EXIST, exception.getErrorCode());
     }
 
     private long insertClientAndGetClientId(InsertClientParam param) {

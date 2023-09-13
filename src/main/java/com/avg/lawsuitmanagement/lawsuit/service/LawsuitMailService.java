@@ -36,7 +36,7 @@ public class LawsuitMailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
             helper.setTo(dto.getToList().toArray(new String[0]));
-            helper.setSubject("[더존 사건관리 서비스] " + dto.getLawsuitDto().getName() + " 사건의 사건집 입니다.");
+            helper.setSubject("[더존 사건관리 서비스] <" + dto.getLawsuitDto().getName() + "> 사건 기록책 입니다.");
             helper.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
 
             StringBuilder text = new StringBuilder();
@@ -46,13 +46,14 @@ public class LawsuitMailService {
                 .append("</h2>");
             text.append("<h2'> 사건번호 : ").append(dto.getLawsuitDto().getLawsuitNum())
                 .append("</h2>");
-            text.append("해당 사건에 대한 사건집을 첨부합니다.").append("</br>").append("감사합니다.");
+            text.append("해당 사건에 대한 사건기록책을 첨부합니다.").append("</br>").append(" 감사합니다.");
             text.append("</div>");
 
             helper.setText(text.toString(), true);
 
             FileSystemResource file = new FileSystemResource(new File(dto.getFullFilePath()));
-            helper.addAttachment(file.getFilename(), file);
+            String attachFileName = "[" + dto.getLawsuitDto().getLawsuitNum() + "] 사건 기록책";
+            helper.addAttachment(attachFileName, file);
 
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
@@ -72,7 +73,7 @@ public class LawsuitMailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
             helper.setTo(dto.getToList().toArray(new String[0]));
-            helper.setSubject("[더존 사건관리 서비스] " + dto.getLawsuitDto().getName() + " 사건의 청구서입니다.");
+            helper.setSubject("[더존 사건관리 서비스] <" + dto.getLawsuitDto().getName() + "> 사건의 청구서입니다.");
             helper.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
 
             StringBuilder text = new StringBuilder();
@@ -82,13 +83,14 @@ public class LawsuitMailService {
                 .append("</h2>");
             text.append("<h2'> 사건번호 : ").append(dto.getLawsuitDto().getLawsuitNum())
                 .append("</h2>");
-            text.append("해당 사건에 대한 청구서를 첨부합니다.").append("</br>").append("감사합니다.");
+            text.append("해당 사건에 대한 청구서를 첨부합니다.").append("</br>").append(" 감사합니다.");
             text.append("</div>");
 
             helper.setText(text.toString(), true);
 
             FileSystemResource file = new FileSystemResource(new File(dto.getFullFilePath()));
-            helper.addAttachment(file.getFilename(), file);
+            String attachFileName = "[" + dto.getLawsuitDto().getLawsuitNum() + "] 사건 청구서";
+            helper.addAttachment(attachFileName, file);
 
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {

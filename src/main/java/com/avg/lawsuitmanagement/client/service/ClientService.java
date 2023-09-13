@@ -1,19 +1,22 @@
 package com.avg.lawsuitmanagement.client.service;
 
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.EMAIL_ALREADY_EXIST;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.SIGNED_CLIENT_CANNOT_DELETE;
 
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
+import com.avg.lawsuitmanagement.client.repository.param.ReRegisterClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
+import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientService {
 
     private final ClientMapperRepository clientMapperRepository;
+    private final MemberMapperRepository memberMapperRepository;
     private final LawsuitMapperRepository lawsuitMapperRepository;
     private final LawsuitService lawsuitService;
     private final LoginUserInfoService loginUserInfoService;
@@ -57,15 +61,25 @@ public class ClientService {
     }
 
     public void insertClient(InsertClientForm form) {
-        ClientDto clientDto = clientMapperRepository.selectClientByEmail(form.getEmail());
-
-        // 이미 등록된 고객이면
-        if (clientDto != null) {
-            throw new CustomRuntimeException(CLIENT_ALREADY_EXIST);
+        //예전에 삭제된 메일이었을 경우
+        ClientDto deletedClientInfo = clientMapperRepository.selectDeletedClientByEmail(form.getEmail());
+        if(deletedClientInfo != null) {
+            clientMapperRepository.reRegisterClient(ReRegisterClientParam.of(
+                deletedClientInfo.getId(), form));
+            return;
         }
 
-        // 등록된 고객이 아니면 db 입력
+        checkEmailDuplicate(form.getEmail());
         clientMapperRepository.insertClient(InsertClientParam.of(form));
+    }
+
+    private void checkEmailDuplicate(String email) {
+        if (clientMapperRepository.selectClientByEmailContainDeleted(email) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
+        }
+        if (memberMapperRepository.selectMemberByEmailContainDeleted(email) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
+        }
     }
 
     public void updateClientInfo(long clientId, UpdateClientInfoForm form) {
@@ -86,6 +100,11 @@ public class ClientService {
         // 해당 clientId의 의뢰인이 없을 경우
         if (clientDto == null) {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
+        }
+
+        //회원가입 된 의뢰인일 경우
+        if(clientDto.getMemberId() == 0) {
+            throw new CustomRuntimeException(SIGNED_CLIENT_CANNOT_DELETE);
         }
 
         clientMapperRepository.deleteClientInfo(clientId);
@@ -109,7 +128,6 @@ public class ClientService {
     }
 
     public ClientDto selectClientIdByEmail(String email) {
-        ClientDto clientDto = clientMapperRepository.selectClientByEmail(email);
-        return clientDto;
+        return clientMapperRepository.selectClientByEmail(email);
     }
 }
