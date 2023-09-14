@@ -2,7 +2,7 @@ package com.avg.lawsuitmanagement.member.service;
 
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_ALREADY_REGISTERED;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_EMAIL_ALREADY_EXIST;
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.EMAIL_ALREADY_EXIST;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
@@ -67,7 +67,7 @@ public class MemberService {
         promotionService.deactivateClientPromotion(form.getPromotionKey());
 
         //3. 회원 테이블 - 삽입
-        long memberId = insertMember(InsertMemberParam.of(form, passwordEncoder));
+        long memberId = insertClient(InsertMemberParam.of(form, passwordEncoder));
 
         //4. 의뢰인 테이블 - 회원 id 갱신
         clientMapperRepository.updateClientMemberId(UpdateClientMemberIdParam.builder()
@@ -83,7 +83,7 @@ public class MemberService {
         //2. 키 비활성화
         promotionService.deactivateEmployeePromotion(form.getPromotionKey());
         //3. 데이터 삽입
-        insertMember(InsertMemberParam.of(form, passwordEncoder));
+        insertEmployee(InsertMemberParam.of(form, passwordEncoder));
     }
 
     @Transactional
@@ -157,12 +157,25 @@ public class MemberService {
         return memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
     }
 
-    private long insertMember(InsertMemberParam param) {
+    private long insertEmployee(InsertMemberParam param) {
         //이메일 중복체크
-        MemberDto member = memberMapperRepository.selectMemberByEmail(param.getEmail());
-        if (member != null) {
-            throw new CustomRuntimeException(MEMBER_EMAIL_ALREADY_EXIST);
+        if(memberMapperRepository.selectMemberByEmailContainDeleted(param.getEmail()) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
         }
+        if(clientMapperRepository.selectClientByEmailContainDeleted(param.getEmail()) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
+        }
+
+        memberMapperRepository.insertMember(param);
+        return param.getId();
+    }
+
+    private long insertClient(InsertMemberParam param) {
+        //이메일 중복체크
+        if(memberMapperRepository.selectMemberByEmailContainDeleted(param.getEmail()) != null) {
+            throw new CustomRuntimeException(EMAIL_ALREADY_EXIST);
+        }
+
         memberMapperRepository.insertMember(param);
         return param.getId();
     }
