@@ -79,6 +79,7 @@
 
     </select>
 
+
     <select id="selectClientByAdviceId" parameterType="java.lang.Long">
         select client_id
         from advice_client_map
