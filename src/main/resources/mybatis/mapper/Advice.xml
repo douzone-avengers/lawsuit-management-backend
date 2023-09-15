@@ -62,10 +62,10 @@
                m.member_id `member_id` ,
                m2.name `member_name`
         from advice a
-            left join advice_client_map c on a.id = c.advice_id and a.is_deleted=false
-            left join client c2 on c2.id = c.client_id and a.is_deleted=false
-            left join advice_member_map m on a.id = m.advice_id and a.is_deleted=false
-            left join member m2 on m2.id = m.member_id and a.is_deleted=false
+            left join advice_client_map c on a.id = c.advice_id and c.is_deleted=false
+            left join client c2 on c2.id = c.client_id and c2.is_deleted=false
+            left join advice_member_map m on a.id = m.advice_id and m.is_deleted=false
+            left join member m2 on m2.id = m.member_id and m2.is_deleted=false
         where a.id = #{adviceId} and a.is_deleted=false
 
 
