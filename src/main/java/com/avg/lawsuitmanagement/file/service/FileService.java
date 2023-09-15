@@ -1,5 +1,9 @@
 package com.avg.lawsuitmanagement.file.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.exception.type.ErrorCode;
 import com.avg.lawsuitmanagement.expense.dto.ExpenseBillSelectDto;
@@ -13,11 +17,14 @@ import com.avg.lawsuitmanagement.file.FileSaveDto;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +39,8 @@ import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_SAV
 public class FileService {
 
     private final FileMapperRepository fileMapperRepository;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     private final String root = "src/main/resources/file/";
 
@@ -54,19 +63,20 @@ public class FileService {
     }
 
     public String save(FileDto dto) {
-        MultipartFile file = dto.getFileData();
-        String fullFilePath = root + dto.getPath() + dto.getOriginFileName();
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("ap-northeast-2").build();
+        MultipartFile multipartFile = dto.getFileData();
+        String fullFilePath = dto.getPath() + dto.getOriginFileName() + "." + dto.getExtension();
 
         try {
-            byte[] fileData = file.getBytes();
-
-            File outputFile = new File(fullFilePath);
-            FileOutputStream outputStream = new FileOutputStream(outputFile);
-            outputStream.write(fileData);
-            outputStream.close();
+            File file = File.createTempFile("temp", null);
+            Files.copy(multipartFile.getInputStream(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            s3Client.putObject(new PutObjectRequest(bucket, fullFilePath, file)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new CustomRuntimeException(FILE_SAVE_FAIL);
+        } finally {
+
         }
 
         return fullFilePath;
@@ -107,10 +117,6 @@ public class FileService {
     public FileMetaDto selectFileByOriginFileName(String originFileName) {
         return fileMapperRepository.selectFileByOriginFileName(originFileName);
     }
-
-//    public byte[] downloadImage(String fileName) {
-//
-//    }
 
     public FileMetaDto selectFileById(long fileId) {
         return fileMapperRepository.selectFileById(fileId);

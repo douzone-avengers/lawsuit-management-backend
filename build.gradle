@@ -58,6 +58,12 @@ dependencies {
     //jasypt 비밀키 암호화
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
+    // AWS SDK 의존성 추가
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.550' // AWS S3에 접근하기 위한 SDK 버전
+
+    // Spring Cloud AWS 의존성 추가
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {
