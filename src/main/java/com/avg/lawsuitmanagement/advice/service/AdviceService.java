@@ -4,14 +4,10 @@ import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.*;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
-import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceClientIdParam;
-import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceMemberIdParam;
-import com.avg.lawsuitmanagement.advice.repository.param.InsertAdviceParam;
-import com.avg.lawsuitmanagement.advice.repository.param.UpdateAdviceInfoParam;
+import com.avg.lawsuitmanagement.advice.repository.param.*;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
-import com.avg.lawsuitmanagement.lawsuit.dto.IdNameDto;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
@@ -22,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +77,7 @@ public class AdviceService {
 
         }
         AdviceDetailResponseDto result = AdviceDetailResponseDto.builder()
-                .adviceId(advice.getId())
+                .adviceId(advice.getAdviceid())
                 .title(advice.getTitle())
                 .contents(advice.getContents())
                 .advicedAt(advice.getAdvicedAt())
@@ -137,7 +132,7 @@ public class AdviceService {
             }
             insertClientIdList.add(clientId);
         }
-        InsertAdviceClientIdParam clientIdParam = InsertAdviceClientIdParam.of(adviceId, insertClientIdList);
+        AdviceClientIdParam clientIdParam = AdviceClientIdParam.of(adviceId, insertClientIdList);
         adviceMapperRepository.insertAdviceClientMap(clientIdParam);
 
         // advice_member_map 테이블에 데이터 삽입
@@ -149,45 +144,75 @@ public class AdviceService {
             }
             insertMemberIdList.add(memberId);
         }
-        InsertAdviceMemberIdParam memberIdParam = InsertAdviceMemberIdParam.of(adviceId, insertMemberIdList);
+        AdviceMemberIdParam memberIdParam = AdviceMemberIdParam.of(adviceId, insertMemberIdList);
 
         adviceMapperRepository.insertAdviceMemberMap(memberIdParam);
     }
 
 
 
+    @Transactional
     public void updateAdviceInfo(long adviceId, UpdateAdviceInfoForm form){
-        AdviceDto adviceDto = adviceMapperRepository.selectAdviceById(adviceId);
-        if(adviceDto == null){
+        List<AdviceRawDto> adviceRawDto = adviceMapperRepository.detailAdviceById(adviceId);
+        if(adviceRawDto == null){
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
         }
 
+        // 사건에 대한 담당자 당사자
         List<Long> clientIdList = clientMapperRepository.selectClientByLawsuitId(form.getLawsuitId());
         List<Long> memberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(form.getLawsuitId());
+        // 상담에 대한 담당자 당사자
+        List<Long> adviceClientIdList = adviceMapperRepository.selectClientByAdviceId(adviceId);
+        List<Long> adviceMemberIdList = adviceMapperRepository.selectMemberByAdviceId(adviceId);
 
-        @NotNull
-        List<IdNameDto> formClientIdList = form.getClientIdList();
+
+        List<Long> formClientIdList = form.getClientIdList();
         List<Long> insertClientIdList = new ArrayList<>();
+        List<Long> deleteClientIdList = new ArrayList<>();
 
-        for(IdNameDto clientId : formClientIdList){
+        for(Long clientId : formClientIdList){
             if(!clientIdList.contains(clientId)){
                 throw new CustomRuntimeException(CLIENT_NOT_FOUND_IN_LAWSUIT);
             }
-            insertClientIdList.add(clientId.getId());
+            insertClientIdList.add(clientId);
         }
-        InsertAdviceClientIdParam clientIdParam = InsertAdviceClientIdParam.of(adviceId, insertClientIdList);
+
+        for(Long clientId : adviceClientIdList){
+            if(!form.getClientIdList().contains(clientId)){
+                deleteClientIdList.add(clientId);
+            }
+        }
+
+
+
+        AdviceClientIdParam clientIdParam = AdviceClientIdParam.of(adviceId, insertClientIdList);
         adviceMapperRepository.insertAdviceClientMap(clientIdParam);
-        @NotNull
-        List<IdNameDto> formMemberIdList = form.getMemberIdList();
+        adviceMapperRepository.updateAdviceClientMap(clientIdParam);
+
+        List<Long> formMemberIdList = form.getMemberIdList();
         List<Long> insertMemberIdList = new ArrayList<>();
-        for(IdNameDto memberId : formMemberIdList){
+        List<Long> deleteMemberIdList = new ArrayList<>();
+
+        for(Long memberId : formMemberIdList){
             if(!memberIdList.contains(memberId)){
                 throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
             }
-            insertMemberIdList.add(memberId.getId());
+            insertMemberIdList.add(memberId);
         }
-        InsertAdviceMemberIdParam memberIdParam = InsertAdviceMemberIdParam.of(adviceId, insertMemberIdList);
+
+        for(Long memberId : adviceMemberIdList){
+            if(!form.getMemberIdList().contains(memberId)){
+                deleteMemberIdList.add(memberId);
+            }
+        }
+
+        AdviceMemberIdParam memberIdParam = AdviceMemberIdParam.of(adviceId, insertMemberIdList);
         adviceMapperRepository.insertAdviceMemberMap(memberIdParam);
+        adviceMapperRepository.updateAdviceMemberMap(memberIdParam);
+        DeleteAdviceClientMemberIdParam DeleteIdParam = DeleteAdviceClientMemberIdParam.of(adviceId, deleteClientIdList,deleteMemberIdList);
+
+        adviceMapperRepository.deleteAdviceMemberMap(DeleteIdParam);
+        adviceMapperRepository.deleteAdviceClientMap(DeleteIdParam);
         adviceMapperRepository.updateAdviceInfo(UpdateAdviceInfoParam.of(adviceId, form));
     }
 
@@ -207,7 +232,6 @@ public class AdviceService {
         }
 
         adviceMapperRepository.deleteAdviceInfo(adviceId);
-        adviceMapperRepository.deleteAdviceClientMap(adviceId);
-        adviceMapperRepository.deleteAdviceMemberMap(adviceId);
+
     }
 }

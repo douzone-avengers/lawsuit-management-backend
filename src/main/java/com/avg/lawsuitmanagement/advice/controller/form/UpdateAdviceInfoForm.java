@@ -15,9 +15,9 @@ public class UpdateAdviceInfoForm {
 
 
     @NotNull
-    private List<IdNameDto> memberIdList;
+    private List<Long> memberIdList;
     @NotNull
-    private List<IdNameDto> clientIdList;
+    private List<Long> clientIdList;
     @NotNull
     private long lawsuitId;
     @NotBlank

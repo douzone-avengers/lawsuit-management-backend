@@ -17,15 +17,20 @@ public interface AdviceMapperRepository {
     List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
 
     void insertAdvice(InsertAdviceParam param);
-    void insertAdviceClientMap(InsertAdviceClientIdParam param);
-    void insertAdviceMemberMap(InsertAdviceMemberIdParam param);
+    void insertAdviceClientMap(AdviceClientIdParam param);
+    void insertAdviceMemberMap(AdviceMemberIdParam param);
+    void updateAdviceMemberMap(AdviceMemberIdParam param);
+    void updateAdviceClientMap(AdviceClientIdParam param);
+
+    void deleteAdviceClientMap(DeleteAdviceClientMemberIdParam param);
+    void deleteAdviceMemberMap(DeleteAdviceClientMemberIdParam param);
     Long getLastInsertedAdviceId();
     void updateAdviceInfo(UpdateAdviceInfoParam param);
     List<Long> selectMemberByAdviceId(long adviceId);
+    List<Long> selectClientByAdviceId(long adviceId);
 
     void deleteAdviceInfo(long adviceId);
-    void deleteAdviceClientMap(long adviceId);
-    void deleteAdviceMemberMap(long adviceId);
+
 
 
 }

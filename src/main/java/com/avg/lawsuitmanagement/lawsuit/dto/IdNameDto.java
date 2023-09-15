@@ -16,6 +16,7 @@ import lombok.ToString;
 @ToString
 public class IdNameDto {
 
+
     @EqualsAndHashCode.Include
     private Long id;
     private String name;

@@ -52,14 +52,14 @@
 
     <select id="detailAdviceById" parameterType="java.lang.Long"
     resultType="com.avg.lawsuitmanagement.advice.dto.AdviceRawDto">
-        select a.id `id`,
+        select a.id `advice_id`,
                a.lawsuit_id  `lawsuit_id` ,
                a.title `title` ,
                a.contents `contents` ,
                a.adviced_at `adviced_at` ,
-               c.id `client_id` ,
+               c.client_id `client_id` ,
                c2.name `client_name` ,
-               m.id `member_id` ,
+               m.member_id `member_id` ,
                m2.name `member_name`
         from advice a
             left join advice_client_map c on a.id = c.advice_id and a.is_deleted=false
@@ -69,6 +69,21 @@
         where a.id = #{adviceId} and a.is_deleted=false
 
 
+    </select>
+
+    <select id="selectMemberByAdviceId" parameterType="java.lang.Long">
+        select member_id
+        from advice_member_map
+        where advice_id = #{adviceId}
+        and is_deleted = false;
+
+    </select>
+
+    <select id="selectClientByAdviceId" parameterType="java.lang.Long">
+        select client_id
+        from advice_client_map
+        where advice_id = #{adviceId}
+        and is_deleted = false;
     </select>
     
     <insert id="insertAdvice" parameterType="InsertAdviceParam">
@@ -81,54 +96,104 @@
         SELECT LAST_INSERT_ID();
     </select>
 
-    <insert id="insertAdviceClientMap" parameterType="InsertAdviceClientIdParam">
+    <!--<insert id="insertAdviceClientMap" parameterType="AdviceClientIdParam">
     INSERT INTO advice_client_map (advice_id, client_id)
     VALUES
         <foreach item="clientId" collection="clientId" separator=",">
             (#{adviceId}, #{clientId})
         </foreach>
-    </insert>
+    </insert>-->
 
-    <insert id="insertAdviceMemberMap" parameterType="InsertAdviceMemberIdParam">
+   <!-- <insert id="insertAdviceMemberMap" parameterType="AdviceMemberIdParam">
     INSERT INTO advice_member_map (advice_id, member_id)
     VALUES
         <foreach item="memberId" collection="memberId"  separator=",">
             (#{adviceId}, #{memberId})
         </foreach>
+    </insert>-->
+    
+    <update id="updateAdviceMemberMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.AdviceMemberIdParam">
+        update advice_member_map
+        set is_deleted = 0
+        where advice_id = #{adviceId} and
+              <foreach item="memberId" collection="memberId" separator="or">
+                member_id = #{memberId}
+              </foreach>
+    </update>
+    
+    <insert id="insertAdviceMemberMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.AdviceMemberIdParam">
+        insert ignore into advice_member_map (advice_id, member_id, is_deleted)
+        values
+            <foreach item="memberId" collection="memberId" separator=",">
+                (#{adviceId}, #{memberId}, 0)
+            </foreach>
     </insert>
 
+    <update id="updateAdviceClientMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.AdviceMemberIdParam">
+        update advice_client_map
+        set is_deleted = 0
+        where advice_id = #{adviceId} and
+              <foreach item="clientId" collection="clientId" separator="or">
+                  client_id = #{clientId}
+              </foreach>
+    </update>
+
+    <insert id="insertAdviceClientMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.AdviceMemberIdParam">
+        insert ignore into advice_client_map (advice_id, client_id, is_deleted)
+        values
+            <foreach item="clientId" collection="clientId"  separator=",">
+                (#{adviceId}, #{clientId}, 0)
+            </foreach>
+    </insert>
+
+    <update id="deleteAdviceClientMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.DeleteAdviceClientMemberIdParam">
+        update advice_client_map
+        set is_deleted = 1
+        where advice_id = #{adviceId}
+        <if test="clientId != null and clientId.size() > 0">
+            and
+            <foreach item="clientId" collection="clientId" separator="OR">
+                client_id = #{clientId}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="deleteAdviceMemberMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.DeleteAdviceClientMemberIdParam">
+        update advice_member_map
+        set is_deleted = 1
+        where advice_id = #{adviceId}
+        <if test="memberId != null and memberId.size() > 0">
+            and
+            <foreach item="memberId" collection="memberId" separator="OR">
+                member_id = #{memberId}
+            </foreach>
+        </if>
+    </update>
+
     <update id="updateAdviceInfo" parameterType="UpdateAdviceInfoParam">
-        update advice, advice_client_map, advice_member_map
+        update advice
         set title = #{title},
         contents = #{contents},
-        adviced_at = #{advicedAt},
-        member_id = (
-        <foreach collection="memberId" item="memberId" separator=",">
-            #{memberId}
-        </foreach>
-        ),
-        client_id = (
-        <foreach collection="clientId" item="clientId" separator=",">
-            #{clientId}
-        </foreach>
-        )
-        where id = #{adviceId};
+        adviced_at = #{advicedAt}
+        where id = #{adviceId}
     </update>
+    
+
 
     <update id="deleteAdviceInfo" parameterType="java.lang.Long">
         update advice
         set is_deleted = true
         where id = #{adviceId};
     </update>
-    <update id="delectAdviceClientMap" parameterType="java.lang.Long">
+    <!--<update id="deleteAdviceClientMap" parameterType="java.lang.Long">
         update advice_client_map
         set is_deleted = true
         where advice_id = #{adviceId};
     </update>
     
-    <update id="delectAdviceMemberMap" parameterType="java.lang.Long">
+    <update id="deleteAdviceMemberMap" parameterType="java.lang.Long">
         update  advice_member_map
         set is_deleted = true
         where  advice_id = #{adviceId};
-    </update>
+    </update>-->
 </mapper>

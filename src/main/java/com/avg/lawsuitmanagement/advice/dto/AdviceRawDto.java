@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 public class AdviceRawDto {
 
-    private Long id;
+    private Long adviceid;
     private Long lawsuitId;
     private String title;
     private String contents;
