@@ -12,6 +12,7 @@ import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
+import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import com.avg.lawsuitmanagement.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class AdviceService {
     private final MemberMapperRepository memberMapperRepository;
     private final MemberService memberService;
     private final ClientMapperRepository clientMapperRepository;
+    private final LoginUserInfoService loginUserInfoService;
 
     public AdviceDto getAdviceById(long adviceId) {
         AdviceDto adviceDto = adviceMapperRepository.selectAdviceById(adviceId);
@@ -216,15 +218,28 @@ public class AdviceService {
         if(adviceDto == null){
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
         }
-        String email = SecurityUtil.getCurrentLoginEmail();
-        MemberDto loginMemberInfo = memberMapperRepository.selectMemberByEmail(email);
 
         List<Long> memberIdList = adviceMapperRepository.selectMemberByAdviceId(adviceId);
-        if (!memberIdList.contains((loginMemberInfo.getId()))){
+
+        if(isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), memberIdList)) {
+            adviceMapperRepository.deleteAdviceInfo(adviceId);
+            adviceMapperRepository.AdviceDeleteClientMap(adviceId);
+            adviceMapperRepository.AdviceDeleteMemberMap(adviceId);
+        } else {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_ADVICE);
         }
 
-        adviceMapperRepository.deleteAdviceInfo(adviceId);
+
 
     }
+
+    private boolean isUserAuthorizedForLawsuit(long userId, List<Long> memberIds) {
+        if (SecurityUtil.getCurrentLoginRoleList().contains("ROLE_ADMIN")) {
+            return true;
+        }
+
+        // 로그인한 사용자가 해당 사건의 담당자가 아니라면
+        return memberIds.contains(userId);
+    }
+
 }

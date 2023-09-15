@@ -42,7 +42,12 @@
                  join member e on m.member_id = e.id AND m.is_deleted=false
         where m.advice_id = #{adviceId}
     </select>-->
-    
+    <select id="selectAdviceById" parameterType="java.lang.Long">
+        select *
+        from advice
+        where id = #{adviceId} and is_deleted = false;
+    </select>
+
     <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long"
     resultType="com.avg.lawsuitmanagement.advice.dto.AdviceDto">
         select id, lawsuit_id, title, contents, adviced_at
@@ -96,22 +101,6 @@
     <select id="getLastInsertedAdviceId" resultType="java.lang.Long">
         SELECT LAST_INSERT_ID();
     </select>
-
-    <!--<insert id="insertAdviceClientMap" parameterType="AdviceClientIdParam">
-    INSERT INTO advice_client_map (advice_id, client_id)
-    VALUES
-        <foreach item="clientId" collection="clientId" separator=",">
-            (#{adviceId}, #{clientId})
-        </foreach>
-    </insert>-->
-
-   <!-- <insert id="insertAdviceMemberMap" parameterType="AdviceMemberIdParam">
-    INSERT INTO advice_member_map (advice_id, member_id)
-    VALUES
-        <foreach item="memberId" collection="memberId"  separator=",">
-            (#{adviceId}, #{memberId})
-        </foreach>
-    </insert>-->
     
     <update id="updateAdviceMemberMap" parameterType="com.avg.lawsuitmanagement.advice.repository.param.AdviceMemberIdParam">
         update advice_member_map
@@ -186,15 +175,16 @@
         set is_deleted = true
         where id = #{adviceId};
     </update>
-    <!--<update id="deleteAdviceClientMap" parameterType="java.lang.Long">
+    <update id="AdviceDeleteClientMap" parameterType="java.lang.Long">
         update advice_client_map
         set is_deleted = true
         where advice_id = #{adviceId};
     </update>
     
-    <update id="deleteAdviceMemberMap" parameterType="java.lang.Long">
+    <update id="AdviceDeleteMemberMap" parameterType="java.lang.Long">
         update  advice_member_map
         set is_deleted = true
         where  advice_id = #{adviceId};
-    </update>-->
+    </update>
+
 </mapper>

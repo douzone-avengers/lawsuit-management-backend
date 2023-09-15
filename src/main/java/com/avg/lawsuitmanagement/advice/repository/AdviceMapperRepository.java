@@ -24,6 +24,10 @@ public interface AdviceMapperRepository {
 
     void deleteAdviceClientMap(DeleteAdviceClientMemberIdParam param);
     void deleteAdviceMemberMap(DeleteAdviceClientMemberIdParam param);
+    void AdviceDeleteClientMap(long adviceId);
+    void AdviceDeleteMemberMap(long adviceId);
+
+
     Long getLastInsertedAdviceId();
     void updateAdviceInfo(UpdateAdviceInfoParam param);
     List<Long> selectMemberByAdviceId(long adviceId);
