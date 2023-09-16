@@ -1,19 +1,21 @@
 package com.avg.lawsuitmanagement.file.controller;
 
-import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.IOUtils;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
 import com.avg.lawsuitmanagement.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -27,11 +29,14 @@ public class FileController {
 
     // 파일 다운로드
     @GetMapping("/download/{fileId}")
-    public ResponseEntity<?> download(@PathVariable Long fileId) {
+    public ResponseEntity<?> download(@PathVariable Long fileId) throws IOException {
         FileMetaDto fileMetaDto = fileService.selectFileById(fileId);
+        String fileUrl = "expenseBill/" + fileMetaDto.getOriginFileName() + "." + fileMetaDto.getExtension();
 
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("ap-northeast-2").build();
-        UrlResource urlResource = new UrlResource(s3Client.getUrl(bucket, fileMetaDto.getShowFileName()));
+        AmazonS3Client s3Client = (AmazonS3Client) AmazonS3ClientBuilder.standard().withRegion("ap-northeast-2").build();
+        S3Object s3Object = s3Client.getObject(new GetObjectRequest(bucket, fileUrl));
+        S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
+        byte[] bytes = IOUtils.toByteArray(objectInputStream);
 
         // MIME 타입을 기본값으로 설정 (예: "application/octet-stream")
         MediaType mediaType = MediaType.parseMediaType("application/octet-stream;charset=UTF-8");
@@ -48,10 +53,12 @@ public class FileController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "Content-Disposition");
+        headers.setContentType(mediaType);
+        headers.setContentLength(bytes.length);
         headers.setContentDisposition(ContentDisposition.builder("attachment")
-                .filename(fileMetaDto.getShowFileName() + "." + fileMetaDto.getExtension(), StandardCharsets.UTF_8)
+                .filename(fileMetaDto.getOriginFileName() + "." + fileMetaDto.getExtension(), StandardCharsets.UTF_8)
                 .build());
 
-        return ResponseEntity.status(HttpStatus.OK).contentType(mediaType).headers(headers).body(urlResource);
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 }
