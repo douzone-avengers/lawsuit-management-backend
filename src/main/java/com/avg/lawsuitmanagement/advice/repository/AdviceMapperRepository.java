@@ -1,6 +1,7 @@
 package com.avg.lawsuitmanagement.advice.repository;
 
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
+import com.avg.lawsuitmanagement.advice.dto.AdviceRawDto;
 import com.avg.lawsuitmanagement.advice.repository.param.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,16 +11,30 @@ import java.util.List;
 public interface AdviceMapperRepository {
 
     AdviceDto selectAdviceById(long adviceId);
+
+    List<AdviceRawDto> detailAdviceById(long adviceId);
+
     List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
 
     void insertAdvice(InsertAdviceParam param);
-    void insertAdviceClientMap(InsertAdviceClientIdParam param);
-    void insertAdviceMemberMap(InsertAdviceMemberIdParam param);
+    void insertAdviceClientMap(AdviceClientIdParam param);
+    void insertAdviceMemberMap(AdviceMemberIdParam param);
+    void updateAdviceMemberMap(AdviceMemberIdParam param);
+    void updateAdviceClientMap(AdviceClientIdParam param);
+
+    void deleteAdviceClientMap(DeleteAdviceClientMemberIdParam param);
+    void deleteAdviceMemberMap(DeleteAdviceClientMemberIdParam param);
+    void AdviceDeleteClientMap(long adviceId);
+    void AdviceDeleteMemberMap(long adviceId);
+
+
     Long getLastInsertedAdviceId();
     void updateAdviceInfo(UpdateAdviceInfoParam param);
     List<Long> selectMemberByAdviceId(long adviceId);
+    List<Long> selectClientByAdviceId(long adviceId);
 
     void deleteAdviceInfo(long adviceId);
-    void deleteAdviceClientMap(long adviceId);
-    void deleteAdviceMemberMap(long adviceId);
+
+
+
 }
