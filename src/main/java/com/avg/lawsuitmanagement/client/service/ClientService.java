@@ -103,7 +103,7 @@ public class ClientService {
         }
 
         //회원가입 된 의뢰인일 경우
-        if(clientDto.getMemberId() == 0) {
+        if(clientDto.getMemberId() != 0) {
             throw new CustomRuntimeException(SIGNED_CLIENT_CANNOT_DELETE);
         }
 
@@ -125,9 +125,5 @@ public class ClientService {
 
     public List<ClientDto> selectClientList() {
         return clientMapperRepository.selectClientList();
-    }
-
-    public ClientDto selectClientIdByEmail(String email) {
-        return clientMapperRepository.selectClientByEmail(email);
     }
 }
