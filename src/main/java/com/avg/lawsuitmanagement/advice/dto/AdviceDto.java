@@ -21,8 +21,9 @@ public class AdviceDto {
     private LocalDate updatedAt; // 수정일
     private boolean isDeleted; //삭제여부
     private long lawsuitId;
-    private List<String> memberId;
-    private List<String> clientId;
+
+
+
 
 
 
