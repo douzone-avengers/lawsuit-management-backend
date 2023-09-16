@@ -39,20 +39,19 @@ public class LawsuitMailService {
             helper.setSubject("[더존 사건관리 서비스] <" + dto.getLawsuitDto().getName() + "> 사건 기록책 입니다.");
             helper.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
 
-            StringBuilder text = new StringBuilder();
-            text.append("<div style='margin:100px;'>");
-            text.append("<div align='center' style='border:1px solid black; font-family:verdana';>");
-            text.append("<h2'> 사건명 : ").append(dto.getLawsuitDto().getName())
-                .append("</h2>");
-            text.append("<h2'> 사건번호 : ").append(dto.getLawsuitDto().getLawsuitNum())
-                .append("</h2>");
-            text.append("해당 사건에 대한 사건기록책을 첨부합니다.").append("</br>").append(" 감사합니다.");
-            text.append("</div>");
+            String text = "<div style='margin:100px;'>"
+                + "<div align='center' style='border:1px solid black; font-family:verdana';>"
+                + "<h2'> 사건명 : " + dto.getLawsuitDto().getName()
+                + "</h2>"
+                + "<h2'> 사건번호 : " + dto.getLawsuitDto().getLawsuitNum()
+                + "</h2>"
+                + "해당 사건에 대한 사건기록책을 첨부합니다." + "</br>" + " 감사합니다."
+                + "</div>";
 
-            helper.setText(text.toString(), true);
+            helper.setText(text, true);
 
             FileSystemResource file = new FileSystemResource(new File(dto.getFullFilePath()));
-            String attachFileName = "[" + dto.getLawsuitDto().getLawsuitNum() + "] 사건 기록책";
+            String attachFileName = "[" + dto.getLawsuitDto().getLawsuitNum() + "] 사건 기록책" + ".pdf";
             helper.addAttachment(attachFileName, file);
 
             javaMailSender.send(mimeMessage);
@@ -76,20 +75,19 @@ public class LawsuitMailService {
             helper.setSubject("[더존 사건관리 서비스] <" + dto.getLawsuitDto().getName() + "> 사건의 청구서입니다.");
             helper.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
 
-            StringBuilder text = new StringBuilder();
-            text.append("<div style='margin:100px;'>");
-            text.append("<div align='center' style='border:1px solid black; font-family:verdana';>");
-            text.append("<h2'> 사건명 : ").append(dto.getLawsuitDto().getName())
-                .append("</h2>");
-            text.append("<h2'> 사건번호 : ").append(dto.getLawsuitDto().getLawsuitNum())
-                .append("</h2>");
-            text.append("해당 사건에 대한 청구서를 첨부합니다.").append("</br>").append(" 감사합니다.");
-            text.append("</div>");
+            String text = "<div style='margin:100px;'>"
+                + "<div align='center' style='border:1px solid black; font-family:verdana';>"
+                + "<h2'> 사건명 : " + dto.getLawsuitDto().getName()
+                + "</h2>"
+                + "<h2'> 사건번호 : " + dto.getLawsuitDto().getLawsuitNum()
+                + "</h2>"
+                + "해당 사건에 대한 청구서를 첨부합니다." + "</br>" + " 감사합니다."
+                + "</div>";
 
-            helper.setText(text.toString(), true);
+            helper.setText(text, true);
 
             FileSystemResource file = new FileSystemResource(new File(dto.getFullFilePath()));
-            String attachFileName = "[" + dto.getLawsuitDto().getLawsuitNum() + "] 사건 청구서";
+            String attachFileName = "[" + dto.getLawsuitDto().getLawsuitNum() + "] 사건 청구서" + ".pdf";
             helper.addAttachment(attachFileName, file);
 
             javaMailSender.send(mimeMessage);
