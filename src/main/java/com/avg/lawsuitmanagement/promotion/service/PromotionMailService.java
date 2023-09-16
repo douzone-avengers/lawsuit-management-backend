@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PromotionMailService {
 
-    private final String VALIDATE_URL = "http://localhost:3000/validate";
+    private final String VALIDATE_URL = "https://lawsuit-management.online/validate";
     @Value("${spring.mail.username}")
     private String from;
     private final JavaMailSender javaMailSender;
@@ -32,21 +32,19 @@ public class PromotionMailService {
                 "[더존 사건관리 서비스] " + dto.getIssuer() + " 님이 " + dto.getClientName()
                     + " 님을 사건관리 서비스로 초대합니다.");
 
-            StringBuilder text = new StringBuilder();
-            text.append("<div style='margin:100px;'>");
-            text.append(
-                "<div align='center' style='border:1px solid black; font-family:verdana';>");
-            text.append("<h2'>").append(dto.getClientName())
-                .append("(").append(dto.getClientPhone()).append(")")
-                .append(" 고객님 환영합니다!!</h2>");
-            text.append("<h3 style='color:blue;'>회원가입 코드입니다.</h3>");
-            text.append("<div style='font-size:130%'>");
-            text.append("CODE : <strong>");
-            text.append(dto.getPromotionKey()).append("</strong><div><br/> ");
-            text.append("<a href=").append(VALIDATE_URL).append(">가입페이지로 이동 </a>");
-            text.append("</div>");
+            String text = "<div style='margin:100px;'>"
+                + "<div align='center' style='border:1px solid black; font-family:verdana';>"
+                + "<h2'>" + dto.getClientName()
+                + "(" + dto.getClientPhone() + ")"
+                + " 고객님 환영합니다!!</h2>"
+                + "<h3 style='color:blue;'>회원가입 코드입니다.</h3>"
+                + "<div style='font-size:130%'>"
+                + "CODE : <strong>"
+                + dto.getPromotionKey() + "</strong><div><br/> "
+                + "<a href=" + VALIDATE_URL + ">가입페이지로 이동 </a>"
+                + "</div>";
 
-            mimeMessage.setText(text.toString(), "utf-8", "html");
+            mimeMessage.setText(text, "utf-8", "html");
             mimeMessage.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
 
             javaMailSender.send(mimeMessage);
@@ -63,20 +61,18 @@ public class PromotionMailService {
             mimeMessage.setSubject(
                 "[더존 사건관리 서비스] " + dto.getIssuer() + " 님이 직원초대 코드를 발급하였습니다.");
 
-            StringBuilder text = new StringBuilder();
-            text.append("<div style='margin:100px;'>");
-            text.append(
-                "<div align='center' style='border:1px solid black; font-family:verdana';>");
-            text.append("<h2'>").append(dto.getIssuer())
-                .append(" 님이 직원초대 코드를 발급하였습니다.</h2>");
-            text.append("<h3 style='color:blue;'>회원가입 코드입니다.</h3>");
-            text.append("<div style='font-size:130%'>");
-            text.append("CODE : <strong>");
-            text.append(dto.getPromotionKey()).append("</strong><div><br/> ");
-            text.append("<a href=").append(VALIDATE_URL).append(">가입페이지로 이동 </a>");
-            text.append("</div>");
+            String text = "<div style='margin:100px;'>"
+                + "<div align='center' style='border:1px solid black; font-family:verdana';>"
+                + "<h2'>" + dto.getIssuer()
+                + " 님이 직원초대 코드를 발급하였습니다.</h2>"
+                + "<h3 style='color:blue;'>회원가입 코드입니다.</h3>"
+                + "<div style='font-size:130%'>"
+                + "CODE : <strong>"
+                + dto.getPromotionKey() + "</strong><div><br/> "
+                + "<a href=" + VALIDATE_URL + ">가입페이지로 이동 </a>"
+                + "</div>";
 
-            mimeMessage.setText(text.toString(), "utf-8", "html");
+            mimeMessage.setText(text, "utf-8", "html");
             mimeMessage.setFrom(new InternetAddress(from, "더존 사건관리 서비스"));
 
             javaMailSender.send(mimeMessage);
