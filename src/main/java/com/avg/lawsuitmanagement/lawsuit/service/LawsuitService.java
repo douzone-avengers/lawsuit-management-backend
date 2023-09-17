@@ -1,11 +1,5 @@
 package com.avg.lawsuitmanagement.lawsuit.service;
 
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.LAWSUIT_STATUS_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
-
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
@@ -51,6 +45,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -173,6 +169,11 @@ public class LawsuitService {
                 }
             }
 
+            // 종결 사건이면 update 불가
+            if (lawsuitStatus == LawsuitStatus.CLOSING) {
+                throw new CustomRuntimeException(CANNOT_ACCESS_CLOSING_LAWSUIT);
+            }
+
             if (lawsuitStatus == null) {
                 throw new CustomRuntimeException(LAWSUIT_STATUS_NOT_FOUND);
             }
@@ -223,6 +224,19 @@ public class LawsuitService {
         // lawsuitId에 해당하는 사건이 없다면
         if (lawsuitDto == null) {
             throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
+        }
+
+        // 클라이언트에서 받아온 사건상태 정보를 enum 클래스의 사건 상태들과 비교
+        LawsuitStatus lawsuitStatus = null;
+        for (LawsuitStatus status : LawsuitStatus.values()) {
+            if (status.getStatusKr().equals(lawsuitDto.getLawsuitStatus())) {
+                lawsuitStatus = status;
+            }
+        }
+
+        // 종결 사건이면 삭제 불가
+        if (lawsuitStatus == LawsuitStatus.CLOSING) {
+            throw new CustomRuntimeException(CANNOT_ACCESS_CLOSING_LAWSUIT);
         }
 
         // 해당 사건의 담당자가 아니라면
