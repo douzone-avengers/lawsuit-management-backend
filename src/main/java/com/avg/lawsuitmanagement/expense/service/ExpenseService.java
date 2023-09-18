@@ -37,6 +37,7 @@ public class ExpenseService {
     private final MemberMapperRepository memberMapperRepository;
     private final LoginUserInfoService loginUserInfoService;
     private final FileService fileService;
+    private final FileMapperRepository fileMapperRepository;
 
     public List<ExpenseDto> searchExpense(ExpenseSearchForm form) {
         return expenseRepository.selectSearchExpense(form.toParam());
@@ -46,6 +47,10 @@ public class ExpenseService {
         ExpenseSelectParam param = form.toParam();
 
         return expenseRepository.searchCount(param);
+    }
+
+    public List<Long> searchExpenseIdListByLawsuitId(long lawsuitId) {
+        return expenseRepository.searchExpenseIdListByLawsuitId(lawsuitId);
     }
 
     @Transactional
@@ -76,12 +81,18 @@ public class ExpenseService {
         return expenseRepository.selectExpenseById(expenseId);
     }
 
+    @Transactional
     public void deleteExpense(Long expenseId, Long lawsuitId) {
         // 기존에 등록된 멤버 id 리스트
         List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
 
         if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
             expenseRepository.deleteExpense(expenseId);
+            // 지출 증빙자료 모두 삭제
+            List<Long> fileIdList = fileMapperRepository.selectFileIdListByExpenseId(expenseId);
+            for (long id : fileIdList) {
+                deleteExpenseBill(id, lawsuitId);
+            }
         } else {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
