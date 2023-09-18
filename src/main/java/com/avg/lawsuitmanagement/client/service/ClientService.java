@@ -1,9 +1,5 @@
 package com.avg.lawsuitmanagement.client.service;
 
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.CLIENT_NOT_FOUND;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.EMAIL_ALREADY_EXIST;
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.SIGNED_CLIENT_CANNOT_DELETE;
-
 import com.avg.lawsuitmanagement.client.controller.form.InsertClientForm;
 import com.avg.lawsuitmanagement.client.controller.form.UpdateClientInfoForm;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
@@ -12,6 +8,7 @@ import com.avg.lawsuitmanagement.client.repository.param.InsertClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.ReRegisterClientParam;
 import com.avg.lawsuitmanagement.client.repository.param.UpdateClientInfoParam;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.lawsuit.dto.ClientLawsuitCountDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
@@ -23,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -102,9 +101,20 @@ public class ClientService {
             throw new CustomRuntimeException(CLIENT_NOT_FOUND);
         }
 
-        //회원가입 된 의뢰인일 경우
-        if(clientDto.getMemberId() == 0) {
+        // 회원가입 된 의뢰인일 경우
+        if(clientDto.getMemberId() != 0) {
             throw new CustomRuntimeException(SIGNED_CLIENT_CANNOT_DELETE);
+        }
+
+        // 관리자가 아니면 의뢰인 삭제 불가
+        if (!SecurityUtil.getCurrentLoginRoleList().contains("ROLE_ADMIN")) {
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+        }
+
+        // 종결된 사건의 의뢰인이면 삭제 불가
+        List<Long> clientIdList = lawsuitService.selectClientIdListOfClosingLawsuit(clientId);
+        if (clientIdList.contains(clientId)) {
+            throw new CustomRuntimeException(CANNOT_ACCESS_CLOSING_LAWSUIT);
         }
 
         clientMapperRepository.deleteClientInfo(clientId);

@@ -415,6 +415,10 @@ public class LawsuitService {
             .build());
     }
 
+    public List<Long> selectClientIdListOfClosingLawsuit(long clientId) {
+        return lawsuitMapperRepository.selectClientIdListOfClosingLawsuit(clientId);
+    }
+
 
     private SelectClientLawsuitListParam getParam(GetClientLawsuitForm form, long clientId) {
 
@@ -440,7 +444,6 @@ public class LawsuitService {
 
     private boolean isUserAuthorizedForLawsuit(long userId, List<Long> memberIds) {
         if (SecurityUtil.getCurrentLoginRoleList().contains("ROLE_ADMIN")) {
-            log.info("관리자입니다.");
             return true;
         }
 
