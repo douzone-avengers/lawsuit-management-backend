@@ -4,7 +4,6 @@ import com.avg.lawsuitmanagement.advice.controller.form.AdviceListForm;
 import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDetailResponseDto;
-import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
 import com.avg.lawsuitmanagement.advice.dto.GetAdviceListDto;
 import com.avg.lawsuitmanagement.advice.service.AdviceService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
