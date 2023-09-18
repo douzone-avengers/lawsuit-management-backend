@@ -114,7 +114,7 @@ public class ClientService {
         // 종결된 사건의 의뢰인이면 삭제 불가
         List<Long> clientIdList = lawsuitService.selectClientIdListOfClosingLawsuit(clientId);
         if (clientIdList.contains(clientId)) {
-            throw new CustomRuntimeException(CANNOT_ACCESS_CLOSING_LAWSUIT);
+            throw new CustomRuntimeException(CANNOT_ACCESS_CLOSING_LAWSUIT_CLIENT);
         }
 
         clientMapperRepository.deleteClientInfo(clientId);
