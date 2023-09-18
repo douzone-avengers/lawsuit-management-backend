@@ -1,9 +1,11 @@
 package com.avg.lawsuitmanagement.advice.controller;
 
+import com.avg.lawsuitmanagement.advice.controller.form.AdviceListForm;
 import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDetailResponseDto;
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
+import com.avg.lawsuitmanagement.advice.dto.GetAdviceListDto;
 import com.avg.lawsuitmanagement.advice.service.AdviceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +22,17 @@ public class AdviceController {
     private final AdviceService adviceService;
 
     //상담 상세 정보
-    /*@GetMapping("/{adviceId}")
-    public ResponseEntity<AdviceDto> selectAdviceDetailInfo(@PathVariable("adviceId") Long adviceId) {
-        return ResponseEntity.ok(adviceService.getAdviceById(adviceId));
-    }*/
+
+
     @GetMapping("/{adviceId}")
     public ResponseEntity<AdviceDetailResponseDto> getAdviceInfo(@PathVariable("adviceId") Long adviceId){
         AdviceDetailResponseDto result = adviceService.getAdviceInfo(adviceId);
         return ResponseEntity.ok(result);
     }
-    @GetMapping()
-    public ResponseEntity<List<AdviceDto>> selectAdviceListInfo(@RequestParam(name="lawsuit") Long lawsuitId){
-        return ResponseEntity.ok(adviceService.getAdviceByLawsuitId(lawsuitId));
+    @GetMapping("/lawsuits/{lawsuitId}")
+    public ResponseEntity<GetAdviceListDto> selectAdviceListInfo(@ModelAttribute AdviceListForm form, @PathVariable ("lawsuitId") Long lawsuitId){
+
+        return ResponseEntity.ok(adviceService.getAdviceByLawsuitId(form,lawsuitId));
     }
     // 상담 등록
     @PostMapping()

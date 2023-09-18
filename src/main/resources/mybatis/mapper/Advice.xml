@@ -48,13 +48,38 @@
         where id = #{adviceId} and is_deleted = false;
     </select>
 
-    <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long"
+    <select id="selectAdviceListByPagingCondition" parameterType="AdviceListParam"
     resultType="com.avg.lawsuitmanagement.advice.dto.AdviceDto">
         select id, lawsuit_id, title, contents, adviced_at
         from advice
-        where lawsuit_id = #{lawsuitId} and is_deleted=false;
-    </select>
+        where lawsuit_id = #{lawsuitId} and is_deleted=false
+        <choose>
+            <when
+                    test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'ASC'">
+                order by ${sortKey} asc
+            </when>
+            <when
+                    test="sortKey != null and sortKey != '' and sortOrder != null and sortOrder.toUpperCase() == 'DESC'">
+                order by ${sortKey} desc
+            </when>
+            <otherwise>
+                order by `adviced_at` desc
+            </otherwise>
+        </choose>
 
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    
+    <select id="selectAdviceListByPagingConditionCount" parameterType="AdviceListParam"
+            resultType="int">
+    select  count(*)
+    from advice
+    where lawsuit_id = #{lawsuitId} and is_deleted=false;
+
+    </select>
+    
     <select id="detailAdviceById" parameterType="java.lang.Long"
     resultType="com.avg.lawsuitmanagement.advice.dto.AdviceRawDto">
         select a.id `advice_id`,
