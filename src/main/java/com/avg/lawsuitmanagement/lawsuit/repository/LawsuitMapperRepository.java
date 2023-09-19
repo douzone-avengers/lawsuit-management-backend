@@ -66,6 +66,8 @@ public interface LawsuitMapperRepository {
 
     void updateLawsuitStatus(LawsuitStatusUpdateParam param);
 
+    List<Long> selectClientIdListOfClosingLawsuit(long clientId);
+
     List<LawsuitPrintRawDto> selectPrintInfo(Long lawsuitId);
 
     void updateResult(LawsuitUpdateResultParam param);

@@ -68,7 +68,8 @@
         from file
         where id in (select file_id
                      from expense_file_map
-                     where expense_id = #{expenseId})
+                     where expense_id = #{expenseId}
+                     and is_deleted = false)
         and is_deleted = false
     </select>
 </mapper>

@@ -18,4 +18,5 @@ public interface ExpenseMapperRepository {
     ExpenseDto selectExpenseById(Long expenseId);
     void deleteExpense(Long expenseId);
     void insertExpenseFileMap(ExpenseFileIdParam param);
+    List<Long> searchExpenseIdListByLawsuitId(Long lawsuitId);
 }
