@@ -128,6 +128,10 @@ public class MemberService {
     public void deleteEmployeeFromLawsuit(long employeeId, long lawsuitId) {
         LawsuitBasicDto basicLawsuitInfo = lawsuitService.getBasicLawsuitInfo(lawsuitId);
 
+        if(basicLawsuitInfo.getLawsuit().getLawsuitStatus().equals("CLOSING") ) {
+            throw new CustomRuntimeException(ErrorCode.CANNOT_ACCESS_CLOSING_LAWSUIT);
+        }
+
         List<BasicUserDto> employees = basicLawsuitInfo.getEmployees();
         if (!isEmployeeInLawsuit(employeeId, employees)) {
             throw new CustomRuntimeException(ErrorCode.MEMBER_NOT_ASSIGNED_TO_LAWSUIT);

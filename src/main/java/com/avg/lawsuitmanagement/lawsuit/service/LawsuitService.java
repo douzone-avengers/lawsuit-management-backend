@@ -1,11 +1,18 @@
 package com.avg.lawsuitmanagement.lawsuit.service;
 
+import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
+import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
+import com.avg.lawsuitmanagement.advice.service.AdviceService;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
 import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
+import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
+import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
+import com.avg.lawsuitmanagement.expense.service.ExpenseService;
 import com.avg.lawsuitmanagement.file.FileSaveDto;
+import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
 import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetClientLawsuitForm;
 import com.avg.lawsuitmanagement.lawsuit.controller.form.GetEmployeeLawsuitForm;
@@ -59,6 +66,11 @@ public class LawsuitService {
     private final LoginUserInfoService loginUserInfoService;
     private final FileService fileService;
     private final LawsuitMailService lawsuitMailService;
+//    private final AdviceService adviceService;
+    private final AdviceMapperRepository adviceMapperRepository;
+//    private final ExpenseService expenseService;
+    private final ExpenseMapperRepository expenseMapperRepository;
+    private final FileMapperRepository fileMapperRepository;
 
     public GetClientLawsuitListDto selectClientLawsuitList(long clientId,
         GetClientLawsuitForm form) {
@@ -244,13 +256,69 @@ public class LawsuitService {
         MemberDto loginMemberInfo = memberMapperRepository.selectMemberByEmail(email);
 
         List<Long> memberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
-        if (!memberIdList.contains(loginMemberInfo.getId())) {
+
+        // 해당 사건의 담당자 또는 관리자가 아니라면
+        if (!isUserAuthorizedForLawsuit(loginMemberInfo.getId(), memberIdList)) {
             throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
         }
 
         lawsuitMapperRepository.deleteLawsuitInfo(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
+
+        // lawsuit-advice 삭제
+//        List<AdviceDto> adviceList = adviceService.getAdviceByLawsuitId(lawsuitId);
+//
+//        if (adviceList == null) {
+//            throw new CustomRuntimeException(ADVICE_NOT_FOUND);
+//        }
+//        for (AdviceDto dto : adviceList) {
+//            adviceService.deleteAdviceInfo(dto.getId());
+//        }
+
+        List<AdviceDto> adviceList = adviceMapperRepository.selectAdviceByLawsuitId(lawsuitId);
+
+        if (adviceList == null) {
+            throw new CustomRuntimeException(ADVICE_NOT_FOUND);
+        }
+        for (AdviceDto dto : adviceList) {
+            List<Long> adviceMemberIdList = adviceMapperRepository.selectMemberByAdviceId(dto.getId());
+
+            if(isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), adviceMemberIdList)) {
+                adviceMapperRepository.deleteAdviceInfo(dto.getId());
+                adviceMapperRepository.AdviceDeleteClientMap(dto.getId());
+                adviceMapperRepository.AdviceDeleteMemberMap(dto.getId());
+            } else {
+                throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_ADVICE);
+            }
+        }
+
+        // lawsuit-expense 삭제
+//        List<Long> expenseIdList = expenseService.searchExpenseIdListByLawsuitId(lawsuitId);
+//        for (long id : expenseIdList) {
+//            expenseService.deleteExpense(id, lawsuitId);
+//        }
+
+        List<Long> expenseIdList = expenseMapperRepository.searchExpenseIdListByLawsuitId(lawsuitId);
+        for (long id : expenseIdList) {
+            // 기존에 등록된 멤버 id 리스트
+            List<Long> originMemberIdList = memberMapperRepository.selectMemberIdListByLawsuitId(lawsuitId);
+
+            if (isUserAuthorizedForLawsuit(loginUserInfoService.getLoginMemberInfo().getId(), originMemberIdList)) {
+                expenseMapperRepository.deleteExpense(id);
+                // 지출 증빙자료 모두 삭제
+                List<Long> fileIdList = fileMapperRepository.selectFileIdListByExpenseId(id);
+                for (long fileId : fileIdList) {
+                    ExpenseFileIdParam param = ExpenseFileIdParam.of(id, fileId);
+
+                    fileMapperRepository.deleteFile(fileId);
+                    fileMapperRepository.deleteExpenseFileMap(param);
+                }
+            } else {
+                throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+            }
+        }
+
     }
 
     public LawsuitBasicDto getBasicLawsuitInfo(Long lawsuitId) {
@@ -345,6 +413,10 @@ public class LawsuitService {
             .id(id)
             .status(status.toString())
             .build());
+    }
+
+    public List<Long> selectClientIdListOfClosingLawsuit(long clientId) {
+        return lawsuitMapperRepository.selectClientIdListOfClosingLawsuit(clientId);
     }
 
 
