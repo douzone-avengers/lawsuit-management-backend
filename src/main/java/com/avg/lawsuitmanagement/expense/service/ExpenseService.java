@@ -9,6 +9,7 @@ import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
 import com.avg.lawsuitmanagement.expense.repository.param.*;
 import com.avg.lawsuitmanagement.file.dto.FileDto;
 import com.avg.lawsuitmanagement.file.dto.FileMetaDto;
+import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
 import com.avg.lawsuitmanagement.file.service.FileService;
 import com.avg.lawsuitmanagement.lawsuit.service.LawsuitService;
 import com.avg.lawsuitmanagement.lawsuit.type.LawsuitStatus;
