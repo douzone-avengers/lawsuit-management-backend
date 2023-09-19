@@ -15,7 +15,6 @@ import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
 import com.avg.lawsuitmanagement.file.repository.param.FileInsertParam;
 import com.avg.lawsuitmanagement.file.FileSaveDto;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_NOT_FOUND;
 import static com.avg.lawsuitmanagement.common.exception.type.ErrorCode.FILE_SAVE_FAIL;
 
 
@@ -72,31 +70,23 @@ public class FileService {
             Files.copy(multipartFile.getInputStream(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             s3Client.putObject(new PutObjectRequest(bucket, fullFilePath, file)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
+            removeFile(file);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new CustomRuntimeException(FILE_SAVE_FAIL);
-        } finally {
-
         }
 
         return fullFilePath;
     }
 
-    public byte[] getFile(long fileId) {
-        // fileId에 해당하는 파일을 읽어와서 fullFilePath찾기
-        String fullFilePath = getFullFilePath(selectFileById(fileId));
-        byte[] fileData = new byte[(int) new File(fullFilePath).length()];
-
-        try {
-            FileInputStream inputStream = new FileInputStream(fullFilePath);
-            inputStream.read(fileData);
-            inputStream.close();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomRuntimeException(FILE_NOT_FOUND);
+    private void removeFile(File targetFile) {
+        if (targetFile.exists()) {
+            if (targetFile.delete()) {
+                log.info("파일이 삭제되었습니다.");
+            } else {
+                log.info("파일이 삭제되지 않았습니다.");
+            }
         }
-
-        return fileData;
     }
 
     public void createFileAndInsertDataBase(FileDto dto) {
@@ -132,9 +122,5 @@ public class FileService {
 
     public Long searchFileSize(Long expenseId) {
         return fileMapperRepository.searchCount(expenseId);
-    }
-
-    private String getFullFilePath (FileMetaDto dto) {
-        return  root + dto.getPath() + dto.getOriginFileName();
     }
 }

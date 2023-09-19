@@ -136,8 +136,4 @@ public class ClientService {
     public List<ClientDto> selectClientList() {
         return clientMapperRepository.selectClientList();
     }
-
-    public ClientDto selectClientIdByEmail(String email) {
-        return clientMapperRepository.selectClientByEmail(email);
-    }
 }
