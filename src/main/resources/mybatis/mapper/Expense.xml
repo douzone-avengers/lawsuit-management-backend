@@ -116,4 +116,10 @@
         insert into expense_file_map (expense_id, file_id)
         values (#{expenseId}, #{fileId})
     </insert>
+
+    <select id="searchExpenseIdListByLawsuitId" parameterType="java.lang.Long">
+        select id
+        from expense
+        where lawsuit_id = #{lawsuitId}
+    </select>
 </mapper>
