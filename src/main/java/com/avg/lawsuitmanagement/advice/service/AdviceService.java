@@ -1,5 +1,6 @@
 package com.avg.lawsuitmanagement.advice.service;
 
+import com.avg.lawsuitmanagement.advice.controller.form.AdviceListForm;
 import com.avg.lawsuitmanagement.advice.controller.form.InsertAdviceForm;
 import com.avg.lawsuitmanagement.advice.controller.form.UpdateAdviceInfoForm;
 import com.avg.lawsuitmanagement.advice.dto.*;
@@ -7,10 +8,10 @@ import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
 import com.avg.lawsuitmanagement.advice.repository.param.*;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
+import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.lawsuit.dto.LawsuitDto;
 import com.avg.lawsuitmanagement.lawsuit.repository.LawsuitMapperRepository;
-import com.avg.lawsuitmanagement.member.dto.MemberDto;
 import com.avg.lawsuitmanagement.member.repository.MemberMapperRepository;
 import com.avg.lawsuitmanagement.member.service.LoginUserInfoService;
 import com.avg.lawsuitmanagement.member.service.MemberService;
@@ -43,8 +44,11 @@ public class AdviceService {
         if(adviceDto == null) {
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
         }
+
         return adviceDto;
     }
+
+
 
     public AdviceDetailResponseDto getAdviceInfo(Long adviceId) {
         List<AdviceRawDto> raws = adviceMapperRepository.detailAdviceById(adviceId);
@@ -101,12 +105,25 @@ public class AdviceService {
 
     }
 
-    public List<AdviceDto> getAdviceByLawsuitId(long lawsuitId) {
-        List<AdviceDto> adviceList = adviceMapperRepository.selectAdviceByLawsuitId(lawsuitId);
-        if(adviceList == null){
-            throw new CustomRuntimeException(ADVICE_NOT_FOUND);
+    public GetAdviceListDto getAdviceByLawsuitId(AdviceListForm form, long lawsuitId) {
+
+        AdviceListParam param;
+
+        if (form.getCurPage() == null || form.getRowsPerPage() == null){
+            param = AdviceListParam.of(form,lawsuitId);
+        } else {
+            param = AdviceListParam.of(form,
+                    PagingUtil.calculatePaging(form.getCurPage(), form.getRowsPerPage()), lawsuitId);
         }
-        return adviceList;
+
+
+        List<AdviceDto> list=adviceMapperRepository.selectAdviceListByPagingCondition(param);
+        int count = adviceMapperRepository.selectAdviceListByPagingConditionCount(param);
+
+        return GetAdviceListDto.builder()
+                .count(count)
+                .adviceDtoList(list)
+                .build();
     }
     public void insertAdvice(InsertAdviceForm form) {
         // 소송 정보를 확인

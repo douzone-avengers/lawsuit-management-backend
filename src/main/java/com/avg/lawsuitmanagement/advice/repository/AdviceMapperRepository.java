@@ -14,7 +14,7 @@ public interface AdviceMapperRepository {
 
     List<AdviceRawDto> detailAdviceById(long adviceId);
 
-    List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
+
 
     void insertAdvice(InsertAdviceParam param);
     void insertAdviceClientMap(AdviceClientIdParam param);
@@ -27,6 +27,8 @@ public interface AdviceMapperRepository {
     void AdviceDeleteClientMap(long adviceId);
     void AdviceDeleteMemberMap(long adviceId);
 
+    List<AdviceDto> selectAdviceListByPagingCondition(AdviceListParam param);
+    int selectAdviceListByPagingConditionCount(AdviceListParam param);
 
     Long getLastInsertedAdviceId();
     void updateAdviceInfo(UpdateAdviceInfoParam param);

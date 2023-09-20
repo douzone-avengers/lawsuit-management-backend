@@ -45,6 +45,7 @@ public enum ErrorCode {
     CLIENT_NOT_FOUND_IN_LAWSUIT(HttpStatus.NOT_FOUND, "해당 사건에 존재하지 않는 의뢰인 입니다."),
     SIGNED_CLIENT_CANNOT_DELETE(HttpStatus.BAD_REQUEST, "회원가입한 의뢰인은 삭제할 수 없습니다."),
     CANNOT_ACCESS_CLOSING_LAWSUIT_CLIENT(HttpStatus.BAD_REQUEST, "종결된 사건의 의뢰인은 삭제할 수 없습니다."),
+    MEMBER_NOT_ASSIGNED_TO_CLIENT(HttpStatus.NOT_FOUND, "의뢰인을 삭제할 권한이 없습니다."),
 
     //사원 관련 예외
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사원입니다."),
