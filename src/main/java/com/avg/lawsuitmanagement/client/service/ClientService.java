@@ -108,7 +108,7 @@ public class ClientService {
 
         // 관리자가 아니면 의뢰인 삭제 불가
         if (!SecurityUtil.getCurrentLoginRoleList().contains("ROLE_ADMIN")) {
-            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_LAWSUIT);
+            throw new CustomRuntimeException(MEMBER_NOT_ASSIGNED_TO_CLIENT);
         }
 
         // 종결된 사건의 의뢰인이면 삭제 불가
