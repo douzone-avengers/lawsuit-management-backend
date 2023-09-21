@@ -262,18 +262,8 @@ public class LawsuitService {
         lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
 
-        // lawsuit-advice 삭제
-//        List<AdviceDto> adviceList = adviceService.getAdviceByLawsuitId(lawsuitId);
-//
-//        if (adviceList == null) {
-//            throw new CustomRuntimeException(ADVICE_NOT_FOUND);
-//        }
-//        for (AdviceDto dto : adviceList) {
-//            adviceService.deleteAdviceInfo(dto.getId());
-//        }
-
+        // 상담 삭제
         List<AdviceDto> adviceList = adviceMapperRepository.selectAdviceByLawsuitId(lawsuitId);
-        log.info(adviceList.toString());
 
         if (adviceList == null) {
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
@@ -290,12 +280,7 @@ public class LawsuitService {
             }
         }
 
-        // lawsuit-expense 삭제
-//        List<Long> expenseIdList = expenseService.searchExpenseIdListByLawsuitId(lawsuitId);
-//        for (long id : expenseIdList) {
-//            expenseService.deleteExpense(id, lawsuitId);
-//        }
-
+        // 지출 삭제
         List<Long> expenseIdList = expenseMapperRepository.searchExpenseIdListByLawsuitId(lawsuitId);
         for (long id : expenseIdList) {
             // 기존에 등록된 멤버 id 리스트
