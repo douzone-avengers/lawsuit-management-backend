@@ -2,7 +2,6 @@ package com.avg.lawsuitmanagement.lawsuit.service;
 
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
-import com.avg.lawsuitmanagement.advice.service.AdviceService;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
@@ -10,7 +9,6 @@ import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
-import com.avg.lawsuitmanagement.expense.service.ExpenseService;
 import com.avg.lawsuitmanagement.file.FileSaveDto;
 import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
 import com.avg.lawsuitmanagement.file.service.FileService;
@@ -66,9 +64,7 @@ public class LawsuitService {
     private final LoginUserInfoService loginUserInfoService;
     private final FileService fileService;
     private final LawsuitMailService lawsuitMailService;
-//    private final AdviceService adviceService;
     private final AdviceMapperRepository adviceMapperRepository;
-//    private final ExpenseService expenseService;
     private final ExpenseMapperRepository expenseMapperRepository;
     private final FileMapperRepository fileMapperRepository;
 
@@ -266,16 +262,7 @@ public class LawsuitService {
         lawsuitMapperRepository.deleteLawsuitClientMap(lawsuitId);
         lawsuitMapperRepository.deleteLawsuitMemberMap(lawsuitId);
 
-        // lawsuit-advice 삭제
-//        List<AdviceDto> adviceList = adviceService.getAdviceByLawsuitId(lawsuitId);
-//
-//        if (adviceList == null) {
-//            throw new CustomRuntimeException(ADVICE_NOT_FOUND);
-//        }
-//        for (AdviceDto dto : adviceList) {
-//            adviceService.deleteAdviceInfo(dto.getId());
-//        }
-
+        // 상담 삭제
         List<AdviceDto> adviceList = adviceMapperRepository.selectAdviceByLawsuitId(lawsuitId);
 
         if (adviceList == null) {
@@ -293,12 +280,7 @@ public class LawsuitService {
             }
         }
 
-        // lawsuit-expense 삭제
-//        List<Long> expenseIdList = expenseService.searchExpenseIdListByLawsuitId(lawsuitId);
-//        for (long id : expenseIdList) {
-//            expenseService.deleteExpense(id, lawsuitId);
-//        }
-
+        // 지출 삭제
         List<Long> expenseIdList = expenseMapperRepository.searchExpenseIdListByLawsuitId(lawsuitId);
         for (long id : expenseIdList) {
             // 기존에 등록된 멤버 id 리스트
