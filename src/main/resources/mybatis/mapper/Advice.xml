@@ -100,11 +100,6 @@
 
 
     </select>
-    <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long">
-        select id, lawsuit_id, title, contents, adviced_at
-        from advice
-        where lawsuit_id = #{lawsuitId} and is_deleted=false
-    </select>
 
     <select id="selectMemberByAdviceId" parameterType="java.lang.Long">
         select member_id

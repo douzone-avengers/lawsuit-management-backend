@@ -27,8 +27,6 @@ public interface AdviceMapperRepository {
     void AdviceDeleteClientMap(long adviceId);
     void AdviceDeleteMemberMap(long adviceId);
 
-    List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
-
     List<AdviceDto> selectAdviceListByPagingCondition(AdviceListParam param);
     int selectAdviceListByPagingConditionCount(AdviceListParam param);
 
