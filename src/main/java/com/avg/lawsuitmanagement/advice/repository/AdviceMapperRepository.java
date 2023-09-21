@@ -36,6 +36,7 @@ public interface AdviceMapperRepository {
     void updateAdviceInfo(UpdateAdviceInfoParam param);
     List<Long> selectMemberByAdviceId(long adviceId);
     List<Long> selectClientByAdviceId(long adviceId);
+    List<AdviceDto> selectAdviceByLawsuitId(long lawsuitId);
 
     void deleteAdviceInfo(long adviceId);
 

@@ -217,4 +217,10 @@
         where  advice_id = #{adviceId};
     </update>
 
+    <select id="selectAdviceByLawsuitId" parameterType="java.lang.Long">
+        select *
+        from advice
+        where lawsuit_id = #{lawsuitId}
+    </select>
+
 </mapper>
