@@ -2,7 +2,6 @@ package com.avg.lawsuitmanagement.lawsuit.service;
 
 import com.avg.lawsuitmanagement.advice.dto.AdviceDto;
 import com.avg.lawsuitmanagement.advice.repository.AdviceMapperRepository;
-import com.avg.lawsuitmanagement.advice.service.AdviceService;
 import com.avg.lawsuitmanagement.client.dto.ClientDto;
 import com.avg.lawsuitmanagement.client.repository.ClientMapperRepository;
 import com.avg.lawsuitmanagement.common.custom.CustomRuntimeException;
@@ -10,7 +9,6 @@ import com.avg.lawsuitmanagement.common.util.PagingUtil;
 import com.avg.lawsuitmanagement.common.util.SecurityUtil;
 import com.avg.lawsuitmanagement.expense.repository.ExpenseMapperRepository;
 import com.avg.lawsuitmanagement.expense.repository.param.ExpenseFileIdParam;
-import com.avg.lawsuitmanagement.expense.service.ExpenseService;
 import com.avg.lawsuitmanagement.file.FileSaveDto;
 import com.avg.lawsuitmanagement.file.repository.FileMapperRepository;
 import com.avg.lawsuitmanagement.file.service.FileService;
@@ -66,9 +64,7 @@ public class LawsuitService {
     private final LoginUserInfoService loginUserInfoService;
     private final FileService fileService;
     private final LawsuitMailService lawsuitMailService;
-//    private final AdviceService adviceService;
     private final AdviceMapperRepository adviceMapperRepository;
-//    private final ExpenseService expenseService;
     private final ExpenseMapperRepository expenseMapperRepository;
     private final FileMapperRepository fileMapperRepository;
 
@@ -277,6 +273,7 @@ public class LawsuitService {
 //        }
 
         List<AdviceDto> adviceList = adviceMapperRepository.selectAdviceByLawsuitId(lawsuitId);
+        log.info(adviceList.toString());
 
         if (adviceList == null) {
             throw new CustomRuntimeException(ADVICE_NOT_FOUND);
