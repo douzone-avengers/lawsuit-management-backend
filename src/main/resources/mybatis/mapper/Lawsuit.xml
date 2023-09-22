@@ -52,7 +52,7 @@
         from `lawsuit`
         where `id` in (select `lawsuit_id`
         from `lawsuit_client_map`
-        where `client_id` = #{clientId})
+        where `client_id` = #{clientId} and is_deleted = false)
         and `is_deleted` = 0
         <if test="searchWord != ''">
             and (
@@ -72,7 +72,7 @@
         from `lawsuit`
         where `id` in (select `lawsuit_id`
         from `lawsuit_member_map`
-        where `member_id` = #{memberId})
+        where `member_id` = #{memberId} and 'is_deleted' = 0)
         and `is_deleted` = 0
         <if test="searchWord != ''">
             and (
