@@ -125,6 +125,8 @@ public class AdviceService {
                 .adviceDtoList(list)
                 .build();
     }
+
+    @Transactional
     public void insertAdvice(InsertAdviceForm form) {
         // 소송 정보를 확인
         LawsuitDto lawsuitDto = lawsuitMapperRepository.selectLawsuitById(form.getLawsuitId());
