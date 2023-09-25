@@ -141,7 +141,7 @@ public class ChatService {
         }
 
         if (checkFriendByEmail(userEmail, friendEmail)) {
-            throw new CustomRuntimeException(ErrorCode.CHAT_ALREADY_FRIEND);
+            return;
         }
 
         UserBasicInfo user = searchUserByEmail(userEmail);
@@ -370,6 +370,9 @@ public class ChatService {
         if (!chatRepository.isEmployeeByEmail(email)) {
             List<String> employeeEmails = chatRepository.searchMemberEmailsByClientEmail(email);
             for (String employeeEmail : employeeEmails) {
+                if (employeeEmail == null) {
+                    continue;
+                }
                 try {
                     addFriendByEmail(email, employeeEmail);
                 } catch (CustomRuntimeException e) {
