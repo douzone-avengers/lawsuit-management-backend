@@ -234,16 +234,8 @@ public class LawsuitService {
             throw new CustomRuntimeException(LAWSUIT_NOT_FOUND);
         }
 
-        // 클라이언트에서 받아온 사건상태 정보를 enum 클래스의 사건 상태들과 비교
-        LawsuitStatus lawsuitStatus = null;
-        for (LawsuitStatus status : LawsuitStatus.values()) {
-            if (status.getStatusKr().equals(lawsuitDto.getLawsuitStatus())) {
-                lawsuitStatus = status;
-            }
-        }
-
         // 종결 사건이면 삭제 불가
-        if (lawsuitStatus == LawsuitStatus.CLOSING) {
+        if(lawsuitDto.getLawsuitStatus().equals("CLOSING")) {
             throw new CustomRuntimeException(CANNOT_ACCESS_CLOSING_LAWSUIT);
         }
 
